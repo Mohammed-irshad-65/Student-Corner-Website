@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura State University - Student Login</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1d4ed8;
+            --light-blue: #eff6ff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --error-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            color: var(--text-main);
+            /* Background Animation */
+            background: linear-gradient(-45deg, #f0f4ff, #e0e7ff, #f8fafc, #dbeafe);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Fade in animation for the whole page */
+        .page-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .system-status {
+            font-size: 0.75rem;
+            color: #059669;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Main Content Layout */
+        .main-container {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .left-panel, .right-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .left-panel:hover, .right-panel:hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        .left-panel {
+            flex: 1.2;
+        }
+
+        .right-panel {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Left Panel Styles */
+        .tag {
+            display: inline-block;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .left-panel h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .left-panel h2 span {
+            color: var(--primary-blue);
+        }
+
+        .left-panel > p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .grid-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-gray);
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: var(--light-blue);
+        }
+
+        .feature-icon {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            background: white;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .feature-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .spotlight {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--light-blue);
+            padding: 1rem;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .spotlight:hover {
+            transform: scale(1.02);
+        }
+
+        .spotlight img {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .spotlight-content h4 {
+            font-size: 0.75rem;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            display: flex;
+            gap: 10px;
+        }
+        .spotlight-content h4 span {
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+
+        .spotlight-content p {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .spotlight-content p.sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Right Panel (Login) Styles */
+        .right-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .right-header h2 {
+            font-size: 2rem;
+        }
+
+        .lock-icon {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .right-panel > p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group label a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.left-icon {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-muted);
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .input-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+            display: block;
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.75rem;
+            margin-top: 0.4rem;
+            display: none;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        /* Styled button container link */
+        .btn-link {
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .divider::before { margin-right: 1rem; }
+        .divider::after { margin-left: 1rem; }
+
+        .btn-sso {
+            width: 100%;
+            background: var(--bg-gray);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .btn-sso:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .security-note {
+            margin-top: auto;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-start;
+            margin-top: 1.5rem;
+        }
+        
+        .security-note i {
+            color: #059669;
+            margin-top: 0.1rem;
+        }
+        /* Bottom Links */
+        .bottom-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .bottom-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--text-main);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .bottom-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        }
+
+        .bottom-card-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .bottom-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .bottom-card h4 { font-size: 0.9rem; }
+        .bottom-card p { font-size: 0.75rem; color: var(--text-muted); }
+        .arrow-icon { color: var(--text-muted); font-size: 0.8rem; }
+
+        /* Icon Colors for bottom cards */
+        .icon-blue { background: var(--light-blue); color: var(--primary-blue); }
+        .icon-purple { background: #f3e8ff; color: #9333ea; }
+        .icon-red { background: #fee2e2; color: #dc2626; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-container { flex-direction: column; }
+            .grid-features { grid-template-columns: 1fr; }
+            .bottom-links { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="logo-text">
+                    <h1>SETH MOTILAL COLLAGE </h1>
+                    <p> jhunjhunu Rajsthan . India 2026</p>
+                </div>
+            </div>
+            <div class="system-status">
+                <div class="status-dot"></div>
+                ALL SYSTEMS OPERATIONAL
+            </div>
+        </header>
+        <!-- Main Content -->
+        <div class="main-container">
+            
+            <!-- Left Panel (Information) -->
+            <div class="left-panel">
+                <div class="tag"><i class="fa-solid fa-wand-magic-sparkles"></i> CAMPUS DIGITAL LIFE</div>
+                <h2>Welcome to <span>Student Corner</span></h2>
+                <p>Your friction-free academic launchpad. Check daily schedules, inspect milestone grades, and manage collegiate funding all in one place.</p>
+                
+                <div class="grid-features">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <h3>View Real-time Grades</h3>
+                        <p>Stay updated on cumulative GPA, midterms, and professor feedback instantly.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-regular fa-calendar-days"></i></div>
+                        <h3>Class Timetable</h3>
+                        <p>Synchronized daily lectures, lab assignments, and study room reservations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        <h3>Campus Bulletins</h3>
+                        <p>Instant alerts on campus life, club symposia, and library extended hours.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-money-check-dollar"></i></div>
+                        <h3>Financial Aid & Awards</h3>
+                        <p>Tuition ledger, FAFSA disbursements, and academic excellence scholarships.</p>
+                    </div>
+                </div>
+
+                <div class="spotlight">
+                    <!-- Placeholder image representing the students in the library -->
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=150&q=80" alt="Students studying">
+                    <div class="spotlight-content">
+                        <h4>STUDENT SPOTLIGHT <span>• 4,200+ students active today</span></h4>
+                        <p>Spring Midterm Study Halls now open 24/7 in Lowden Library</p>
+                        <p class="sub">Includes free student tutoring and technical equipment checkout.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel (Login Form) -->
+            <div class="right-panel">
+                <div class="right-header">
+                    <div>
+                        <h2>Sign In</h2>
+                        <p>Access your personalized academic profile</p>
+                    </div>
+                    <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="studentId">Student ID or University Email</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-id-badge left-icon"></i>
+                            <input type="text" id="studentId" placeholder="s1234567 or student@campus.edu">
+                        </div>
+                        <span class="input-hint">Ex: alex.chen@campus.edu</span>
+                        <span class="error-message" id="emailError">Please enter your Student ID or Email.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password <a href="#">Forgot password?</a></label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-key left-icon"></i>
+                            <input type="password" id="password" placeholder="Enter your student password">
+                            <i class="fa-regular fa-eye toggle-password" id="togglePassword"></i>
+                        </div>
+                        <span class="error-message" id="passwordError">Password must be at least 8 characters.</span>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember this device for 30 days</label>
+                    </div>
+
+                    <!-- Login Button Wrapped with Anchor Tag -->
+                    <a href="./index.html" class="btn-link">
+                        <button type="submit" class="btn-primary" id="loginBtn">
+                            Sign In to Portal <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </a>
+                </form>
+
+                <div class="divider">OR SINGLE SIGN-ON</div>
+
+                <button class="btn-sso">
+                    <i class="fa-solid fa-building-columns" style="color: var(--primary-blue);"></i>
+                    Log in with Campus Key / Google Workspace
+                </button>
+
+                <div class="security-note">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <p>Protected by Dual-Factor SSO Authentication. Never disclose your Campus Key password or one-time verification passcode.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Links -->
+        <div class="bottom-links">
+            <a href="#" class="bottom-card">
+                <div class="bottom-card-content">
+                    <div class="bottom-icon icon-blue"><i class="fa-regular fa-compass"></i></div>
+                    <div>
+                        <h4>New Student Orientation</h4>
+                        <p>Step-by-step account onboarding guide</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+            
+            <a href="#" class="bottom-card">
+                <div class="bottom-card-content">
+                    <div class="bottom-icon icon-purple"><i class="fa-solid fa-headset"></i></div>
+                    <div>
+                        <h4>IT Help Desk & Support</h4>
+                        <p>Password resets, WiFi, and MFA help</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+
+            <a href="#" class="bottom-card">
+                <div class="bottom-card-content">
+                    <div class="bottom-icon icon-red"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <h4 style="color: #dc2626;">Campus Police Emergency</h4>
+                        <p>Dial (555) 019-9111 • 24/7 Dispatch</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-phone" style="color: #dc2626; font-size: 0.9rem;"></i>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 Aura State University • Division of Academic & Student Information Technology • FERPA & Student Privacy Compliance Ensured</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript for Interactivity and Validation -->
+    <script>
+        // Toggle Password Visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        togglePassword.addEventListener('click', function (e) {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            // Toggle the eye icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Form Validation Logic
+        const loginForm = document.getElementById('loginForm');
+        const studentIdInput = document.getElementById('studentId');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const loginBtn = document.getElementById('loginBtn');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent actual form submission
+            
+            let isValid = true;
+
+            // Reset errors
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+            studentIdInput.style.borderColor = 'var(--border-color)';
+            passwordInput.style.borderColor = 'var(--border-color)';
+
+            // Check Email/ID
+            if (studentIdInput.value.trim() === '') {
+                emailError.style.display = 'block';
+                studentIdInput.style.borderColor = 'var(--error-red)';
+                isValid = false;
+            }
+
+            // Check Password (Minimum 8 characters requirement)
+            if (passwordInput.value.length < 8) {
+                passwordError.style.display = 'block';
+                passwordInput.style.borderColor = 'var(--error-red)';
+                isValid = false;
+            }
+
+            // Success Animation/Action
+            if (isValid) {
+                const originalText = loginBtn.innerHTML;
+                loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+                loginBtn.style.opacity = '0.8';
+                
+                // Simulate network request and navigate to home page
+                setTimeout(() => {
+                    window.location.href = './home.html';
+                }, 1000);
+            }
+        });
+
+        // Remove error states on input
+        studentIdInput.addEventListener('input', () => {
+            emailError.style.display = 'none';
+            studentIdInput.style.borderColor = 'var(--border-color)';
+        });
+
+        passwordInput.addEventListener('input', () => {
+            passwordError.style.display = 'none';
+            passwordInput.style.borderColor = 'var(--border-color)';
+        });
+    </script>
+</body>
+</html>

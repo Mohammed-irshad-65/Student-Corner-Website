@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic & Campus Resources - CampusCorner</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        campusBlue: '#2563eb',
+                        campusDarkBlue: '#1e40af',
+                        campusBg: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbars for clean UI */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .toast-slide { animation: slideIn 0.3s ease-out forwards; }
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .chat-slide-up { animation: chatSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes chatSlideIn {
+            from { transform: translateY(20px); opacity: 0; scale: 0.95; }
+            to { transform: translateY(0); opacity: 1; scale: 1; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- Interactive Modal Container -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 transform scale-95 transition-transform duration-300">
+            <!-- Modal content injected via JS -->
+        </div>
+    </div>
+
+    <!-- Interactive Live Chat Drawer / Modal Widget -->
+    <div id="live-chat-backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center sm:justify-end p-0 sm:p-6">
+        <div id="live-chat-drawer" class="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:w-[420px] h-[85vh] sm:h-[650px] flex flex-col transform translate-y-full sm:translate-y-0 sm:scale-95 transition-all duration-300 border border-slate-200 overflow-hidden">
+            
+            <!-- Chat Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-5 py-4 flex items-center justify-between flex-shrink-0 shadow-sm">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces" alt="Dr. Sarah Thornton" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/30">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-blue-600"></span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm leading-tight">Dr. Sarah Thornton</h3>
+                        <p class="text-[11px] text-blue-100 flex items-center">
+                            <i class="fa-solid fa-circle text-[6px] text-emerald-400 mr-1.5 animate-pulse"></i>
+                            CS & Data Science Subject Specialist • Online
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="clearChatHistory()" title="Clear Chat" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition text-xs">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                    <button onclick="closeLiveChat()" title="Close Chat" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition text-sm">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages Scroll Area -->
+            <div id="chat-messages-container" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50">
+                <!-- Timestamp divider -->
+                <div class="flex justify-center my-2">
+                    <span class="bg-slate-200 text-slate-600 text-[10px] font-medium px-3 py-1 rounded-full">Today • Secure SSO Session Active</span>
+                </div>
+
+                <!-- Librarian Initial Greeting -->
+                <div class="flex items-start space-x-3">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces" class="w-8 h-8 rounded-full object-cover mt-0.5 flex-shrink-0">
+                    <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-3.5 shadow-sm max-w-[80%] text-xs text-slate-700 leading-relaxed">
+                        <p class="font-semibold text-slate-900 mb-1">Dr. Sarah Thornton</p>
+                        Hello! I'm Dr. Sarah Thornton, your CS & Data Science Subject Specialist. How can I help with your research, citations, or library database access today?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Reply Chips Bar -->
+            <div class="px-4 py-2.5 bg-white border-t border-slate-100 flex items-center space-x-2 overflow-x-auto scrollbar-none flex-shrink-0">
+                <button onclick="sendQuickReply('How do I access IEEE Xplore?')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/60 rounded-full text-[11px] font-semibold whitespace-nowrap transition shadow-sm">
+                    How do I access IEEE Xplore?
+                </button>
+                <button onclick="sendQuickReply('Help with APA citation')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/60 rounded-full text-[11px] font-semibold whitespace-nowrap transition shadow-sm">
+                    Help with APA citation
+                </button>
+                <button onclick="sendQuickReply('Book a study room')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/60 rounded-full text-[11px] font-semibold whitespace-nowrap transition shadow-sm">
+                    Book a study room
+                </button>
+                <button onclick="sendQuickReply('Software license keys')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/60 rounded-full text-[11px] font-semibold whitespace-nowrap transition shadow-sm">
+                    Software license keys
+                </button>
+            </div>
+
+            <!-- Chat Input Footer -->
+            <div class="p-3 bg-white border-t border-slate-200 flex items-center space-x-2 flex-shrink-0">
+                <input type="text" id="chat-input-field" placeholder="Ask Dr. Thornton a question..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition" onkeypress="handleChatKeypress(event)">
+                <button onclick="sendUserMessage()" class="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-200 transition flex-shrink-0">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 h-16 flex items-center justify-between px-6">
+        <div class="flex items-center space-x-8">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-200">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-slate-900">Campus<span class="text-blue-600">Corner</span></span>
+            </div>
+            
+            <!-- Global Search Bar -->
+            <div class="hidden md:flex items-center relative w-96">
+                <i class="fa-solid fa-search absolute left-3.5 text-slate-400 text-sm"></i>
+                <input type="text" id="global-search" placeholder="Search classes, faculty, events..." class="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-24 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                <div class="absolute right-2 text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-medium">⌘K</div>
+            </div>
+        </div>
+
+        <!-- Right Header Actions -->
+        <div class="flex items-center space-x-4">
+            <!-- Semester Selector -->
+            <div class="hidden lg:flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm cursor-pointer hover:bg-slate-100 transition">
+                <i class="fa-regular fa-calendar text-blue-600"></i>
+                <span class="font-medium text-slate-700" id="current-semester">Fall 2024</span>
+                <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+            </div>
+
+            <!-- Notifications Bell -->
+            <button id="notif-btn" class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition">
+                <i class="fa-regular fa-bell"></i>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            </button>
+
+            <!-- User Profile Badge -->
+            <div class="flex items-center space-x-3 pl-2 border-l border-slate-200 cursor-pointer" onclick="openProfileModal()">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" alt="Alex Rivers" class="w-9 h-9 rounded-full object-cover ring-2 ring-blue-500/20">
+                <div class="hidden sm:block text-left">
+                    <p class="text-xs font-semibold text-slate-900 leading-tight">Alex Rivers</p>
+                    <p class="text-[10px] text-slate-500 font-medium">ID: #488264</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)]">
+            <div class="space-y-6">
+                <div>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">Academic Hub</p>
+                    <nav class="space-y-1">
+                        <a href="./home.html" onclick="switchNav(this)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                            <i class="fa-solid fa-house w-5 text-slate-400"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="./Schedule.html" onclick="switchNav(this)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                            <i class="fa-regular fa-calendar-days w-5 text-slate-400"></i>
+                            <span>Schedule</span>
+                        </a>
+                        <a href="./greds&Exams.html" onclick="switchNav(this)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                            <i class="fa-solid fa-graduation-cap w-5 text-slate-400"></i>
+                            <span>Grades & Exams</span>
+                        </a>
+                        <a href="./campus.html" onclick="switchNav(this)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                            <i class="fa-solid fa-compass w-5 text-slate-400"></i>
+                            <span>Campus Life</span>
+                        </a>
+                        <a href="./Resource.html" onclick="switchNav(this)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 text-white shadow-md shadow-blue-200 transition">
+                            <i class="fa-solid fa-book-bookmark w-5"></i>
+                            <span>Resources</span>
+                        </a>
+                        <a href="./new-student.html" onclick="switchNav(this)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                            <i class="fa-solid fa-compass-drafting w-5 text-slate-400"></i>
+                            <span>New Student Orientation</span>
+                        </a>
+                        <a href="./help-desk.html" onclick="switchNav(this)" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                            <i class="fa-solid fa-life-ring w-5 text-slate-400"></i>
+                            <span>Campus Support</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Term GPA Card at Sidebar Bottom -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Term GPA</span>
+                    <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Dean's List</span>
+                </div>
+                <div class="text-2xl font-bold text-slate-900">3.84</div>
+                <div class="mt-2 w-full bg-blue-200/60 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-blue-600 h-full rounded-full" style="width: 92%"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto overflow-y-auto">
+            <!-- Breadcrumbs -->
+            <div class="flex items-center space-x-2 text-xs font-medium text-slate-500 mb-3">
+                <a href="#" class="hover:text-blue-600 transition">Academics</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-slate-800 font-semibold">Campus Resources & Library</span>
+            </div>
+
+            <!-- Title & Top CTA Bar -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Academic & Campus Resources</h1>
+                    <p class="text-slate-500 text-sm mt-1">Access digital libraries, reserve private study rooms, download licensed academic software, and book specialized research consultations.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="openSavedDatabasesModal()" class="flex items-center space-x-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition">
+                        <i class="fa-regular fa-bookmark text-blue-600"></i>
+                        <span>Saved Databases</span>
+                    </button>
+                    <button onclick="openNewReservationModal()" class="flex items-center space-x-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 shadow-md shadow-blue-200 transition">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>New Reservation</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Stats Banner -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-book-atlas"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-slate-900">4.8M+</div>
+                        <div class="text-xs text-slate-500 font-medium">E-Books & Journals</div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-slate-900">18+</div>
+                        <div class="text-xs text-slate-500 font-medium">Private Pods Free</div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-slate-900">42</div>
+                        <div class="text-xs text-slate-500 font-medium">Pro Software Licenses</div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-slate-900">24/7</div>
+                        <div class="text-xs text-slate-500 font-medium">Peer Tutoring Center</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Search & Filter Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 space-y-4">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="text" id="resource-search-input" placeholder="Search by keywords, DOI, title, software tool, research librarian, or room specs..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-24 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition" oninput="filterResources()">
+                    <button onclick="triggerSearchAction()" class="absolute right-2 top-2 px-5 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Search</button>
+                </div>
+                <!-- Filter Chips -->
+                <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none" id="filter-chips">
+                    <button onclick="filterChip('all', this)" class="filter-chip px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white whitespace-nowrap shadow-sm transition">All Catalogs</button>
+                    <button onclick="filterChip('library', this)" class="filter-chip px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">Digital Library & JSTOR</button>
+                    <button onclick="filterChip('pods', this)" class="filter-chip px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">Study Pods & Labs</button>
+                    <button onclick="filterChip('software', this)" class="filter-chip px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">Software & Cloud Keys</button>
+                    <button onclick="filterChip('career', this)" class="filter-chip px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">Career Pathways</button>
+                    <button onclick="filterChip('tutoring', this)" class="filter-chip px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">Writing & STEM Tutoring</button>
+                </div>
+            </div>
+
+            <!-- Primary Academic Gateway Banner -->
+            <div class="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
+                    <div class="max-w-xl">
+                        <div class="inline-flex items-center space-x-2 bg-blue-500/40 border border-blue-400/30 px-3 py-1 rounded-full text-xs font-semibold text-blue-100 mb-4">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>PRIMARY ACADEMIC GATEWAY • Connected via Eduroam</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Aura Digital Library & JSTOR Global Gateway</h2>
+                        <p class="text-blue-100 text-sm mb-6 leading-relaxed">Full-text access to peer-reviewed articles, dissertations, historical archives, and specialized research datasets. Export citations directly in APA 7th, MLA 9th, or Chicago style with real-time bibliography validation.</p>
+                        
+                        <!-- Instant Search inside Banner -->
+                        <div class="flex items-center bg-white/10 border border-white/20 rounded-2xl p-1.5 backdrop-blur-md">
+                            <i class="fa-solid fa-book-open px-3 text-blue-200"></i>
+                            <input type="text" id="gateway-search-input" placeholder="Enter ISBN, DOI, or author query..." class="bg-transparent border-none text-white placeholder-blue-200/70 text-sm w-full focus:outline-none px-2">
+                            <button onclick="runGatewaySearch()" class="px-5 py-2.5 bg-white text-blue-700 font-semibold text-xs rounded-xl hover:bg-blue-50 shadow transition whitespace-nowrap">Instant Search</button>
+                        </div>
+                    </div>
+
+                    <!-- Research Tool Kit Box on Right -->
+                    <div class="bg-white/10 border border-white/15 rounded-2xl p-5 backdrop-blur-md lg:w-80 space-y-3">
+                        <p class="text-xs font-bold uppercase tracking-wider text-blue-200 mb-2">Research Tool Kit</p>
+                        <a href="#" onclick="openToolModal('Citation Machine')" class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition text-sm font-medium">
+                            <span><i class="fa-solid fa-quote-right mr-2 text-blue-300"></i>Citation Machine (APA/MLA)</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-blue-300"></i>
+                        </a>
+                        <a href="#" onclick="openToolModal('Inter-Library Loan')" class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition text-sm font-medium">
+                            <span><i class="fa-solid fa-book-arrow-right mr-2 text-blue-300"></i>Inter-Library Loan (ILL)</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-blue-300"></i>
+                        </a>
+                        <a href="#" onclick="openToolModal('Off-Campus Proxy Setup')" class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition text-sm font-medium">
+                            <span><i class="fa-solid fa-shield-halved mr-2 text-blue-300"></i>Off-Campus Proxy Setup</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-blue-300"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Four Quick Service Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <!-- Card 1 -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                <i class="fa-solid fa-door-closed"></i>
+                            </div>
+                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2.5 py-1 rounded-full">8 Rooms Open</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mb-1">Reserve Study Room</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Lowden Library floors 2–4 with digital whiteboards, 4K monitors & 2–8 student capacity pods.</p>
+                    </div>
+                    <button onclick="openReservationModal('Study Room')" class="mt-4 flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 pt-3 border-t border-slate-100">
+                        <span>Check Floor Map</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <span class="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold px-2.5 py-1 rounded-full">Free Licenses</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mb-1">Software Hub & Keys</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">MATLAB, Adobe CC Suite, JetBrains Ultimate, Microsoft 365, AutoCAD, & GitHub Developer Pack.</p>
+                    </div>
+                    <button onclick="scrollToSoftware()" class="mt-4 flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 pt-3 border-t border-slate-100">
+                        <span>Claim Licenses</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                                <i class="fa-solid fa-compass-drafting"></i>
+                            </div>
+                            <span class="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold px-2.5 py-1 rounded-full">6 Faculties</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mb-1">Subject Research Guides</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Curated indexes for Computer Science, Biomechanics, Pure Math, Architecture, and Humanities.</p>
+                    </div>
+                    <button onclick="openResearchGuidesModal()" class="mt-4 flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 pt-3 border-t border-slate-100">
+                        <span>Browse Guides</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                                <i class="fa-solid fa-pen-nib"></i>
+                            </div>
+                            <span class="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold px-2.5 py-1 rounded-full">Walk-ins Welcome</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mb-1">Writing & STEM Commons</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Book 1-on-1 essay critique, differential equations tutoring, and peer-to-peer coding labs.</p>
+                    </div>
+                    <button onclick="openTutoringModal()" class="mt-4 flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 pt-3 border-t border-slate-100">
+                        <span>Book Session</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Two Column Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                
+                <!-- Left 2 Columns: Software Tools & Study Spaces -->
+                <div class="lg:col-span-2 space-y-8">
+                    
+                    <!-- Student Software & Developer Tools Section -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-cubes"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">Student Software & Developer Tools</h3>
+                                    <p class="text-xs text-slate-500">Complimentary institutional licenses verified through your student SSO.</p>
+                                </div>
+                            </div>
+                            <button onclick="viewAllAppsModal()" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View All 43 Apps</button>
+                        </div>
+
+                        <!-- Software Items List -->
+                        <div class="space-y-3" id="software-list">
+                            <!-- Item 1 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50/60 hover:bg-slate-50 transition gap-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-sm">Ai</div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <h4 class="font-bold text-slate-900 text-sm">Adobe Creative Cloud All Apps</h4>
+                                            <span class="bg-slate-200 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded">V2024.4</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3 text-xs text-slate-500 mt-0.5">
+                                            <span><i class="fa-brands fa-apple mr-1"></i>macOS / Win</span>
+                                            <span class="text-emerald-600 font-medium"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Active: 284 days left</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 self-end sm:self-center">
+                                    <button onclick="copyKey('ADBE-9942-X821-KEY')" class="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold shadow-sm transition">Copy Key</button>
+                                    <button onclick="downloadSoftware('Adobe Creative Cloud')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">Download</button>
+                                </div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50/60 hover:bg-slate-50 transition gap-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">ML</div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <h4 class="font-bold text-slate-900 text-sm">MATLAB & Simulink Campus B...</h4>
+                                            <span class="bg-slate-200 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded">R2024a</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3 text-xs text-slate-500 mt-0.5">
+                                            <span><i class="fa-brands fa-linux mr-1"></i>Win / Mac / Linux</span>
+                                            <span class="text-emerald-600 font-medium"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Active: Fall Term</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 self-end sm:self-center">
+                                    <button onclick="copyKey('MATLAB-CAMPUS-LICENSE-KEY')" class="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold shadow-sm transition">Copy Key</button>
+                                    <button onclick="downloadSoftware('MATLAB')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">Download</button>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50/60 hover:bg-slate-50 transition gap-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">JB</div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <h4 class="font-bold text-slate-900 text-sm">JetBrains All Products ...</h4>
+                                            <span class="bg-slate-200 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded">Ultimate 2024</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3 text-xs text-slate-500 mt-0.5">
+                                            <span><i class="fa-solid fa-laptop mr-1"></i>All OS Supported</span>
+                                            <span class="text-blue-600 font-semibold">SSO Edu Auto-Renew</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 self-end sm:self-center">
+                                    <button onclick="openAccountLink()" class="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold shadow-sm transition">Account Link</button>
+                                    <button onclick="downloadSoftware('JetBrains Suite')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">Download</button>
+                                </div>
+                            </div>
+
+                            <!-- Item 4 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50/60 hover:bg-slate-50 transition gap-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">M</div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <h4 class="font-bold text-slate-900 text-sm">Microsoft 365 Enterprise +...</h4>
+                                            <span class="bg-slate-200 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded">A3 Plus</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3 text-xs text-slate-500 mt-0.5">
+                                            <span><i class="fa-solid fa-cloud mr-1"></i>Web & Desktop Installs</span>
+                                            <span class="text-emerald-600 font-medium">Active Enrollment</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 self-end sm:self-center">
+                                    <button onclick="launchWebApps()" class="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold shadow-sm transition">Launch Web Apps</button>
+                                    <button onclick="downloadSoftware('Microsoft 365')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">Installer</button>
+                                </div>
+                            </div>
+
+                            <!-- Item 5 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50/60 hover:bg-slate-50 transition gap-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">CD</div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <h4 class="font-bold text-slate-900 text-sm">ChemDraw Professional Suite</h4>
+                                            <span class="bg-slate-200 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded">V23.1</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3 text-xs text-slate-500 mt-0.5">
+                                            <span><i class="fa-solid fa-flask mr-1"></i>Chem / Bio Labs</span>
+                                            <span class="text-blue-600 font-semibold">Campus License</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 self-end sm:self-center">
+                                    <button onclick="copyKey('CHEMDRAW-SUITE-2024-KEY')" class="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold shadow-sm transition">Copy Key</button>
+                                    <button onclick="downloadSoftware('ChemDraw')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">Download</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Study Spaces & Lab Workstations -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-desktop"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">Study Spaces & Lab Workstations</h3>
+                                    <p class="text-xs text-slate-500">Real-time availability by sensor status across campus buildings.</p>
+                                </div>
+                            </div>
+                            <!-- Sub-filter tabs -->
+                            <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                                <button onclick="filterSpaces('all', this)" class="space-tab px-3 py-1.5 rounded-lg bg-white text-slate-900 shadow-sm transition">All Specs</button>
+                                <button onclick="filterSpaces('displays', this)" class="space-tab px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">46 Displays</button>
+                                <button onclick="filterSpaces('gpu', this)" class="space-tab px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">GPU Rigs</button>
+                            </div>
+                        </div>
+
+                        <!-- Spaces Cards Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Space 1 -->
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between space-y-4">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Available Now</span>
+                                        <span class="text-xs font-semibold text-slate-500">Cap: 4</span>
+                                    </div>
+                                    <h4 class="font-bold text-slate-900 text-base mb-1">Lowden Quiet Floor 304</h4>
+                                    <p class="text-xs text-slate-500">Glass-walled, dual 32" screens, mobile whiteboard, sound-dampened.</p>
+                                </div>
+                                <button onclick="bookSpace('Lowden Quiet Floor 304')" class="w-full py-2 bg-blue-600 text-white font-semibold text-xs rounded-xl hover:bg-blue-700 shadow-sm transition">Book Now (30 Min)</button>
+                            </div>
+
+                            <!-- Space 2 -->
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between space-y-4">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-clock text-[8px] mr-1"></i>In-Use (til 3:00 PM)</span>
+                                        <span class="text-xs font-semibold text-slate-500">Cap: 8</span>
+                                    </div>
+                                    <h4 class="font-bold text-slate-900 text-base mb-1">STEM Lab – Station 112</h4>
+                                    <p class="text-xs text-slate-500">High-performance NVIDIA RTX A6000 rig with CUDA toolkit & VR headset dock.</p>
+                                </div>
+                                <button onclick="queueSpace('STEM Lab – Station 112')" class="w-full py-2 bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl hover:bg-slate-300 transition">Queue for 3:00 PM</button>
+                            </div>
+
+                            <!-- Space 3 -->
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between space-y-4">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-clock text-[8px] mr-1"></i>Opens 3:30 PM</span>
+                                        <span class="text-xs font-semibold text-slate-500">Cap: 3</span>
+                                    </div>
+                                    <h4 class="font-bold text-slate-900 text-base mb-1">Engineering Media Studio B</h4>
+                                    <p class="text-xs text-slate-500">Acoustic podcast booth. Shure SM7B mic, Blackmagic 4K camera setup.</p>
+                                </div>
+                                <button onclick="reserveLaterSpace('Engineering Media Studio B')" class="w-full py-2 bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl hover:bg-slate-300 transition">Reserve for 3:30 PM</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Databases & Research Repositories Grid -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-database"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">Academic Databases & Research Repositories</h3>
+                                    <p class="text-xs text-slate-500">Direct SSO auto-authentication campus fiber network.</p>
+                                </div>
+                            </div>
+                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1 rounded-full"><i class="fa-solid fa-shield-halved mr-1"></i>Proxy Active</span>
+                        </div>
+
+                        <!-- 6 Database Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <a href="#" onclick="openDatabase('IEEE Xplore')" class="p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 transition flex items-start justify-between group">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition">IEEE Xplore</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1">Computer Science & EE Institutional Access ✓</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-blue-600"></i>
+                            </a>
+                            <a href="#" onclick="openDatabase('ScienceDirect')" class="p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 transition flex items-start justify-between group">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition">ScienceDirect</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1">Elsevier Peer-Reviewed Full Library Pass ✓</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-blue-600"></i>
+                            </a>
+                            <a href="#" onclick="openDatabase('JSTOR Global')" class="p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 transition flex items-start justify-between group">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition">JSTOR Global</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1">Humanities & Archival Unlimited Access ✓</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-blue-600"></i>
+                            </a>
+                            <a href="#" onclick="openDatabase('PubMed Central')" class="p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 transition flex items-start justify-between group">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition">PubMed Central</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1">Biomedical & Life Sci Direct DOI Feed ✓</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-blue-600"></i>
+                            </a>
+                            <a href="#" onclick="openDatabase('ProQuest')" class="p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 transition flex items-start justify-between group">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition">ProQuest</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1">Dissertations & Theses Campus License ✓</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-blue-600"></i>
+                            </a>
+                            <a href="#" onclick="openDatabase('SpringerLink')" class="p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 transition flex items-start justify-between group">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition">SpringerLink</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1">Mathematics & Physics Direct PDF Expert ✓</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-blue-600"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Active Checkouts, Librarian, & Career Pathways -->
+                <div class="space-y-8">
+                    
+                    <!-- My Active Checkouts Widget -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-slate-900 text-base">My Active Checkouts</h3>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-full">2 Active</span>
+                        </div>
+
+                        <!-- Active Checkout 1 -->
+                        <div class="bg-blue-50/60 border border-blue-100 rounded-2xl p-4 mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Room Booking Today</span>
+                                <span class="text-xs text-slate-500">2:00 PM – 4:00 PM</span>
+                            </div>
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-door-open"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm">Lowden Library Rm 218</h4>
+                                    <p class="text-xs text-slate-500">Pod for 4 • Screen & Whiteboard</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="rescheduleBooking('Lowden Library Rm 218')" class="flex-1 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl transition shadow-sm">Reschedule</button>
+                                <button onclick="openQRPass('Lowden Library Rm 218')" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl transition shadow-sm flex items-center justify-center space-x-1">
+                                    <i class="fa-solid fa-qrcode mr-1"></i>
+                                    <span>Entry QR Pass</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Checked-Out Items List -->
+                        <div class="space-y-3">
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Checked-Out Items</p>
+                            
+                            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
+                                <div>
+                                    <h5 class="font-semibold text-slate-900 text-xs">Introduction to Algor...</h5>
+                                    <p class="text-[10px] text-slate-500">Course Res. • 4th Ed. | <span class="text-amber-600 font-medium">Due in 5 days (Nov 12)</span></p>
+                                </div>
+                                <button onclick="renewItem('Introduction to Algorithms')" class="px-3 py-1 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-medium hover:bg-slate-100 transition">Renew</button>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
+                                <div>
+                                    <h5 class="font-semibold text-slate-900 text-xs">MacBook Pro M3 Max...</h5>
+                                    <p class="text-[10px] text-slate-500">Asset #IT-90412 | <span class="text-blue-600 font-medium">Due End of Term (Dec 15)</span></p>
+                                </div>
+                                <button onclick="viewDetails('MacBook Pro M3 Max')" class="px-3 py-1 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-medium hover:bg-slate-100 transition">Details</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Librarian On-Duty Widget -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-slate-900 text-base">Librarian On-Duty</h3>
+                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center cursor-pointer hover:bg-emerald-200 transition" onclick="openLiveChat()">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                                Online for Chat
+                            </span>
+                        </div>
+
+                        <div class="flex items-center space-x-3 mb-4 cursor-pointer group" onclick="openLiveChat()">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces" alt="Dr. Sarah Thornton" class="w-12 h-12 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-blue-400 transition">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition">Dr. Sarah Thornton</h4>
+                                <p class="text-xs text-slate-500">CS & Data Science Subject Specialist</p>
+                                <p class="text-[10px] text-blue-600 font-medium">Office: Lowden 314N</p>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-500 mb-4 leading-relaxed">Assists with literature reviews, thesis structuring, open-access publication grants, and dataset procurement.</p>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="openLiveChat()" class="py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-sm transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-comments"></i>
+                                <span>Live Chat</span>
+                            </button>
+                            <button onclick="openBookLibrarianModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-regular fa-calendar-check"></i>
+                                <span>Book 30 Min</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Career & Research Pathways Widget -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-base">Career & Research Pathways</h3>
+                            <i class="fa-solid fa-chart-line text-slate-400"></i>
+                        </div>
+
+                        <div class="space-y-2">
+                            <a href="#" onclick="openCareerPath('Handshake Job Board')" class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-blue-50 transition group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-slate-900 text-xs group-hover:text-blue-600">Handshake Job Board</h5>
+                                        <p class="text-[10px] text-slate-500">Over 1,200 curated on-campus internships</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                            </a>
+
+                            <a href="#" onclick="openCareerPath('AI Resume Critique')" class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-blue-50 transition group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-slate-900 text-xs group-hover:text-blue-600">AI Resume Critique</h5>
+                                        <p class="text-[10px] text-slate-500">Instant ATS scoring & advisor feedback</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                            </a>
+
+                            <a href="#" onclick="openCareerPath('PROP Undergraduate Research')" class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-blue-50 transition group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-flask"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-slate-900 text-xs group-hover:text-blue-600">PROP Undergraduate Research</h5>
+                                        <p class="text-[10px] text-slate-500">Faculty-sponsored funded laboratory spots</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                            </a>
+
+                            <a href="#" onclick="openCareerPath('GRE / MCAT Fee Waivers')" class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-blue-50 transition group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-ticket"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-slate-900 text-xs group-hover:text-blue-600">GRE / MCAT Fee Waivers</h5>
+                                        <p class="text-[10px] text-slate-500">Testing vouchers for eligible scholars</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Hardware Borrowing Banner -->
+            <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl flex-shrink-0">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2 mb-1">
+                            <h3 class="text-lg font-bold text-slate-900">Need physical hardware or lab equipment?</h3>
+                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Bulky Hall 104</span>
+                        </div>
+                        <p class="text-xs text-slate-500 leading-relaxed max-w-2xl">Borrow 3D Printers, Meta Quest 3 VR kits, Texas Instruments graphing calculators, DSLR camera kits, and Raspberry Pi kits at the Makerspace Checkout Desk. Walk-ins open Monday through Saturday.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 w-full md:w-auto">
+                    <button onclick="openHardwareCatalogModal()" class="flex-1 md:flex-initial px-4 py-2.5 bg-white border border-slate-200 text-slate-700 font-semibold text-xs rounded-xl hover:bg-slate-50 shadow-sm transition">View Hardware Catalog</button>
+                    <button onclick="openReserveHardwareModal()" class="flex-1 md:flex-initial px-5 py-2.5 bg-blue-600 text-white font-semibold text-xs rounded-xl hover:bg-blue-700 shadow-md shadow-blue-200 transition">Reserve Hardware</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toast Notification Function
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-slide bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 text-xs font-medium border border-slate-800`;
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+            if (type === 'error') icon = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+            if (type === 'info') icon = '<i class="fa-solid fa-circle-info text-blue-400"></i>';
+
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Live Chat Drawer Interactive Logic
+        const chatBackdrop = document.getElementById('live-chat-backdrop');
+        const chatDrawer = document.getElementById('live-chat-drawer');
+        const chatMessagesContainer = document.getElementById('chat-messages-container');
+        const chatInputField = document.getElementById('chat-input-field');
+
+        function openLiveChat() {
+            chatBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                chatDrawer.classList.remove('translate-y-full', 'sm:scale-95');
+                chatDrawer.classList.add('translate-y-0', 'sm:scale-100');
+            }, 10);
+            chatInputField.focus();
+            scrollToBottom();
+            showToast("Secure connection established with Dr. Sarah Thornton", "info");
+        }
+
+        function closeLiveChat() {
+            chatDrawer.classList.remove('translate-y-0', 'sm:scale-100');
+            chatDrawer.classList.add('translate-y-full', 'sm:scale-95');
+            setTimeout(() => {
+                chatBackdrop.classList.add('hidden');
+            }, 250);
+        }
+
+        chatBackdrop.addEventListener('click', (e) => {
+            if (e.target === chatBackdrop) closeLiveChat();
+        });
+
+        function scrollToBottom() {
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+
+        function handleChatKeypress(e) {
+            if (e.key === 'Enter') {
+                sendUserMessage();
+            }
+        }
+
+        function sendQuickReply(text) {
+            chatInputField.value = text;
+            sendUserMessage();
+        }
+
+        function sendUserMessage() {
+            const text = chatInputField.value.trim();
+            if (!text) return;
+
+            // Append user message bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = 'flex items-start justify-end space-x-3';
+            userBubble.innerHTML = `
+                <div class="bg-blue-600 text-white rounded-2xl rounded-tr-sm p-3.5 shadow-sm max-w-[80%] text-xs leading-relaxed">
+                    <p class="font-semibold text-blue-100 mb-1 text-right">You (Alex Rivers)</p>
+                    ${escapeHTML(text)}
+                </div>
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" class="w-8 h-8 rounded-full object-cover mt-0.5 flex-shrink-0">
+            `;
+            chatMessagesContainer.appendChild(userBubble);
+            chatInputField.value = '';
+            scrollToBottom();
+
+            // Simulate typing indicator & bot response after short delay
+            setTimeout(() => {
+                showTypingIndicator();
+            }, 400);
+        }
+
+        function showTypingIndicator() {
+            const typingId = 'typing-' + Date.now();
+            const typingBubble = document.createElement('div');
+            typingBubble.id = typingId;
+            typingBubble.className = 'flex items-start space-x-3';
+            typingBubble.innerHTML = `
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces" class="w-8 h-8 rounded-full object-cover mt-0.5 flex-shrink-0">
+                <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-3 shadow-sm text-xs text-slate-500 flex items-center space-x-1.5">
+                    <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
+                    <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+            `;
+            chatMessagesContainer.appendChild(typingBubble);
+            scrollToBottom();
+
+            setTimeout(() => {
+                const element = document.getElementById(typingId);
+                if (element) element.remove();
+                appendLibrarianResponse();
+            }, 1200);
+        }
+
+        function appendLibrarianResponse() {
+            // Smart simulated answers based on keywords
+            responses = [
+                "I've verified your SSO credentials! You have full institutional access to IEEE Xplore, ScienceDirect, and JSTOR through the campus VPN/proxy tunnel. Let me know if you need help querying specific DOIs.",
+                "For APA 7th edition citations, make sure to include the DOI without 'https://doi.org/' prefix in modern bibliography formatting. You can also use our Citation Machine tool right above!",
+                "Study rooms in Lowden Library (floors 2–4) can be reserved instantly using the 'Reserve Study Room' card on your dashboard. Would you like me to hold Quiet Floor Room 304 for you right now?",
+                "Your student software license keys for MATLAB, Adobe CC, and JetBrains Ultimate can be copied directly from the Software Hub on your dashboard. Need any installation help?"
+            ];
+            const randomResp = responses[Math.floor(Math.random() * responses.length)];
+
+            const botBubble = document.createElement('div');
+            botBubble.className = 'flex items-start space-x-3';
+            botBubble.innerHTML = `
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces" class="w-8 h-8 rounded-full object-cover mt-0.5 flex-shrink-0">
+                <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-3.5 shadow-sm max-w-[80%] text-xs text-slate-700 leading-relaxed">
+                    <p class="font-semibold text-slate-900 mb-1">Dr. Sarah Thornton</p>
+                    ${randomResp}
+                </div>
+            `;
+            chatMessagesContainer.appendChild(botBubble);
+            scrollToBottom();
+        }
+
+        function clearChatHistory() {
+            chatMessagesContainer.innerHTML = `
+                <div class="flex justify-center my-2">
+                    <span class="bg-slate-200 text-slate-600 text-[10px] font-medium px-3 py-1 rounded-full">Chat History Reset • Secure Session Active</span>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces" class="w-8 h-8 rounded-full object-cover mt-0.5 flex-shrink-0">
+                    <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-3.5 shadow-sm max-w-[80%] text-xs text-slate-700 leading-relaxed">
+                        <p class="font-semibold text-slate-900 mb-1">Dr. Sarah Thornton</p>
+                        Chat reset! How else can I assist with your research today?
+                    </div>
+                </div>
+            `;
+            showToast("Chat conversation cleared", "info");
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Modal Handler Functions
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal(htmlContent) {
+            modalContent.innerHTML = htmlContent;
+            modalBackdrop.classList.remove('hidden');
+            setTimeout(() => modalContent.classList.remove('scale-95'), 10);
+        }
+
+        function closeModal() {
+            modalContent.classList.add('scale-95');
+            setTimeout(() => modalBackdrop.classList.add('hidden'), 200);
+        }
+
+        modalBackdrop.addEventListener('click', (e) => {
+            if (e.target === modalBackdrop) closeModal();
+        });
+
+        // Interactive Feature Functions
+        function switchNav(el) {
+            document.querySelectorAll('aside nav a').forEach(a => {
+                a.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-200', 'font-semibold');
+                a.classList.add('text-slate-600');
+            });
+            el.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-200', 'font-semibold');
+            el.classList.remove('text-slate-600');
+            showToast(`Navigated to ${el.querySelector('span').innerText}`, 'info');
+        }
+
+        function openProfileModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Alex Rivers</h3>
+                            <p class="text-xs text-slate-500">Computer Science • ID: #488264</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div class="space-y-3 text-sm text-slate-600">
+                    <div class="p-3 bg-slate-50 rounded-xl flex justify-between"><span class="font-medium">Eduroam Status:</span><span class="text-emerald-600 font-bold">Connected</span></div>
+                    <div class="p-3 bg-slate-50 rounded-xl flex justify-between"><span class="font-medium">SSO Authentication:</span><span class="text-blue-600 font-bold">Verified</span></div>
+                    <div class="p-3 bg-slate-50 rounded-xl flex justify-between"><span class="font-medium">Library Privileges:</span><span class="text-slate-900 font-bold">Unlimited Borrowing</span></div>
+                </div>
+                <button onclick="closeModal(); showToast('Logged out securely', 'info')" class="w-full mt-5 py-2.5 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition text-xs">Sign Out</button>
+            `);
+        }
+
+        function openSavedDatabasesModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">Saved Databases & Bookmarks</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Your pinned repositories for fast access during thesis drafting.</p>
+                <div class="space-y-2 mb-4">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs font-semibold"><span>IEEE Xplore (CS & Engineering)</span><span class="text-blue-600">Active</span></div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs font-semibold"><span>JSTOR Global Gateway</span><span class="text-blue-600">Active</span></div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs font-semibold"><span>PubMed Central</span><span class="text-blue-600">Active</span></div>
+                </div>
+                <button onclick="closeModal()" class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition text-xs">Close</button>
+            `);
+        }
+
+        function openNewReservationModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">Create New Resource Reservation</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Select Resource Type</label>
+                        <select class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option>Private Study Room (Lowden Library)</option>
+                            <option>STEM Lab GPU Rig Station</option>
+                            <option>Engineering Media Podcast Booth</option>
+                            <option>Makerspace Hardware Kit</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Date & Time Slot</label>
+                        <input type="datetime-local" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+                <button onclick="closeModal(); showToast('Reservation successfully requested!')" class="w-full mt-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition text-xs">Confirm Booking</button>
+            `);
+        }
+
+        function filterChip(category, btn) {
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                c.classList.remove('bg-blue-600', 'text-white');
+                c.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            btn.classList.remove('bg-slate-100', 'text-slate-600');
+            btn.classList.add('bg-blue-600', 'text-white');
+            showToast(`Filtered view by: ${btn.innerText}`, 'info');
+        }
+
+        function filterResources() {
+            const query = document.getElementById('resource-search-input').value.toLowerCase();
+            if (query.length > 2) {
+                // Mock search responsiveness
+            }
+        }
+
+        function triggerSearchAction() {
+            const query = document.getElementById('resource-search-input').value;
+            if(!query) {
+                showToast('Please enter a search query', 'error');
+                return;
+            }
+            showToast(`Searching databases for "${query}"...`);
+        }
+
+        function runGatewaySearch() {
+            const q = document.getElementById('gateway-search-input').value;
+            if(!q) {
+                showToast('Please enter ISBN, DOI, or author query', 'error');
+                return;
+            }
+            showToast(`Querying Aura & JSTOR for "${q}"...`);
+        }
+
+        function openToolModal(toolName) {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">${toolName}</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Automated campus tool integration for student Alex Rivers (#488264).</p>
+                <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100 text-xs text-blue-900 mb-4 font-medium">
+                    Tool is fully synchronized with your active enrolled courses. Click below to launch workspace.
+                </div>
+                <button onclick="closeModal(); showToast('${toolName} workspace launched successfully!')" class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition text-xs">Launch Workspace</button>
+            `);
+        }
+
+        function openReservationModal(roomType) {
+            showToast(`Opening floor map for ${roomType}...`, 'info');
+            openNewReservationModal();
+        }
+
+        function scrollToSoftware() {
+            document.getElementById('software-list').scrollIntoView({ behavior: 'smooth' });
+            showToast('Scrolled to Student Software & Developer Tools', 'info');
+        }
+
+        function openResearchGuidesModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">Subject Research Guides</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div class="space-y-2 text-xs">
+                    <div class="p-3 bg-slate-50 rounded-xl font-semibold flex justify-between"><span>Computer Science & AI Index</span><span class="text-blue-600">Open</span></div>
+                    <div class="p-3 bg-slate-50 rounded-xl font-semibold flex justify-between"><span>Biomechanics & Kinesiology</span><span class="text-blue-600">Open</span></div>
+                    <div class="p-3 bg-slate-50 rounded-xl font-semibold flex justify-between"><span>Pure Math & Cryptography</span><span class="text-blue-600">Open</span></div>
+                </div>
+                <button onclick="closeModal()" class="w-full mt-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold">Done</button>
+            `);
+        }
+
+        function openTutoringModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">Writing & STEM Commons Booking</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Select tutoring focus for today's walk-in or scheduled slot.</p>
+                <div class="space-y-2 text-xs mb-4">
+                    <label class="block p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer"><input type="radio" name="tut" checked class="mr-2"> 1-on-1 Essay Structure & Citations</label>
+                    <label class="block p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer"><input type="radio" name="tut" class="mr-2"> Differential Equations & Linear Algebra</label>
+                    <label class="block p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer"><input type="radio" name="tut" class="mr-2"> Peer-to-Peer Algorithm Debugging</label>
+                </div>
+                <button onclick="closeModal(); showToast('Tutoring session booked successfully!')" class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-xl text-xs">Confirm Session</button>
+            `);
+        }
+
+        function viewAllAppsModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">All 43 Available Institutional Apps</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">All verified software licenses included in your tuition.</p>
+                <div class="max-h-60 overflow-y-auto space-y-2 text-xs pr-1">
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>Adobe Creative Cloud</span><span class="text-emerald-600 font-bold">Active</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>MATLAB & Simulink Suite</span><span class="text-emerald-600 font-bold">Active</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>JetBrains Ultimate Pack</span><span class="text-emerald-600 font-bold">Active</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>Microsoft 365 Enterprise A3</span><span class="text-emerald-600 font-bold">Active</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>ChemDraw Professional</span><span class="text-emerald-600 font-bold">Active</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>AutoCAD 2024 Professional</span><span class="text-emerald-600 font-bold">Active</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>ArcGIS Pro GIS Suite</span><span class="text-emerald-600 font-bold">Active</span></div>
+                </div>
+                <button onclick="closeModal()" class="w-full mt-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold">Close Catalog</button>
+            `);
+        }
+
+        function copyKey(keyText) {
+            const textArea = document.createElement("textarea");
+            textArea.value = keyText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast(`License key copied to clipboard!`);
+            } catch (err) {
+                showToast('Failed to copy key', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function downloadSoftware(appName) {
+            showToast(`Downloading secure installer for ${appName}...`);
+        }
+
+        function openAccountLink() {
+            showToast('Redirecting to JetBrains SSO authorization...', 'info');
+        }
+
+        function launchWebApps() {
+            showToast('Launching Microsoft 365 web portal in secure sandbox...', 'info');
+        }
+
+        function filterSpaces(type, btn) {
+            document.querySelectorAll('.space-tab').forEach(t => {
+                t.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                t.classList.add('text-slate-600');
+            });
+            btn.classList.remove('text-slate-600');
+            btn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+            showToast(`Filtered study spaces by: ${btn.innerText}`, 'info');
+        }
+
+        function bookSpace(spaceName) {
+            showToast(`Successfully booked ${spaceName} for 30 minutes!`);
+        }
+
+        function queueSpace(spaceName) {
+            showToast(`Added to queue for ${spaceName} at 3:00 PM.`);
+        }
+
+        function reserveLaterSpace(spaceName) {
+            showToast(`Reservation scheduled for ${spaceName} at 3:30 PM.`);
+        }
+
+        function openDatabase(dbName) {
+            showToast(`Authenticating SSO tunnel into ${dbName}...`, 'info');
+        }
+
+        function rescheduleBooking(roomName) {
+            showToast(`Opening reschedule panel for ${roomName}...`, 'info');
+            openNewReservationModal();
+        }
+
+        function openQRPass(roomName) {
+            openModal(`
+                <div class="text-center space-y-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-bold text-slate-900 text-lg">Entry QR Pass</h3>
+                        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    </div>
+                    <p class="text-xs text-slate-500">${roomName} • Today 2:00 PM – 4:00 PM</p>
+                    <div class="bg-slate-100 p-6 rounded-2xl inline-block border border-slate-200">
+                        <i class="fa-solid fa-qrcode text-6xl text-slate-800"></i>
+                    </div>
+                    <p class="text-[11px] text-slate-400">Scan at the Lowden Library turnstile scanner</p>
+                    <button onclick="closeModal()" class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-xl text-xs">Done</button>
+                </div>
+            `);
+        }
+
+        function renewItem(itemName) {
+            showToast(`Successfully renewed "${itemName}" for 14 additional days!`);
+        }
+
+        function viewDetails(itemName) {
+            showToast(`Displaying inventory details for ${itemName}`, 'info');
+        }
+
+        function openBookLibrarianModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">Book Consultation with Dr. Thornton</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Select an open office hour slot at Lowden 314N.</p>
+                <div class="space-y-2 text-xs mb-4">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center font-medium"><span>Monday, Nov 13 • 10:00 AM</span><button onclick="closeModal(); showToast('Consultation booked!')" class="px-3 py-1 bg-blue-600 text-white rounded-lg font-semibold">Book</button></div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center font-medium"><span>Tuesday, Nov 14 • 2:30 PM</span><button onclick="closeModal(); showToast('Consultation booked!')" class="px-3 py-1 bg-blue-600 text-white rounded-lg font-semibold">Book</button></div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center font-medium"><span>Thursday, Nov 16 • 11:00 AM</span><button onclick="closeModal(); showToast('Consultation booked!')" class="px-3 py-1 bg-blue-600 text-white rounded-lg font-semibold">Book</button></div>
+                </div>
+                <button onclick="closeModal()" class="w-full py-2 bg-slate-100 text-slate-700 font-semibold rounded-xl text-xs">Cancel</button>
+            `);
+        }
+
+        function openCareerPath(pathName) {
+            showToast(`Opening ${pathName} portal...`, 'info');
+        }
+
+        function openHardwareCatalogModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">Makerspace Hardware Catalog</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Bulky Hall 104 • Walk-in Mon–Sat</p>
+                <div class="space-y-2 text-xs mb-4">
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>Meta Quest 3 VR Kit</span><span class="text-emerald-600 font-bold">12 Available</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>DSLR Camera Kit (Sony A7IV)</span><span class="text-emerald-600 font-bold">5 Available</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>Raspberry Pi 5 Developer Kit</span><span class="text-emerald-600 font-bold">18 Available</span></div>
+                    <div class="p-2.5 bg-slate-50 rounded-lg flex justify-between font-medium"><span>Texas Instruments TI-Nspire CX II</span><span class="text-emerald-600 font-bold">24 Available</span></div>
+                </div>
+                <button onclick="closeModal()" class="w-full py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold">Close</button>
+            `);
+        }
+
+        function openReserveHardwareModal() {
+            openModal(`
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-lg">Reserve Hardware Equipment</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div class="space-y-3 text-xs mb-4">
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Equipment Category</label>
+                        <select class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none">
+                            <option>Meta Quest 3 VR Kit</option>
+                            <option>DSLR Camera Kit</option>
+                            <option>Raspberry Pi 5 Kit</option>
+                            <option>TI Graphing Calculator</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Pickup Date at Bulky Hall 104</label>
+                        <input type="date" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none">
+                    </div>
+                </div>
+                <button onclick="closeModal(); showToast('Hardware reservation confirmed for pickup!')" class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-xl text-xs">Confirm Hardware Hold</button>
+            `);
+        }
+    </script>
+</body>
+</html>

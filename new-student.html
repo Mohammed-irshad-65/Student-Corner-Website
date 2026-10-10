@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCorner - New Student Orientation</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- jsPDF for direct PDF download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Pulse Animations */
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .pulse-subtle {
+            animation: subtlePulse 3s infinite ease-in-out;
+        }
+
+        /* Map Pin Bounce */
+        @keyframes pinDrop {
+            0% { transform: translateY(-10px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .pin-animated {
+            animation: pinDrop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Glassmorphic elements */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <div class="flex flex-col lg:flex-row min-h-screen w-full">
+
+        <!-- ================= SIDEBAR NAV ================= -->
+        <aside class="w-full lg:w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 z-20">
+            <div>
+                <!-- Brand Header -->
+                <div class="h-16 flex items-center px-6 border-b border-slate-100 gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-brand-500/20">
+                        C
+                    </div>
+                    <span class="font-bold text-lg text-slate-900 tracking-tight">CampusCorner</span>
+                </div>
+
+                <!-- Navigation Items -->
+                <div class="p-4 space-y-6">
+                    <div>
+                        <div class="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                            Academic Hub
+                        </div>
+                        <nav class="space-y-1">
+                            <a href="./home.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-house w-5 text-slate-400"></i>
+                                Home
+                            </a>
+                            <a href="/Schedule.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-regular fa-calendar-days w-5 text-slate-400"></i>
+                                Schedule
+                            </a>
+                            <a href="./greds&Exams.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-graduation-cap w-5 text-slate-400"></i>
+                                Grades & Exams
+                            </a>
+                            <a href="./campus.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-users w-5 text-slate-400"></i>
+                                Campus Life
+                            </a>
+                            <a href="./Resource.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-folder-open w-5 text-slate-400"></i>
+                                Resources
+                            </a>
+                        </nav>
+                    </div>
+
+                    <div class="pt-2">
+                        <nav class="space-y-1.5">
+                            <!-- Active Menu Item -->
+                            <a href="./new-student.html" class="flex items-center gap-3 px-3.5 py-3 text-sm font-semibold text-white bg-brand-600 rounded-xl shadow-md shadow-brand-600/30 transition-all">
+                                <i class="fa-solid fa-compass w-5 text-white"></i>
+                                New Student Orientation
+                            </a>
+                            <a href="./help-desk.html" id="navHelpDeskBtn" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-headset w-5 text-slate-400"></i>
+                                Help Desk & Support
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer Status Box -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50/50 m-3 rounded-2xl border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Term GPA</div>
+                        <div class="text-xl font-bold text-slate-900 mt-0.5">3.84</div>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        Dean's List
+                    </span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT AREA ================= -->
+        <div class="flex-1 flex flex-col min-w-0">
+
+            <!-- TOP NAVBAR HEADER -->
+            <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+                
+                <!-- Search Input with Live Dropdown -->
+                <div class="relative w-full max-w-md">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search classes, faculty, events..." 
+                            class="w-full pl-10 pr-4 py-2 bg-slate-100/80 border border-transparent rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                    </div>
+
+                    <!-- Search Dropdown Results Popup -->
+                    <div id="searchDropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50">
+                        <div class="px-3 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Quick Suggestions</div>
+                        <div class="space-y-1">
+                            <button onclick="handleSearchResult('Orientation Check-In')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm flex items-center gap-3">
+                                <i class="fa-solid fa-location-dot text-brand-600"></i>
+                                <div>
+                                    <div class="font-medium text-slate-800">Orientation Check-In</div>
+                                    <div class="text-xs text-slate-400">Location: Birch Hall Quad • Today 10:00 AM</div>
+                                </div>
+                            </button>
+                            <button onclick="handleSearchResult('Jhunjhunu Rani Sati Mandir')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm flex items-center gap-3">
+                                <i class="fa-solid fa-gopuram text-amber-600"></i>
+                                <div>
+                                    <div class="font-medium text-slate-800">Jhunjhunu Rani Sati Mandir</div>
+                                    <div class="text-xs text-slate-400">Campus Cultural Hub & Landmark</div>
+                                </div>
+                            </button>
+                            <button onclick="handleSearchResult('Maya Lin (Mentor)')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm flex items-center gap-3">
+                                <i class="fa-solid fa-user-graduate text-emerald-600"></i>
+                                <div>
+                                    <div class="font-medium text-slate-800">Maya Lin</div>
+                                    <div class="text-xs text-slate-400">Assigned Peer Mentor • CS Senior</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Header Actions -->
+                <div class="flex items-center gap-3 sm:gap-4 ml-4">
+                    
+                    <!-- Term Selector Dropdown -->
+                    <div class="relative">
+                        <button id="termSelectorBtn" class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition-colors">
+                            <i class="fa-regular fa-calendar text-brand-600"></i>
+                            <span id="currentTermText">Fall 2024</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                        </button>
+                        <div id="termMenu" class="hidden absolute right-0 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-lg p-1 z-50">
+                            <button onclick="selectTerm('Fall 2024')" class="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-slate-100 font-medium text-slate-800">Fall 2024</button>
+                            <button onclick="selectTerm('Spring 2025')" class="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-slate-100 font-medium text-slate-600">Spring 2025</button>
+                            <button onclick="selectTerm('Summer 2024')" class="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-slate-100 font-medium text-slate-600">Summer 2024</button>
+                        </div>
+                    </div>
+
+                    <!-- Nav Header Links -->
+                    <button onclick="openSupportModal()" class="hidden md:block text-xs font-semibold text-slate-600 hover:text-brand-600 transition-colors">
+                        Support
+                    </button>
+                    <button onclick="scrollToSection('heroSection')" class="hidden md:block text-xs font-semibold text-slate-600 hover:text-brand-600 transition-colors">
+                        Orientation
+                    </button>
+
+                    <!-- Notifications Dropdown -->
+                    <div class="relative">
+                        <button id="notificationBtn" class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-full transition-colors">
+                            <i class="fa-regular fa-bell text-lg"></i>
+                            <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                        </button>
+
+                        <div id="notificationMenu" class="hidden absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 z-50">
+                            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                                <span class="text-xs font-bold text-slate-900 uppercase">Notifications</span>
+                                <button onclick="markAllNotificationsRead()" class="text-[11px] text-brand-600 hover:underline">Mark all read</button>
+                            </div>
+                            <div class="space-y-2 text-xs">
+                                <div class="p-2 bg-brand-50 rounded-xl border border-brand-100">
+                                    <div class="font-semibold text-brand-900">Move-in Slot Confirmed</div>
+                                    <div class="text-slate-600 mt-0.5">Aug 24 @ 10:00 AM Birch Hall #412</div>
+                                    <div class="text-[10px] text-brand-500 mt-1">20 minutes ago</div>
+                                </div>
+                                <div class="p-2 hover:bg-slate-50 rounded-xl transition-colors">
+                                    <div class="font-semibold text-slate-800">Peer Mentor Maya Lin</div>
+                                    <div class="text-slate-500 mt-0.5">Sent a welcome message in cohort chat</div>
+                                    <div class="text-[10px] text-slate-400 mt-1">2 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Chat Quick Icon -->
+                    <button onclick="toggleLiveChat()" class="p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-full transition-colors">
+                        <i class="fa-regular fa-comment-dots text-lg"></i>
+                    </button>
+
+                    <!-- User Profile Button & Drawer -->
+                    <div class="relative">
+                        <button id="profileBtn" class="flex items-center gap-2 pl-2 pr-1 py-1 hover:bg-slate-100 rounded-full transition-colors">
+                            <div class="text-right hidden sm:block">
+                                <div class="text-xs font-bold text-slate-800 leading-tight">Alex Rivera</div>
+                                <div class="text-[10px] font-medium text-slate-400">ID: #49204</div>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" 
+                                 alt="Alex Rivera" class="w-8 h-8 rounded-full object-cover ring-2 ring-brand-500/30">
+                        </button>
+
+                        <div id="profileMenu" class="hidden absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50">
+                            <div class="px-3 py-2 border-b border-slate-100">
+                                <div class="text-xs font-bold text-slate-900">Alex Rivera</div>
+                                <div class="text-[11px] text-slate-500">alex.rivera@aurastate.edu</div>
+                                <div class="mt-1 inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-semibold">Class of 2028</div>
+                            </div>
+                            <div class="py-1">
+                                <a href="#" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded-lg">
+                                    <i class="fa-regular fa-user w-4"></i> Profile Settings
+                                </a>
+                                <a href="#" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded-lg">
+                                    <i class="fa-solid fa-shield-halved w-4"></i> Security & 2FA
+                                </a>
+                            </div>
+                            <div class="border-t border-slate-100 pt-1">
+                                <button onclick="alert('Signed out successfully.')" class="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 rounded-lg font-medium">
+                                    <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Sign Out
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- MAIN SCROLLABLE DASHBOARD CONTENT -->
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl w-full mx-auto">
+
+                <!-- ================= HERO BANNER SECTION ================= -->
+                <section id="heroSection" class="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+                    <!-- Subtle Glow Background Effects -->
+                    <div class="absolute -right-16 -bottom-16 w-80 h-80 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute right-1/3 top-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                        <div class="lg:col-span-8 space-y-4">
+                            
+                            <!-- Badges -->
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-emerald-300 border border-emerald-400/30 uppercase tracking-wide">
+                                    <i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> OFFICIAL PORTAL
+                                </span>
+                                <span class="text-xs font-medium text-slate-300">Fall Cohort Launch</span>
+                            </div>
+
+                            <!-- Main Title -->
+                            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+                                Welcome to Aura State, <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-emerald-300">Class of 2028! 🎓</span>
+                            </h1>
+
+                            <p class="text-slate-300 text-sm sm:text-base max-w-2xl font-normal leading-relaxed">
+                                Your interactive roadmap to academic success, campus life, housing check-in, and student traditions. Let's make your transition smooth and memorable.
+                            </p>
+
+                            <!-- Hero Action Buttons -->
+                            <div class="flex flex-wrap items-center gap-3 pt-2">
+                                <!-- Download Student Handbook PDF Button -->
+                                <button id="downloadHandbookBtn" onclick="downloadStudentHandbook()" class="px-5 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-brand-600/30 flex items-center gap-2 transition-all active:scale-95">
+                                    <i class="fa-solid fa-file-arrow-down text-base"></i>
+                                    Download Student Handbook (PDF)
+                                </button>
+
+                                <button onclick="openMentorModal()" class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-sm rounded-xl backdrop-blur-md flex items-center gap-2 transition-all">
+                                    <i class="fa-regular fa-comments"></i>
+                                    Meet Your Orientation Leader
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Onboarding Progress Card inside Hero -->
+                        <div class="lg:col-span-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 text-white space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Onboarding Status</span>
+                                <span id="overallPercentBadge" class="text-2xl font-black text-brand-300">65%</span>
+                            </div>
+
+                            <!-- Dynamic Progress Bar -->
+                            <div class="w-full bg-slate-700/60 rounded-full h-3 p-0.5 overflow-hidden">
+                                <div id="overallProgressBar" class="bg-gradient-to-r from-brand-400 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: 65%;"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between text-xs pt-1 border-t border-white/10">
+                                <div>
+                                    <span id="tasksCompletedText" class="font-bold text-white">7 of 11</span> Tasks Done
+                                </div>
+                                <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 font-semibold rounded-full border border-emerald-400/30">
+                                    On Track
+                                </span>
+                            </div>
+
+                            <div class="bg-black/20 rounded-xl p-3 text-xs flex items-center gap-3 border border-white/5">
+                                <i class="fa-regular fa-calendar-check text-brand-300 text-base"></i>
+                                <div>
+                                    <div class="text-slate-400 text-[10px]">Next Scheduled Milestone</div>
+                                    <div class="font-semibold text-slate-100">Move-In Check: Aug 24 @ 10:00 AM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= ONBOARDING REQUIREMENTS SECTION ================= -->
+                <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Left: Onboarding Requirements Checklist (7 cols) -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <div>
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Action Checklist</div>
+                                <h2 class="text-xl font-bold text-slate-900">Onboarding Requirements</h2>
+                            </div>
+                            <span id="pendingItemsBadge" class="px-3 py-1 bg-brand-100 text-brand-800 text-xs font-bold rounded-full">
+                                4 Action Items Pending
+                            </span>
+                        </div>
+
+                        <!-- Category Filters -->
+                        <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                            <button onclick="filterTasks('all')" class="task-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-xs">
+                                All Tasks (7)
+                            </button>
+                            <button onclick="filterTasks('before')" class="task-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-200/80 text-slate-700 hover:bg-slate-200">
+                                Before Arrival
+                            </button>
+                            <button onclick="filterTasks('firstweek')" class="task-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-200/80 text-slate-700 hover:bg-slate-200">
+                                First Week
+                            </button>
+                            <button onclick="filterTasks('academic')" class="task-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-200/80 text-slate-700 hover:bg-slate-200">
+                                Academic
+                            </button>
+                        </div>
+
+                        <!-- Tasks List -->
+                        <div id="taskListContainer" class="space-y-3">
+                            
+                            <!-- Task Item 1 (Completed) -->
+                            <div class="task-item bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4" data-category="before">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Upload Student ID Photo</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">Verified by Campus Registrar. Ready for pick-up at Union.</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-full border border-emerald-200/60 shrink-0">
+                                    Completed
+                                </span>
+                            </div>
+
+                            <!-- Task Item 2 (Completed) -->
+                            <div class="task-item bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4" data-category="before">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Submit Immunization & Health Records</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">Approved by University Health Services Clinic.</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-full border border-emerald-200/60 shrink-0">
+                                    Completed
+                                </span>
+                            </div>
+
+                            <!-- Task Item 3 (Completed) -->
+                            <div class="task-item bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4" data-category="academic">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Academic Advising & Course Registration</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">15 Credits locked in with Dr. Alvarez (CS Dept).</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-full border border-emerald-200/60 shrink-0">
+                                    Completed
+                                </span>
+                            </div>
+
+                            <!-- Task Item 4 (Pending / In Progress) -->
+                            <div id="task-dorm" class="task-item bg-white p-4 rounded-2xl border border-brand-200 shadow-xs flex items-center justify-between gap-4 hover:border-brand-400 transition-colors" data-category="before">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                                        <i class="fa-solid fa-door-open"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Dorm Room Move-In Slot Selection</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">Slot Selected: Birch Hall #412 • Aug 24 @ 10:00 AM</p>
+                                    </div>
+                                </div>
+                                <button onclick="openTaskModal('dorm')" class="task-action-btn px-4 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold text-xs rounded-xl border border-brand-200/80 transition-all flex items-center gap-1.5 shrink-0">
+                                    <span>Submit</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                </button>
+                            </div>
+
+                            <!-- Task Item 5 (Pending) -->
+                            <div id="task-safety" class="task-item bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4 hover:border-brand-300 transition-colors" data-category="firstweek">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                                        <i class="fa-solid fa-shield-cat"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Campus Safety & Title IX Seminar</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">Live Session: Tomorrow @ 2:00 PM (Auditorium B)</p>
+                                    </div>
+                                </div>
+                                <button onclick="openTaskModal('safety')" class="task-action-btn px-4 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold text-xs rounded-xl border border-purple-200/80 transition-all flex items-center gap-1.5 shrink-0">
+                                    <span>Submit</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                </button>
+                            </div>
+
+                            <!-- Task Item 6 (Pending / Setup) -->
+                            <div id="task-wifi" class="task-item bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4 hover:border-brand-300 transition-colors" data-category="firstweek">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                                        <i class="fa-solid fa-wifi"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Connect Devices to Eduroam Campus Wi-Fi</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">Certificate authentication required before Day 1.</p>
+                                    </div>
+                                </div>
+                                <button onclick="openTaskModal('wifi')" class="task-action-btn px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shrink-0">
+                                    <span>Submit</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                </button>
+                            </div>
+
+                            <!-- Task Item 7 (Pending) -->
+                            <div id="task-dining" class="task-item bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4 hover:border-brand-300 transition-colors" data-category="firstweek">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                                        <i class="fa-solid fa-utensils"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Pick Up Dining & Transit Pass</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">Available at Welcome Desk, Campus Center Room 104.</p>
+                                    </div>
+                                </div>
+                                <button onclick="openTaskModal('dining')" class="task-action-btn px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shrink-0">
+                                    <span>Submit</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Right: Orientation Event Lineup (5 cols) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Orientation Week</div>
+                                <h2 class="text-xl font-bold text-slate-900">Event Lineup</h2>
+                            </div>
+                            <button onclick="openFullCalendarModal()" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+                                Full Calendar <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+
+                        <!-- Date Navigation Tabs -->
+                        <div class="grid grid-cols-4 gap-2 bg-slate-200/70 p-1 rounded-2xl text-center">
+                            <button onclick="switchEventDay('day1')" id="day1-btn" class="event-day-btn py-2 rounded-xl bg-white text-slate-900 font-bold shadow-xs transition-all">
+                                <div class="text-[10px] text-slate-400 uppercase">Day 1</div>
+                                <div class="text-xs font-extrabold">Aug 23</div>
+                            </button>
+                            <button onclick="switchEventDay('day2')" id="day2-btn" class="event-day-btn py-2 rounded-xl text-slate-600 font-medium hover:text-slate-900 transition-all">
+                                <div class="text-[10px] uppercase">Day 2</div>
+                                <div class="text-xs font-extrabold">Aug 24</div>
+                            </button>
+                            <button onclick="switchEventDay('day3')" id="day3-btn" class="event-day-btn py-2 rounded-xl text-slate-600 font-medium hover:text-slate-900 transition-all">
+                                <div class="text-[10px] uppercase">Day 3</div>
+                                <div class="text-xs font-extrabold">Aug 25</div>
+                            </button>
+                            <button onclick="switchEventDay('day4')" id="day4-btn" class="event-day-btn py-2 rounded-xl text-slate-600 font-medium hover:text-slate-900 transition-all">
+                                <div class="text-[10px] uppercase">Day 4</div>
+                                <div class="text-xs font-extrabold">Aug 26</div>
+                            </button>
+                        </div>
+
+                        <!-- Dynamic Event Cards List Container -->
+                        <div id="eventListContainer" class="space-y-3">
+                            <!-- Events will be dynamically injected via JavaScript -->
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- ================= CAMPUS MAP LANDMARKS & PEER MENTOR ================= -->
+                <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
+                    
+                    <!-- Left: Campus Landmarks Map Section (8 cols) -->
+                    <div class="lg:col-span-8 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Wayfinding</div>
+                                <h2 class="text-xl font-bold text-slate-900">Campus Landmarks Quick Map</h2>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Shuttles Running
+                            </span>
+                        </div>
+
+                        <!-- Interactive Map Graphic Canvas -->
+                        <div class="relative bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 shadow-md h-96 group">
+                            <!-- Stylized Map Vector Background -->
+                            <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+                            
+                            <!-- Vector Road & Greenery SVG Layout -->
+                            <svg class="absolute inset-0 w-full h-full object-cover" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M 0 100 Q 250 180 500 120 T 1000 220" stroke="#334155" stroke-width="24" fill="none" opacity="0.6" />
+                                <path d="M 300 0 Q 350 200 400 400" stroke="#334155" stroke-width="18" fill="none" opacity="0.6" />
+                                <circle cx="350" cy="190" r="140" fill="#065f46" opacity="0.15" />
+                                <circle cx="700" cy="120" r="100" fill="#1e3a8a" opacity="0.15" />
+                            </svg>
+
+                            <!-- Landmark Pins Floating over Map -->
+
+                            <!-- Landmark 1: Jhunjhunu Rani Sati Mandir (Main Highlighted Pin) -->
+                            <button onclick="showLandmarkDetails('ranisati')" 
+                                class="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 group/pin z-10 flex flex-col items-center">
+                                <div class="px-3 py-1 bg-amber-500 text-slate-950 font-black text-xs rounded-full shadow-lg flex items-center gap-1.5 ring-2 ring-amber-300">
+                                    <i class="fa-solid fa-gopuram text-sm"></i>
+                                    Jhunjhunu Rani Sati Mandir
+                                </div>
+                                <div class="w-4 h-4 bg-amber-500 rotate-45 -mt-2 shadow-md"></div>
+                            </button>
+
+                            <!-- Landmark 2: Central Library -->
+                            <button onclick="showLandmarkDetails('library')" 
+                                class="absolute top-1/3 left-1/4 -translate-x-1/2 group/pin z-10 flex flex-col items-center">
+                                <div class="px-2.5 py-1 bg-white/90 text-slate-800 font-bold text-xs rounded-full shadow-md flex items-center gap-1 border border-slate-200">
+                                    <i class="fa-solid fa-book text-brand-600"></i> Central Library
+                                </div>
+                                <div class="w-2.5 h-2.5 bg-white rotate-45 -mt-1.5"></div>
+                            </button>
+
+                            <!-- Landmark 3: Student Union (Active Default) -->
+                            <button onclick="showLandmarkDetails('union')" 
+                                class="absolute top-1/2 left-2/3 -translate-x-1/2 group/pin z-10 flex flex-col items-center">
+                                <div class="px-3 py-1 bg-brand-600 text-white font-bold text-xs rounded-full shadow-lg flex items-center gap-1.5 ring-2 ring-brand-300">
+                                    <i class="fa-solid fa-graduation-cap text-xs"></i> Student Union
+                                </div>
+                                <div class="w-3 h-3 bg-brand-600 rotate-45 -mt-1.5"></div>
+                            </button>
+
+                            <!-- Landmark 4: Rec Center -->
+                            <button onclick="showLandmarkDetails('reccenter')" 
+                                class="absolute top-2/3 left-1/2 -translate-x-1/2 group/pin z-10 flex flex-col items-center">
+                                <div class="px-2.5 py-1 bg-white/90 text-slate-800 font-bold text-xs rounded-full shadow-md flex items-center gap-1 border border-slate-200">
+                                    <i class="fa-solid fa-dumbbell text-purple-600"></i> Rec Center
+                                </div>
+                                <div class="w-2.5 h-2.5 bg-white rotate-45 -mt-1.5"></div>
+                            </button>
+
+                            <!-- Landmark 5: South Dining -->
+                            <button onclick="showLandmarkDetails('dining')" 
+                                class="absolute bottom-6 left-1/4 group/pin z-10 flex flex-col items-center">
+                                <div class="px-2.5 py-1 bg-white/90 text-slate-800 font-bold text-xs rounded-full shadow-md flex items-center gap-1 border border-slate-200">
+                                    <i class="fa-solid fa-utensils text-emerald-600"></i> South Dining
+                                </div>
+                                <div class="w-2.5 h-2.5 bg-white rotate-45 -mt-1.5"></div>
+                            </button>
+
+                            <!-- Active Selected Landmark Info Card Overlay at Bottom -->
+                            <div id="landmarkCardOverlay" class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-slate-200/80 shadow-xl flex items-center justify-between gap-4 transition-all">
+                                <div class="flex items-center gap-3.5">
+                                    <div id="landmarkIcon" class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg shrink-0">
+                                        <i class="fa-solid fa-gopuram"></i>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h3 id="landmarkTitle" class="font-bold text-sm text-slate-900">Jhunjhunu Rani Sati Mandir</h3>
+                                            <span id="landmarkTag" class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full">Cultural Hub</span>
+                                        </div>
+                                        <p id="landmarkDesc" class="text-xs text-slate-500 mt-0.5">Historical cultural site, peaceful meditation courtyard, and heritage assembly spot.</p>
+                                    </div>
+                                </div>
+                                <button onclick="getDirectionsToLandmark()" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs rounded-xl shadow-xs shrink-0 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-diamond-turn-right"></i>
+                                    Walking Directions
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-mouse-pointer text-slate-400"></i> Click any pin to inspect campus buildings & services
+                            </span>
+                            <button onclick="downloadPrintableMap()" class="font-semibold text-brand-600 hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-file-pdf"></i> Download Printable PDF Map
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Peer Mentor Card (4 cols) -->
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Assigned Peer Mentor</span>
+                                <span class="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Online Now
+                                </span>
+                            </div>
+
+                            <!-- Mentor Profile Header -->
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200" 
+                                     alt="Maya Lin" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-brand-500/20">
+                                <div>
+                                    <h3 class="font-bold text-base text-slate-900">Maya Lin</h3>
+                                    <p class="text-xs font-medium text-brand-600">Senior • Computer Science & Cognitive Design</p>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Orientation Cohort #14 Leader</p>
+                                </div>
+                            </div>
+
+                            <!-- Mentor Quote Bubble -->
+                            <div class="p-3.5 bg-slate-50 rounded-2xl text-xs text-slate-600 italic border border-slate-100 relative">
+                                "Hey Alex! Huge congrats on your admission. Can't wait to show you around Euler Wing and help you find the best matcha lattes on campus. Drop me a note anytime!"
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="space-y-2 pt-1">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="openMentorMessageModal()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5">
+                                        <i class="fa-solid fa-comment-dots"></i> Message Maya
+                                    </button>
+                                    <button onclick="openBookQAModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                        <i class="fa-regular fa-calendar-plus"></i> Book 1:1 Q&A
+                                    </button>
+                                </div>
+                                <button onclick="window.open('https://discord.com', '_blank')" class="w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs rounded-xl border border-indigo-100 flex items-center justify-center gap-2 transition-all">
+                                    <i class="fa-brands fa-discord"></i> Join Class of 2028 Discord & GroupChat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- ================= CAMPUS ESSENTIALS CAROUSEL ================= -->
+                <section class="space-y-4 pt-2">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">First 30 Days Survival Kit</div>
+                            <h2 class="text-xl font-bold text-slate-900">Campus Essentials & Insider Tips</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="scrollTips('left')" class="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs shadow-xs">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button onclick="scrollTips('right')" class="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs shadow-xs">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Cards -->
+                    <div id="tipsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto pb-2 scroll-smooth">
+                        
+                        <!-- Tip 1 -->
+                        <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-32 overflow-hidden bg-slate-100">
+                                    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=400" 
+                                         alt="Dining" class="w-full h-full object-cover">
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded-md">Dining 101</span>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-sm text-slate-900">Meal Plans & Hidden Cafes</h3>
+                                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Maximize Dining Dollars, skip lunch rush hours, and find late-night ramen spots.</p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <button onclick="openTipDetails('dining')" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+                                    Read Survival Guide <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tip 2 -->
+                        <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-32 overflow-hidden bg-slate-100">
+                                    <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&q=80&w=400" 
+                                         alt="Transit" class="w-full h-full object-cover">
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded-md">Transit & Night Escort</span>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-sm text-slate-900">Getting Around Campus</h3>
+                                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Live bus GPS tracking, bike locker rentals, and safe late-night ride escort apps.</p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <button onclick="openTipDetails('transit')" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+                                    Download Transit Map <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tip 3 -->
+                        <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-32 overflow-hidden bg-slate-100">
+                                    <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=400" 
+                                         alt="Study" class="w-full h-full object-cover">
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded-md">Secret Study Nooks</span>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-sm text-slate-900">Quiet Corners & Charging Hubs</h3>
+                                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Top 6 silent floors, reservable whiteboard rooms, and high-speed device power stations.</p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <button onclick="openTipDetails('study')" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+                                    Browse Locations <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tip 4 -->
+                        <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-32 overflow-hidden bg-slate-100">
+                                    <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80&w=400" 
+                                         alt="Clubs" class="w-full h-full object-cover">
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded-md">Clubs & Greek Life</span>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-sm text-slate-900">Find Your Community</h3>
+                                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Explore 140+ student organizations, design teams, intramural sports, and cultural societies.</p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <button onclick="openTipDetails('clubs')" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+                                    Search Org Directory <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ================= 24/7 HOTLINE FOOTER CARD ================= -->
+                <section class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-3xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 border border-white/10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-brand-300 text-2xl shrink-0">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base text-white">24/7 New Student Assistance & Safety Hotline</h3>
+                            <p class="text-xs text-slate-300 mt-0.5">Immediate help with dorm lockouts, medical needs, or general arrival questions.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 shrink-0">
+                        <button onclick="openCallHotlineModal()" class="px-5 py-2.5 bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs rounded-xl shadow-xs transition-all">
+                            Call (555) 019-AURA
+                        </button>
+                        <button onclick="toggleLiveChat()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-headset"></i>
+                            Live Chat Support
+                        </button>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- FOOTER COPYRIGHT -->
+            <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400">
+                &copy; 2026 CampusCorner Academic Portal • Aura State University • All rights reserved.
+            </footer>
+
+        </div>
+    </div>
+
+
+    <!-- ================= FLOATING LIVE CHAT WIDGET ================= -->
+    <div id="liveChatWidget" class="hidden fixed bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-3xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden">
+        <!-- Chat Header -->
+        <div class="bg-brand-600 p-4 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-brand-600"></span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm">Campus Support Bot</h4>
+                    <p class="text-[10px] text-brand-100">24/7 Virtual Orientation Assistant</p>
+                </div>
+            </div>
+            <button onclick="toggleLiveChat()" class="text-white/80 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Chat Feed -->
+        <div id="chatFeed" class="p-4 h-80 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+            <div class="flex items-start gap-2">
+                <div class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-xs max-w-[85%]">
+                    Hello Alex! Welcome to Aura State Orientation. How can I help you today?
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Suggestions -->
+        <div class="px-3 py-2 bg-slate-100 border-t border-slate-200 flex gap-1.5 overflow-x-auto text-[11px]">
+            <button onclick="sendQuickChatMessage('Where is Jhunjhunu Rani Sati Mandir?')" class="px-2.5 py-1 bg-white hover:bg-slate-200 border border-slate-300 rounded-full shrink-0 font-medium text-slate-700">
+                🛕 Rani Sati Mandir
+            </button>
+            <button onclick="sendQuickChatMessage('How do I upload my ID photo?')" class="px-2.5 py-1 bg-white hover:bg-slate-200 border border-slate-300 rounded-full shrink-0 font-medium text-slate-700">
+                📷 ID Upload Help
+            </button>
+            <button onclick="sendQuickChatMessage('Move-In details')" class="px-2.5 py-1 bg-white hover:bg-slate-200 border border-slate-300 rounded-full shrink-0 font-medium text-slate-700">
+                📦 Move-In Time
+            </button>
+        </div>
+
+        <!-- Chat Input -->
+        <form onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+            <input type="text" id="chatInput" placeholder="Type a message..." class="flex-1 bg-slate-100 border-0 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <button type="submit" class="w-8 h-8 bg-brand-600 hover:bg-brand-700 text-white rounded-xl flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- ================= TASK DOCUMENT SUBMISSION MODAL ================= -->
+    <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 id="taskModalTitle" class="font-bold text-base text-slate-900">Task Form Submission</h3>
+                <button onclick="closeTaskModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p id="taskModalDesc" class="text-xs text-slate-500">Please provide the required verification or document to complete this orientation requirement.</p>
+
+            <form onsubmit="submitTaskForm(event)" class="space-y-4">
+                <input type="hidden" id="taskModalKey" value="">
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Student Full Name</label>
+                    <input type="text" value="Alex Rivera" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-700">
+                </div>
+
+                <div id="dynamicTaskFields" class="space-y-3">
+                    <!-- Dynamic fields populated by JavaScript -->
+                </div>
+
+                <!-- File Drag and Drop Zone -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Upload Supporting Document/Proof (Optional)</label>
+                    <div class="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 cursor-pointer transition-colors" onclick="document.getElementById('taskFileInput').click()">
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand-500 mb-1"></i>
+                        <div class="text-xs font-medium text-slate-700">Click or drag document file here</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">PDF, PNG, JPG up to 10MB</div>
+                        <input type="file" id="taskFileInput" class="hidden" onchange="handleFileSelected(this)">
+                        <div id="fileNameDisplay" class="text-xs font-bold text-brand-600 mt-2 hidden"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="closeTaskModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow-xs">
+                        Submit & Complete Task
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MENTOR MESSAGE MODAL ================= -->
+    <div id="mentorMsgModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-3">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=120" alt="Maya" class="w-8 h-8 rounded-full object-cover">
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900">Direct Message to Maya Lin</h3>
+                        <p class="text-[10px] text-emerald-600 font-medium">Orientation Peer Mentor</p>
+                    </div>
+                </div>
+                <button onclick="closeMentorMsgModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <textarea id="mentorMsgText" rows="4" placeholder="Hi Maya, I have a quick question regarding..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+
+            <div class="flex justify-end gap-2">
+                <button onclick="closeMentorMsgModal()" class="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
+                <button onclick="sendMentorMessage()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow-xs">
+                    Send Message
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= STATE DATA MANAGEMENT ================= */
+        const eventData = {
+            day1: [
+                {
+                    tag: "Mandatory Attendance",
+                    tagColor: "bg-red-100 text-red-800 border-red-200",
+                    time: "09:00 - 12:00 PM",
+                    title: "Residence Move-In & Keys Handover",
+                    location: "Assigned Residence Halls (Birch & Cedar Quads)",
+                    host: "Residential Life Staff",
+                    added: true
+                },
+                {
+                    tag: "University Milestone",
+                    tagColor: "bg-purple-100 text-purple-800 border-purple-200",
+                    time: "02:30 - 04:00 PM",
+                    title: "Presidential Academic Convocation",
+                    location: "Memorial Stadium Main Stage",
+                    host: "Keynote: Dr. Helena Vance, University President",
+                    added: false
+                },
+                {
+                    tag: "Social & Fun",
+                    tagColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                    time: "06:00 - 09:30 PM",
+                    title: "Sunset Lawn Bash & Student Org Fair",
+                    location: "North Quad Green • Free Tacos & Live DJ",
+                    host: "Hosted by Student Activities Council",
+                    added: false
+                }
+            ],
+            day2: [
+                {
+                    tag: "Academic Orientation",
+                    tagColor: "bg-blue-100 text-blue-800 border-blue-200",
+                    time: "10:00 - 11:30 AM",
+                    title: "Computer Science Dept Orientation",
+                    location: "Euler Science Hall • Room 102",
+                    host: "Dr. Alvarez & CS Faculty",
+                    added: true
+                },
+                {
+                    tag: "Cultural & Campus Landmark",
+                    tagColor: "bg-amber-100 text-amber-800 border-amber-200",
+                    time: "01:00 - 03:00 PM",
+                    title: "Jhunjhunu Rani Sati Mandir Guided Tour",
+                    location: "Jhunjhunu Rani Sati Mandir Grounds",
+                    host: "Cultural Society Leaders",
+                    added: false
+                }
+            ],
+            day3: [
+                {
+                    tag: "Campus Safety",
+                    tagColor: "bg-purple-100 text-purple-800 border-purple-200",
+                    time: "11:00 - 01:00 PM",
+                    title: "Title IX & Campus Safety Workshop",
+                    location: "Main Campus Auditorium B",
+                    host: "University Safety Team",
+                    added: false
+                }
+            ],
+            day4: [
+                {
+                    tag: "Social & Celebration",
+                    tagColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                    time: "05:00 - 08:00 PM",
+                    title: "Class of 2028 Welcome Concert & Night Market",
+                    location: "Student Union Plaza",
+                    host: "Campus Activities Board",
+                    added: false
+                }
+            ]
+        };
+
+        const landmarksData = {
+            ranisati: {
+                title: "Jhunjhunu Rani Sati Mandir",
+                tag: "Campus Landmark & Cultural Hub",
+                tagClass: "bg-amber-100 text-amber-800",
+                iconClass: "fa-gopuram text-amber-600",
+                bgClass: "bg-amber-100",
+                desc: "Historic campus landmark and cultural heritage hub. Features tranquil courtyards, peaceful study zones, and traditional student gatherings."
+            },
+            library: {
+                title: "Central Library (Lowden Quad)",
+                tag: "Academic & Tech Hub",
+                tagClass: "bg-blue-100 text-blue-800",
+                iconClass: "fa-book text-brand-600",
+                bgClass: "bg-blue-100",
+                desc: "6 floors of quiet study nooks, tech lending desks, 24/7 printing labs, and digital research archives."
+            },
+            union: {
+                title: "Student Union (Active Center)",
+                tag: "Dining & Help Desk",
+                tagClass: "bg-emerald-100 text-emerald-800",
+                iconClass: "fa-graduation-cap text-emerald-600",
+                bgClass: "bg-emerald-100",
+                desc: "ID Pickup, Campus Store, Main Dining Hall, Student Services, and Tech Helpdesk."
+            },
+            reccenter: {
+                title: "Recreation & Wellness Center",
+                tag: "Fitness & Sports",
+                tagClass: "bg-purple-100 text-purple-800",
+                iconClass: "fa-dumbbell text-purple-600",
+                bgClass: "bg-purple-100",
+                desc: "Olympic pool, indoor climbing wall, basketball courts, group workout studios, and locker rooms."
+            },
+            dining: {
+                title: "South Dining Commons",
+                tag: "Food & Cafes",
+                tagClass: "bg-rose-100 text-rose-800",
+                iconClass: "fa-utensils text-rose-600",
+                bgClass: "bg-rose-100",
+                desc: "All-you-care-to-eat buffet, vegan grill, late-night cafe, and outdoor patio seating."
+            }
+        };
+
+        let currentActiveDay = 'day1';
+        let completedTasksCount = 3; // Initial 3 completed
+        const totalTasks = 7;
+
+        /* ================= INITIALIZATION ================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderEventList('day1');
+            setupHeaderDropdowns();
+            setupSearchEngine();
+        });
+
+        /* ================= EVENT LINEUP RENDERING ================= */
+        function switchEventDay(dayKey) {
+            currentActiveDay = dayKey;
+
+            // Highlight button active states
+            document.querySelectorAll('.event-day-btn').forEach(btn => {
+                btn.className = "event-day-btn py-2 rounded-xl text-slate-600 font-medium hover:text-slate-900 transition-all";
+            });
+            const activeBtn = document.getElementById(`${dayKey}-btn`);
+            if (activeBtn) {
+                activeBtn.className = "event-day-btn py-2 rounded-xl bg-white text-slate-900 font-bold shadow-xs transition-all ring-1 ring-slate-200";
+            }
+
+            renderEventList(dayKey);
+        }
+
+        function renderEventList(dayKey) {
+            const container = document.getElementById('eventListContainer');
+            if (!container) return;
+
+            const events = eventData[dayKey] || [];
+            if (events.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-slate-400 text-xs">No scheduled events for this day.</div>`;
+                return;
+            }
+
+            container.innerHTML = events.map((evt, idx) => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3 hover:border-brand-200 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase border ${evt.tagColor}">
+                            ${evt.tag}
+                        </span>
+                        <span class="text-xs font-semibold text-slate-500">
+                            <i class="fa-regular fa-clock text-[10px]"></i> ${evt.time}
+                        </span>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900">${evt.title}</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">${evt.location}</p>
+                        <p class="text-[11px] text-slate-400 mt-1"><i class="fa-regular fa-user"></i> ${evt.host}</p>
+                    </div>
+
+                    <div class="pt-1 border-t border-slate-100 flex justify-end">
+                        <button onclick="toggleAddTimetable('${dayKey}', ${idx})" 
+                            class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                                evt.added 
+                                ? 'bg-brand-50 text-brand-700 border border-brand-200' 
+                                : 'bg-brand-600 hover:bg-brand-700 text-white shadow-xs'
+                            }">
+                            <i class="fa-solid ${evt.added ? 'fa-check text-brand-600' : 'fa-plus'}"></i>
+                            <span>${evt.added ? 'Added' : 'Add to Timetable'}</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleAddTimetable(dayKey, index) {
+            if (eventData[dayKey] && eventData[dayKey][index]) {
+                eventData[dayKey][index].added = !eventData[dayKey][index].added;
+                renderEventList(dayKey);
+            }
+        }
+
+        /* ================= LANDMARKS MAP INTERACTION ================= */
+        function showLandmarkDetails(key) {
+            const lm = landmarksData[key];
+            if (!lm) return;
+
+            document.getElementById('landmarkTitle').innerText = lm.title;
+            document.getElementById('landmarkTag').innerText = lm.tag;
+            document.getElementById('landmarkTag').className = `px-2 py-0.5 text-[10px] font-bold rounded-full ${lm.tagClass}`;
+            document.getElementById('landmarkDesc').innerText = lm.desc;
+            
+            const iconBox = document.getElementById('landmarkIcon');
+            iconBox.className = `w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shrink-0 ${lm.bgClass}`;
+            iconBox.innerHTML = `<i class="fa-solid ${lm.iconClass}"></i>`;
+        }
+
+        function getDirectionsToLandmark() {
+            const title = document.getElementById('landmarkTitle').innerText;
+            alert(`🧭 Navigation route initialized to "${title}". Follow green walking path on campus map.`);
+        }
+
+        /* ================= HANDBOOK PDF DOWNLOAD ENGINE ================= */
+        function downloadStudentHandbook() {
+            const btn = document.getElementById('downloadHandbookBtn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Generating PDF...`;
+
+            setTimeout(() => {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    // PDF Content Header
+                    doc.setFillColor(37, 99, 235); // Brand Blue
+                    doc.rect(0, 0, 210, 40, 'F');
+                    
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(22);
+                    doc.text("AURA STATE UNIVERSITY", 15, 20);
+                    
+                    doc.setFontSize(14);
+                    doc.text("Official New Student Handbook - Class of 2028", 15, 30);
+
+                    // Body
+                    doc.setTextColor(30, 41, 59);
+                    doc.setFontSize(12);
+                    doc.text("Welcome to Campus, Alex Rivera!", 15, 55);
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    doc.text([
+                        "This handbook contains essential guidelines, campus orientation schedules,",
+                        "safety hotline information, academic advising procedures, and key landmark details.",
+                        "",
+                        "1. ACADEMIC HUB & ADVISING",
+                        "   - Registrar Office: Student Union Room 104",
+                        "   - Course Add/Drop Deadline: September 5th",
+                        "",
+                        "2. CAMPUS LANDMARKS & CULTURAL CENTERS",
+                        "   - Jhunjhunu Rani Sati Mandir: Central Cultural Hub & Meditation Grounds",
+                        "   - Central Library: Lowden Quad (24/7 Study Access)",
+                        "   - South Dining Commons: Meals & Meal Plan Refills",
+                        "",
+                        "3. EMERGENCY & ASSISTANCE",
+                        "   - 24/7 Hotline: (555) 019-AURA",
+                        "   - Campus Security Office: Extension 9111",
+                        "",
+                        "Keep this document saved on your personal device during Orientation Week."
+                    ], 15, 65);
+
+                    // Footer
+                    doc.setFontSize(8);
+                    doc.setTextColor(148, 163, 184);
+                    doc.text("Generated via CampusCorner Student Portal • Document Ref #AURA-2028-HANDBOOK", 15, 280);
+
+                    doc.save("AuraState_Student_Handbook_2028.pdf");
+                } catch (e) {
+                    // Fallback to text blob download if jsPDF encounters issue
+                    const content = `AURA STATE UNIVERSITY - STUDENT HANDBOOK (CLASS OF 2028)\n\nWelcome Alex Rivera!\n\nKey Information:\n- Move-In Check: Birch Hall #412\n- Jhunjhunu Rani Sati Mandir Cultural Hub\n- 24/7 Safety Hotline: (555) 019-AURA\n\nCampusCorner Portal`;
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "AuraState_Student_Handbook_2028.txt";
+                    a.click();
+                }
+
+                btn.innerHTML = `<i class="fa-solid fa-file-arrow-down text-base"></i> Download Student Handbook (PDF)`;
+            }, 600);
+        }
+
+        function downloadPrintableMap() {
+            alert("📄 Downloading printable high-resolution campus map PDF...");
+        }
+
+        /* ================= TASK FORM SUBMISSION & PROGRESS LOGIC ================= */
+        const taskFormFields = {
+            dorm: {
+                title: "Dorm Room Move-In Slot Selection",
+                fields: `
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Select Hall & Room</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                            <option>Birch Hall #412 (Selected)</option>
+                            <option>Cedar Quad #201</option>
+                            <option>Maple Wing #108</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Preferred Time Slot (Aug 24)</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                            <option>10:00 AM - 12:00 PM</option>
+                            <option>01:00 PM - 03:00 PM</option>
+                        </select>
+                    </div>
+                `
+            },
+            safety: {
+                title: "Campus Safety Seminar Confirmation",
+                fields: `
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Seminar Attendance Code</label>
+                        <input type="text" placeholder="Enter 6-digit code from seminar" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                `
+            },
+            wifi: {
+                title: "Eduroam Wi-Fi Device Setup",
+                fields: `
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Device MAC Address / Name</label>
+                        <input type="text" placeholder="e.g. Alex-MacBook-Pro" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                `
+            },
+            dining: {
+                title: "Dining & Transit Pass Pickup Request",
+                fields: `
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Meal Plan Level</label>
+                        <input type="text" value="Unlimited Dining + $200 Dollars" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                `
+            }
+        };
+
+        function openTaskModal(taskKey) {
+            const data = taskFormFields[taskKey];
+            if (!data) return;
+
+            document.getElementById('taskModalKey').value = taskKey;
+            document.getElementById('taskModalTitle').innerText = data.title;
+            document.getElementById('dynamicTaskFields').innerHTML = data.fields;
+            document.getElementById('fileNameDisplay').classList.add('hidden');
+            document.getElementById('taskFileInput').value = '';
+
+            document.getElementById('taskModal').classList.remove('hidden');
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.add('hidden');
+        }
+
+        function handleFileSelected(input) {
+            if (input.files && input.files[0]) {
+                const nameDisplay = document.getElementById('fileNameDisplay');
+                nameDisplay.innerText = `Selected File: ${input.files[0].name}`;
+                nameDisplay.classList.remove('hidden');
+            }
+        }
+
+        function submitTaskForm(e) {
+            e.preventDefault();
+            const key = document.getElementById('taskModalKey').value;
+            const taskCard = document.getElementById(`task-${key}`);
+
+            if (taskCard) {
+                // Update DOM elements inside the task card to reflect Completed state
+                const badgeBtn = taskCard.querySelector('.task-action-btn');
+                if (badgeBtn) {
+                    badgeBtn.replaceWith(Object.assign(document.createElement('span'), {
+                        className: "px-3 py-1 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-full border border-emerald-200/60 shrink-0",
+                        innerText: "Completed"
+                    }));
+                }
+
+                // Change left icon to green check
+                const iconContainer = taskCard.querySelector('.w-8.h-8');
+                if (iconContainer) {
+                    iconContainer.className = "w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5";
+                    iconContainer.innerHTML = `<i class="fa-solid fa-check text-sm"></i>`;
+                }
+
+                // Recalculate progress
+                completedTasksCount = Math.min(completedTasksCount + 1, totalTasks);
+                const percent = Math.round((completedTasksCount + 4) / 11 * 100); // 4 initial outside tasks + 7 list tasks
+
+                document.getElementById('overallPercentBadge').innerText = `${percent}%`;
+                document.getElementById('overallProgressBar').style.width = `${percent}%`;
+                document.getElementById('tasksCompletedText').innerText = `${completedTasksCount + 4} of 11`;
+
+                const pendingCount = totalTasks - completedTasksCount;
+                document.getElementById('pendingItemsBadge').innerText = `${pendingCount} Action Items Pending`;
+            }
+
+            closeTaskModal();
+        }
+
+        function filterTasks(cat) {
+            document.querySelectorAll('.task-filter-btn').forEach(btn => {
+                btn.className = "task-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-200/80 text-slate-700 hover:bg-slate-200";
+            });
+            event.target.className = "task-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-xs";
+
+            document.querySelectorAll('.task-item').forEach(item => {
+                if (cat === 'all' || item.dataset.category === cat) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        /* ================= MENTOR & MODALS ================= */
+        function openMentorModal() { openMentorMessageModal(); }
+        function openMentorMessageModal() { document.getElementById('mentorMsgModal').classList.remove('hidden'); }
+        function closeMentorMsgModal() { document.getElementById('mentorMsgModal').classList.add('hidden'); }
+        
+        function sendMentorMessage() {
+            const txt = document.getElementById('mentorMsgText').value;
+            if (!txt) return;
+            alert("💬 Message sent to Maya Lin! She usually responds in under 15 minutes.");
+            document.getElementById('mentorMsgText').value = '';
+            closeMentorMsgModal();
+        }
+
+        function openBookQAModal() {
+            alert("📅 Opening 1:1 Orientation Leader Scheduling Calendar for Maya Lin...");
+        }
+
+        function openFullCalendarModal() {
+            alert("🗓️ Opening Full Academic & Orientation Week Calendar...");
+        }
+
+        function openTipDetails(type) {
+            alert(`💡 Opening Insider Survival Guide: ${type.toUpperCase()}`);
+        }
+
+        function openCallHotlineModal() {
+            alert("📞 Dialing 24/7 Safety & Assistance Hotline: (555) 019-AURA...");
+        }
+
+        function openSupportModal() {
+            alert("🆘 Campus Support & Help desk direct portal accessed.");
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ================= HEADER DROPDOWNS & SEARCH ================= */
+        function setupHeaderDropdowns() {
+            // Notification toggle
+            const notifBtn = document.getElementById('notificationBtn');
+            const notifMenu = document.getElementById('notificationMenu');
+            notifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifMenu.classList.toggle('hidden');
+                document.getElementById('termMenu').classList.add('hidden');
+                document.getElementById('profileMenu').classList.add('hidden');
+            });
+
+            // Term Selector toggle
+            const termBtn = document.getElementById('termSelectorBtn');
+            const termMenu = document.getElementById('termMenu');
+            termBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                termMenu.classList.toggle('hidden');
+                notifMenu.classList.add('hidden');
+                document.getElementById('profileMenu').classList.add('hidden');
+            });
+
+            // Profile Dropdown toggle
+            const profileBtn = document.getElementById('profileBtn');
+            const profileMenu = document.getElementById('profileMenu');
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('hidden');
+                notifMenu.classList.add('hidden');
+                termMenu.classList.add('hidden');
+            });
+
+            // Global click away listener
+            document.addEventListener('click', () => {
+                notifMenu.classList.add('hidden');
+                termMenu.classList.add('hidden');
+                profileMenu.classList.add('hidden');
+                document.getElementById('searchDropdown').classList.add('hidden');
+            });
+        }
+
+        function selectTerm(term) {
+            document.getElementById('currentTermText').innerText = term;
+        }
+
+        function markAllNotificationsRead() {
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.classList.add('hidden');
+            alert("Notifications marked as read.");
+        }
+
+        function setupSearchEngine() {
+            const input = document.getElementById('globalSearchInput');
+            const dropdown = document.getElementById('searchDropdown');
+
+            input.addEventListener('focus', () => dropdown.classList.remove('hidden'));
+            input.addEventListener('input', (e) => {
+                if (e.target.value.trim() !== '') {
+                    dropdown.classList.remove('hidden');
+                }
+            });
+            input.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        function handleSearchResult(term) {
+            document.getElementById('searchDropdown').classList.add('hidden');
+            document.getElementById('globalSearchInput').value = term;
+
+            if (term.includes('Rani Sati')) {
+                showLandmarkDetails('ranisati');
+                scrollToSection('landmarkCardOverlay');
+            } else if (term.includes('Maya')) {
+                openMentorMessageModal();
+            } else {
+                alert(`Search query results for: "${term}" loaded.`);
+            }
+        }
+
+        /* ================= LIVE CHAT SUPPORT ENGINE ================= */
+        function toggleLiveChat() {
+            const chatWidget = document.getElementById('liveChatWidget');
+            chatWidget.classList.toggle('hidden');
+        }
+
+        function sendQuickChatMessage(msg) {
+            document.getElementById('chatInput').value = msg;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatFeed = document.getElementById('chatFeed');
+
+            // Append User Message
+            chatFeed.innerHTML += `
+                <div class="flex items-start justify-end gap-2">
+                    <div class="bg-brand-600 text-white p-3 rounded-2xl shadow-xs max-w-[85%]">
+                        ${text}
+                    </div>
+                </div>
+            `;
+
+            input.value = '';
+            chatFeed.scrollTop = chatFeed.scrollHeight;
+
+            // Simulated AI Auto-response
+            setTimeout(() => {
+                let botReply = "I am here to assist with your orientation steps, housing, or class schedules!";
+                const lower = text.toLowerCase();
+
+                if (lower.includes('rani sati') || lower.includes('mandir')) {
+                    botReply = "Jhunjhunu Rani Sati Mandir is a key cultural landmark on campus! You can find it on our Interactive Map under Wayfinding.";
+                } else if (lower.includes('id photo') || lower.includes('upload')) {
+                    botReply = "You can complete your Student ID task in the Onboarding Checklist section by clicking Submit!";
+                } else if (lower.includes('move-in') || lower.includes('dorm')) {
+                    botReply = "Your scheduled move-in time is Aug 24 @ 10:00 AM at Birch Hall #412.";
+                }
+
+                chatFeed.innerHTML += `
+                    <div class="flex items-start gap-2">
+                        <div class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-xs max-w-[85%]">
+                            ${botReply}
+                        </div>
+                    </div>
+                `;
+                chatFeed.scrollTop = chatFeed.scrollHeight;
+            }, 600);
+        }
+
+        function scrollTips(direction) {
+            const container = document.getElementById('tipsContainer');
+            if (direction === 'left') {
+                container.scrollBy({ left: -300, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: 300, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCorner - Class Schedule & Timetable</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Print CSS Styling -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media print {
+            aside, header, #viewControls, #filterBar, #facultySection, #milestonesSection, #liveChatWidget, #floatingToast {
+                display: none !important;
+            }
+            main {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+            .schedule-card {
+                border: 1px solid #cbd5e1 !important;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <div class="flex flex-col lg:flex-row min-h-screen w-full">
+
+        <!-- ================= SIDEBAR NAV ================= -->
+        <aside class="w-full lg:w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 z-20">
+            <div>
+                <!-- Brand Header -->
+                <div class="h-16 flex items-center px-6 border-b border-slate-100 gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-brand-500/20">
+                        C
+                    </div>
+                    <span class="font-bold text-lg text-slate-900 tracking-tight">CampusCorner</span>
+                </div>
+
+                <!-- Navigation Items -->
+                <div class="p-4 space-y-6">
+                    <div>
+                        <div class="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                            Academic Hub
+                        </div>
+                        <nav class="space-y-1">
+                            <a href="./home.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-house w-5 text-slate-400"></i>
+                                Home
+                            </a>
+                            <!-- Active Menu Item: Schedule -->
+                            <a href="./Schedule.html" class="flex items-center gap-3 px-3.5 py-3 text-sm font-semibold text-white bg-brand-600 rounded-xl shadow-md shadow-brand-600/30 transition-all">
+                                <i class="fa-regular fa-calendar-days w-5 text-white"></i>
+                                Schedule
+                            </a>
+                            <a href="./greds&Exams.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-graduation-cap w-5 text-slate-400"></i>
+                                Grades & Exams
+                            </a>
+                            <a href="./campus.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-users w-5 text-slate-400"></i>
+                                Campus Life
+                            </a>
+                            <a href="./Resource.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-folder-open w-5 text-slate-400"></i>
+                                Resources
+                            </a>
+                        </nav>
+                    </div>
+
+                    <div class="pt-2">
+                        <nav class="space-y-1.5">
+                            <a href="./new-student.html" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-compass w-5 text-slate-400"></i>
+                                New Student Orientation
+                            </a>
+                            <a href="./help-desk.html" onclick="openSupportModal()" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                <i class="fa-solid fa-headset w-5 text-slate-400"></i>
+                                Help Desk & Support
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer Status Box -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50/50 m-3 rounded-2xl border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Term GPA</div>
+                        <div class="text-xl font-bold text-slate-900 mt-0.5">3.84</div>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        Dean's List
+                    </span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT AREA ================= -->
+        <div class="flex-1 flex flex-col min-w-0">
+
+            <!-- TOP NAVBAR HEADER -->
+            <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+                
+                <!-- Search Input with Live Dropdown -->
+                <div class="relative w-full max-w-md">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search classes, faculty, events..." 
+                            class="w-full pl-10 pr-4 py-2 bg-slate-100/80 border border-transparent rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                    </div>
+
+                    <!-- Search Dropdown Results Popup -->
+                    <div id="searchDropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50">
+                        <div class="px-3 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Class & Faculty Suggestions</div>
+                        <div class="space-y-1">
+                            <button onclick="handleSearchResult('CS 301')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm flex items-center gap-3">
+                                <i class="fa-solid fa-laptop-code text-brand-600"></i>
+                                <div>
+                                    <div class="font-medium text-slate-800">CS 301 - Data Structures & Algorithms</div>
+                                    <div class="text-xs text-slate-400">Mon/Wed/Fri 09:00 AM • Turing Hall 204</div>
+                                </div>
+                            </button>
+                            <button onclick="handleSearchResult('MATH 240')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm flex items-center gap-3">
+                                <i class="fa-solid fa-square-root-variable text-purple-600"></i>
+                                <div>
+                                    <div class="font-medium text-slate-800">MATH 240 - Linear Algebra</div>
+                                    <div class="text-xs text-slate-400">Mon/Wed/Fri 12:00 PM • Euler Bldg 110</div>
+                                </div>
+                            </button>
+                            <button onclick="handleSearchResult('Prof. Elena Rostova')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm flex items-center gap-3">
+                                <i class="fa-solid fa-user-tie text-emerald-600"></i>
+                                <div>
+                                    <div class="font-medium text-slate-800">Prof. Elena Rostova</div>
+                                    <div class="text-xs text-slate-400">CS Dept Office Hours • Thu 12:30 PM</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Header Actions -->
+                <div class="flex items-center gap-3 sm:gap-4 ml-4">
+                    
+                    <!-- Term Selector Dropdown -->
+                    <div class="relative">
+                        <button id="termSelectorBtn" class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition-colors">
+                            <i class="fa-regular fa-calendar text-brand-600"></i>
+                            <span id="currentTermText">Fall 2024</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                        </button>
+                        <div id="termMenu" class="hidden absolute right-0 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-lg p-1 z-50">
+                            <button onclick="selectTerm('Fall 2024')" class="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-slate-100 font-medium text-slate-800">Fall 2024</button>
+                            <button onclick="selectTerm('Spring 2025')" class="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-slate-100 font-medium text-slate-600">Spring 2025</button>
+                            <button onclick="selectTerm('Summer 2024')" class="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-slate-100 font-medium text-slate-600">Summer 2024</button>
+                        </div>
+                    </div>
+
+                    <!-- Header Links -->
+                    <button onclick="openSupportModal()" class="hidden md:block text-xs font-semibold text-slate-600 hover:text-brand-600 transition-colors">
+                        Support
+                    </button>
+                    <a href="#" class="hidden md:block text-xs font-semibold text-slate-600 hover:text-brand-600 transition-colors">
+                        Orientation
+                    </a>
+
+                    <!-- Notifications Dropdown -->
+                    <div class="relative">
+                        <button id="notificationBtn" class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-full transition-colors">
+                            <i class="fa-regular fa-bell text-lg"></i>
+                            <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                        </button>
+
+                        <div id="notificationMenu" class="hidden absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 z-50">
+                            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                                <span class="text-xs font-bold text-slate-900 uppercase">Schedule Updates</span>
+                                <button onclick="markAllNotificationsRead()" class="text-[11px] text-brand-600 hover:underline">Mark all read</button>
+                            </div>
+                            <div class="space-y-2 text-xs">
+                                <div class="p-2 bg-brand-50 rounded-xl border border-brand-100">
+                                    <div class="font-semibold text-brand-900">CS 301 Lab Room Changed</div>
+                                    <div class="text-slate-600 mt-0.5">Moved to MacLab 105 starting Wed Oct 23</div>
+                                    <div class="text-[10px] text-brand-500 mt-1">1 hour ago</div>
+                                </div>
+                                <div class="p-2 hover:bg-slate-50 rounded-xl transition-colors">
+                                    <div class="font-semibold text-slate-800">Office Hour Confirmed</div>
+                                    <div class="text-slate-500 mt-0.5">Prof. Elena Rostova booked for Thu @ 1:00 PM</div>
+                                    <div class="text-[10px] text-slate-400 mt-1">3 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Chat Quick Icon -->
+                    <button onclick="toggleLiveChat()" class="p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-full transition-colors">
+                        <i class="fa-regular fa-comment-dots text-lg"></i>
+                    </button>
+
+                    <!-- User Profile Button & Drawer -->
+                    <div class="relative">
+                        <button id="profileBtn" class="flex items-center gap-2 pl-2 pr-1 py-1 hover:bg-slate-100 rounded-full transition-colors">
+                            <div class="text-right hidden sm:block">
+                                <div class="text-xs font-bold text-slate-800 leading-tight">Alex Rivera</div>
+                                <div class="text-[10px] font-medium text-slate-400">ID: #89204</div>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" 
+                                 alt="Alex Rivera" class="w-8 h-8 rounded-full object-cover ring-2 ring-brand-500/30">
+                        </button>
+
+                        <div id="profileMenu" class="hidden absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50">
+                            <div class="px-3 py-2 border-b border-slate-100">
+                                <div class="text-xs font-bold text-slate-900">Alex Rivera</div>
+                                <div class="text-[11px] text-slate-500">alex.rivera@aurastate.edu</div>
+                                <div class="mt-1 inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-semibold">Class of 2028</div>
+                            </div>
+                            <div class="py-1">
+                                <a href="#" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded-lg">
+                                    <i class="fa-regular fa-user w-4"></i> Profile Settings
+                                </a>
+                                <a href="#" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded-lg">
+                                    <i class="fa-solid fa-shield-halved w-4"></i> Security & 2FA
+                                </a>
+                            </div>
+                            <div class="border-t border-slate-100 pt-1">
+                                <button onclick="showToast('Signed out successfully')" class="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 rounded-lg font-medium">
+                                    <a href="./index.html"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Sign Out</a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- MAIN SCROLLABLE DASHBOARD CONTENT -->
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl w-full mx-auto">
+
+                <!-- ================= PAGE HEADER & CONTROLS ================= -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-brand-50 text-brand-700 border border-brand-200">
+                                FALL SEMESTER 2024
+                            </span>
+                            <span class="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Term On Schedule
+                            </span>
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+                            Class Schedule & Timetable
+                        </h1>
+                    </div>
+
+                    <!-- Top Right Controls -->
+                    <div id="viewControls" class="flex flex-wrap items-center gap-3">
+                        <!-- View Toggle -->
+                        <div class="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200">
+                            <button id="btnGridView" onclick="setScheduleView('grid')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs flex items-center gap-1.5 transition-all">
+                                <i class="fa-solid fa-table-cells text-brand-600"></i> Weekly Grid
+                            </button>
+                            <button id="btnListView" onclick="setScheduleView('list')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 transition-all">
+                                <i class="fa-solid fa-list text-slate-400"></i> List View
+                            </button>
+                        </div>
+
+                        <!-- Week Navigator -->
+                        <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-xl p-1">
+                            <button onclick="changeWeek(-1)" class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-600 text-xs transition-colors">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <span id="currentWeekDisplay" class="px-3 text-xs font-bold text-slate-800">
+                                Week 8: Oct 21 - Oct 25, 2024
+                            </span>
+                            <button onclick="changeWeek(1)" class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-600 text-xs transition-colors">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <!-- Sync Calendar & Print -->
+                        <button onclick="openSyncModal()" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 transition-all">
+                            <i class="fa-solid fa-calendar-plus"></i> Sync Calendar
+                        </button>
+
+                        <button onclick="window.print()" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-medium border border-slate-200 transition-all">
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ================= FILTER TABS & CATEGORY LEGEND BAR ================= -->
+                <div id="filterBar" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+                    
+                    <!-- Filter Pills -->
+                    <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+                        <button onclick="filterSchedule('all', this)" class="schedule-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-xs">
+                            All Classes
+                        </button>
+                        <button onclick="filterSchedule('lecture', this)" class="schedule-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">
+                            Lectures Only
+                        </button>
+                        <button onclick="filterSchedule('lab', this)" class="schedule-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">
+                            Labs & Discussions
+                        </button>
+                        <button onclick="filterSchedule('office', this)" class="schedule-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">
+                            Office Hours
+                        </button>
+                    </div>
+
+                    <!-- Categories Color Legend -->
+                    <div class="flex items-center gap-3 text-xs font-semibold text-slate-600 shrink-0">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-blue-500"></span> CS (CompSci)
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-purple-500"></span> Math
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span> Eng
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-amber-500"></span> Bio
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ================= SCHEDULE TIMETABLE GRID SECTION ================= -->
+                <div id="gridScheduleContainer" class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-x-auto">
+                    <div class="min-w-[800px]">
+                        
+                        <!-- Grid Header (Days) -->
+                        <div class="grid grid-cols-6 border-b border-slate-200 bg-slate-50/70 text-center font-bold text-xs text-slate-700">
+                            <div class="p-3 border-r border-slate-200/80 text-slate-400">TIME</div>
+                            <div class="p-3 border-r border-slate-200/80">Mon <span id="dateMon" class="text-slate-400 font-medium">Oct 21</span></div>
+                            <div class="p-3 border-r border-slate-200/80">Tue <span id="dateTue" class="text-slate-400 font-medium">Oct 22</span></div>
+                            <div class="p-3 border-r border-slate-200/80">Wed <span id="dateWed" class="text-slate-400 font-medium">Oct 23</span></div>
+                            <div class="p-3 border-r border-slate-200/80">Thu <span id="dateThu" class="text-slate-400 font-medium">Oct 24</span></div>
+                            <div class="p-3">Fri <span id="dateFri" class="text-slate-400 font-medium">Oct 25</span></div>
+                        </div>
+
+                        <!-- Grid Time Slots -->
+                        <div class="divide-y divide-slate-100 text-xs">
+                            
+                            <!-- 08:00 AM -->
+                            <div class="grid grid-cols-6 min-h-[56px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">08:00 AM</div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="p-1"></div>
+                            </div>
+
+                            <!-- 09:00 AM -->
+                            <div class="grid grid-cols-6 min-h-[72px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">09:00 AM</div>
+                                <!-- Mon CS 301 -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('cs301')" class="schedule-card bg-blue-50 hover:bg-blue-100/80 border border-blue-200 text-blue-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>CS 301</span>
+                                            <span class="text-[9px] bg-blue-200 px-1.5 py-0.5 rounded font-bold">Lec</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Data Structures</div>
+                                        <div class="text-[10px] text-blue-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Turing 204
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <!-- Wed CS 301 -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('cs301')" class="schedule-card bg-blue-50 hover:bg-blue-100/80 border border-blue-200 text-blue-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>CS 301</span>
+                                            <span class="text-[9px] bg-blue-200 px-1.5 py-0.5 rounded font-bold">Lec</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Data Structures</div>
+                                        <div class="text-[10px] text-blue-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Turing 204
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <!-- Fri CS 301 -->
+                                <div class="p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('cs301')" class="schedule-card bg-blue-50 hover:bg-blue-100/80 border border-blue-200 text-blue-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>CS 301</span>
+                                            <span class="text-[9px] bg-blue-200 px-1.5 py-0.5 rounded font-bold">Lec</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Data Structures</div>
+                                        <div class="text-[10px] text-blue-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Turing 204
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 10:00 AM -->
+                            <div class="grid grid-cols-6 min-h-[72px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">10:00 AM</div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <!-- Tue ENGR 210 -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('engr210')" class="schedule-card bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>ENGR 210</span>
+                                            <span class="text-[9px] bg-emerald-200 px-1.5 py-0.5 rounded font-bold">Lec</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Circuits & Signals</div>
+                                        <div class="text-[10px] text-emerald-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Tesla Center 102
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <!-- Thu ENGR 210 -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('engr210')" class="schedule-card bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>ENGR 210</span>
+                                            <span class="text-[9px] bg-emerald-200 px-1.5 py-0.5 rounded font-bold">Lec</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Circuits & Signals</div>
+                                        <div class="text-[10px] text-emerald-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Tesla Center 102
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-1"></div>
+                            </div>
+
+                            <!-- 11:00 AM -->
+                            <div class="grid grid-cols-6 min-h-[64px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">11:00 AM</div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <!-- Fri MATH 240 (Starts 11:30) -->
+                                <div class="p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('math240')" class="schedule-card bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>MATH 240</span>
+                                            <span class="text-[9px] bg-purple-200 px-1.5 py-0.5 rounded font-bold">11:30 AM</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Linear Algebra</div>
+                                        <div class="text-[10px] text-purple-700 mt-0.5 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Euler 110
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 12:00 PM (LUNCH & MATH) -->
+                            <div class="grid grid-cols-6 min-h-[72px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">12:00 PM</div>
+                                <!-- Mon MATH 240 -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('math240')" class="schedule-card bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>MATH 240</span>
+                                            <span class="text-[9px] bg-purple-200 px-1.5 py-0.5 rounded font-bold">Lec</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Linear Algebra</div>
+                                        <div class="text-[10px] text-purple-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Euler 110
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <!-- Wed MATH 240 -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lecture">
+                                    <div onclick="openCourseModal('math240')" class="schedule-card bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>MATH 240</span>
+                                            <span class="text-[9px] bg-purple-200 px-1.5 py-0.5 rounded font-bold">Lec</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Linear Algebra</div>
+                                        <div class="text-[10px] text-purple-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Euler 110
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="p-1"></div>
+                            </div>
+
+                            <!-- 01:00 PM (OFFICE HOURS & LABS) -->
+                            <div class="grid grid-cols-6 min-h-[72px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">01:00 PM</div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <!-- Tue Math OH -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="office">
+                                    <div onclick="openFacultyModal('sterling')" class="schedule-card bg-slate-100 hover:bg-slate-200/80 border border-slate-300 text-slate-800 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between text-slate-900">
+                                            <span>OH: Dr. Sterling</span>
+                                            <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">OH</span>
+                                        </div>
+                                        <div class="text-[10px] text-slate-600 truncate mt-0.5">Math Office Hours</div>
+                                        <div class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Euler 408
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Wed CS 301 Lab -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lab">
+                                    <div onclick="openCourseModal('cs301')" class="schedule-card bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>CS 301L</span>
+                                            <span class="text-[9px] bg-sky-200 px-1.5 py-0.5 rounded font-bold">Lab</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Data Struct Lab</div>
+                                        <div class="text-[10px] text-sky-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> MacLab 105
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Thu CS OH -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="office">
+                                    <div onclick="openFacultyModal('rostova')" class="schedule-card bg-slate-100 hover:bg-slate-200/80 border border-slate-300 text-slate-800 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between text-slate-900">
+                                            <span>OH: Prof. Rostova</span>
+                                            <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">OH</span>
+                                        </div>
+                                        <div class="text-[10px] text-slate-600 truncate mt-0.5">CS Advising Slot</div>
+                                        <div class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Turing 312
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Fri Peer Tutoring -->
+                                <div class="p-1 schedule-slot" data-type="office">
+                                    <div onclick="showToast('Peer Tutoring Drop-in Session at Commons B-12')" class="schedule-card bg-slate-100 hover:bg-slate-200/80 border border-slate-300 text-slate-800 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold text-[11px] text-slate-900">Peer Tutoring</div>
+                                        <div class="text-[10px] text-slate-500 mt-1"><i class="fa-solid fa-location-dot"></i> Commons B-12</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 02:00 PM (BIO LAB) -->
+                            <div class="grid grid-cols-6 min-h-[72px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">02:00 PM</div>
+                                <!-- Mon BIO 105L (2:30 PM) -->
+                                <div class="border-r border-slate-100 p-1 schedule-slot" data-type="lab">
+                                    <div onclick="openCourseModal('bio105l')" class="schedule-card bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900 rounded-xl p-2 cursor-pointer transition-all h-full">
+                                        <div class="font-extrabold flex items-center justify-between">
+                                            <span>BIO 105L</span>
+                                            <span class="text-[9px] bg-amber-200 px-1.5 py-0.5 rounded font-bold">Lab</span>
+                                        </div>
+                                        <div class="text-[11px] font-semibold truncate">Genetics Lab</div>
+                                        <div class="text-[10px] text-amber-700 mt-1 flex items-center gap-1">
+                                            <i class="fa-solid fa-location-dot"></i> Darwin Lab 3B
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="border-r border-slate-100 p-1"></div>
+                                <div class="p-1"></div>
+                            </div>
+
+                            <!-- 03:00 PM to 06:00 PM -->
+                            <div class="grid grid-cols-6 min-h-[56px]">
+                                <div class="p-2 border-r border-slate-200/80 text-slate-400 font-medium text-center">03:00 PM+</div>
+                                <div class="border-r border-slate-100 p-2 text-slate-400 italic text-[11px]">No classes</div>
+                                <div class="border-r border-slate-100 p-2 text-slate-400 italic text-[11px]">No classes</div>
+                                <div class="border-r border-slate-100 p-2 text-slate-400 italic text-[11px]">No classes</div>
+                                <div class="border-r border-slate-100 p-2 text-slate-400 italic text-[11px]">No classes</div>
+                                <div class="p-2 text-slate-400 italic text-[11px]">No classes</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= LIST VIEW CONTAINER (Hidden by default) ================= -->
+                <div id="listScheduleContainer" class="hidden space-y-4">
+                    
+                    <!-- Monday Group -->
+                    <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <span class="font-extrabold text-sm text-slate-900">Monday, Oct 21</span>
+                            <span class="text-xs text-slate-400">3 Sessions</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div onclick="openCourseModal('cs301')" class="p-3 bg-blue-50/60 hover:bg-blue-50 border border-blue-200 rounded-2xl flex items-center justify-between cursor-pointer transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-bold flex items-center justify-center text-xs">CS</div>
+                                    <div>
+                                        <div class="font-bold text-sm text-slate-900">CS 301 - Data Structures & Algorithms</div>
+                                        <div class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-brand-600"></i> Turing Hall 204 • Prof. Elena Rostova</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-xs text-slate-800">09:00 - 10:30 AM</div>
+                                    <span class="px-2 py-0.5 bg-blue-200 text-blue-900 text-[10px] font-bold rounded">Lecture</span>
+                                </div>
+                            </div>
+
+                            <div onclick="openCourseModal('math240')" class="p-3 bg-purple-50/60 hover:bg-purple-50 border border-purple-200 rounded-2xl flex items-center justify-between cursor-pointer transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-purple-500 text-white font-bold flex items-center justify-center text-xs">MATH</div>
+                                    <div>
+                                        <div class="font-bold text-sm text-slate-900">MATH 240 - Linear Algebra</div>
+                                        <div class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-purple-600"></i> Euler Bldg 110 • Dr. Marcus Sterling</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-xs text-slate-800">12:00 - 01:15 PM</div>
+                                    <span class="px-2 py-0.5 bg-purple-200 text-purple-900 text-[10px] font-bold rounded">Lecture</span>
+                                </div>
+                            </div>
+
+                            <div onclick="openCourseModal('bio105l')" class="p-3 bg-amber-50/60 hover:bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between cursor-pointer transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white font-bold flex items-center justify-center text-xs">BIO</div>
+                                    <div>
+                                        <div class="font-bold text-sm text-slate-900">BIO 105L - Genetics Laboratory</div>
+                                        <div class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-amber-600"></i> Darwin Lab 3B • Prof. David Darwin</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-xs text-slate-800">02:30 - 04:00 PM</div>
+                                    <span class="px-2 py-0.5 bg-amber-200 text-amber-900 text-[10px] font-bold rounded">Lab</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tuesday Group -->
+                    <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <span class="font-extrabold text-sm text-slate-900">Tuesday, Oct 22</span>
+                            <span class="text-xs text-slate-400">2 Sessions</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div onclick="openCourseModal('engr210')" class="p-3 bg-emerald-50/60 hover:bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between cursor-pointer transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white font-bold flex items-center justify-center text-xs">ENG</div>
+                                    <div>
+                                        <div class="font-bold text-sm text-slate-900">ENGR 210 - Circuits & Signals</div>
+                                        <div class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-emerald-600"></i> Tesla Center 102 • Dr. Sarah Jenkins</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-xs text-slate-800">10:00 - 11:30 AM</div>
+                                    <span class="px-2 py-0.5 bg-emerald-200 text-emerald-900 text-[10px] font-bold rounded">Lecture</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ================= FACULTY OFFICE HOURS DIRECTORY ================= -->
+                <section id="facultySection" class="space-y-4 pt-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Faculty Connection</div>
+                            <h2 class="text-xl font-bold text-slate-900">Faculty Office Hours Directory</h2>
+                        </div>
+                        <span class="px-3 py-1 bg-brand-50 text-brand-700 text-xs font-bold rounded-full border border-brand-200">
+                            Drop-in & Bookable
+                        </span>
+                    </div>
+
+                    <!-- 4 Faculty Member Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        
+                        <!-- Faculty 1 -->
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:border-brand-300 transition-all flex flex-col justify-between space-y-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150" 
+                                         alt="Prof Rostova" class="w-12 h-12 rounded-2xl object-cover ring-2 ring-brand-500/20">
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Prof. Dinesh Sing Ruhela</h3>
+                                        <p class="text-[11px] font-semibold text-brand-600">Computer Science • CS 301</p>
+                                    </div>
+                                </div>
+                                <div class="p-2.5 bg-slate-50 rounded-xl text-xs space-y-1">
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-regular fa-clock text-slate-400"></i>
+                                        <span>Thu 10:00 PM - 11:00 PM</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-solid fa-location-dot text-slate-400"></i>
+                                        <span>Computer Lab #312</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                <button onclick="openBookingModal('Prof. Elena Rostova', 'CS 301')" class="flex-1 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors">
+                                    Book Slot
+                                </button>
+                                <button onclick="openMentorMsgModal('Prof. Elena Rostova')" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Faculty 2 -->
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:border-purple-300 transition-all flex flex-col justify-between space-y-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" 
+                                         alt="Dr Sterling" class="w-12 h-12 rounded-2xl object-cover ring-2 ring-purple-500/20">
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Dr. Krishna Sharma</h3>
+                                        <p class="text-[11px] font-semibold text-purple-600">Web Devlopment • MATH 240</p>
+                                    </div>
+                                </div>
+                                <div class="p-2.5 bg-slate-50 rounded-xl text-xs space-y-1">
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-regular fa-clock text-slate-400"></i>
+                                        <span>Tue 11:00 PM - 12:00 PM</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-solid fa-location-dot text-slate-400"></i>
+                                        <span>Languege Lab #408</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                <button onclick="openBookingModal('Dr. Marcus Sterling', 'MATH 240')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors">
+                                    Book Slot
+                                </button>
+                                <button onclick="openMentorMsgModal('Dr. Marcus Sterling')" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Faculty 3 -->
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:border-emerald-300 transition-all flex flex-col justify-between space-y-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150" 
+                                         alt="Dr Jenkins" class="w-12 h-12 rounded-2xl object-cover ring-2 ring-emerald-500/20">
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Jaipal Singh</h3>
+                                        <p class="text-[11px] font-semibold text-emerald-600">Rscit • ENGR 210</p>
+                                    </div>
+                                </div>
+                                <div class="p-2.5 bg-slate-50 rounded-xl text-xs space-y-1">
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-regular fa-clock text-slate-400"></i>
+                                        <span>Mon & Wed 10:00 PM - 11:30 PM</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-solid fa-location-dot text-slate-400"></i>
+                                        <span>Computer Lab #204</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                <button onclick="openBookingModal('Dr. Sarah Jenkins', 'ENGR 210')" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors">
+                                    Book Slot
+                                </button>
+                                <button onclick="openMentorMsgModal('Dr. Sarah Jenkins')" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Faculty 4 -->
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:border-amber-300 transition-all flex flex-col justify-between space-y-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" 
+                                         alt="Prof Darwin" class="w-12 h-12 rounded-2xl object-cover ring-2 ring-amber-500/20">
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-900">Prof. Ravi Don</h3>
+                                        <p class="text-[11px] font-semibold text-amber-600">Piyun X Dala • Jhadu 105L</p>
+                                    </div>
+                                </div>
+                                <div class="p-2.5 bg-slate-50 rounded-xl text-xs space-y-1">
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-regular fa-clock text-slate-400"></i>
+                                        <span>Fri 10:00 AM - 12:00 PM</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-solid fa-location-dot text-slate-400"></i>
+                                        <span>Sml Main Bullding #102</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                <button onclick="openBookingModal('Prof. David Darwin', 'BIO 105L')" class="flex-1 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors">
+                                    Book Slot
+                                </button>
+                                <button onclick="openMentorMsgModal('Prof. David Darwin')" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ================= ACADEMIC MILESTONES SECTION ================= -->
+                <section id="milestonesSection" class="space-y-4 pt-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Key Deadlines</div>
+                            <h2 class="text-xl font-bold text-slate-900">Academic Milestones & Term Deadlines</h2>
+                        </div>
+                        <span class="text-xs text-brand-600 font-semibold">Fall 2024 Key Dates</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        
+                        <!-- Milestone 1 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-start gap-3.5 hover:border-red-300 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 border border-red-100 flex flex-col items-center justify-center shrink-0">
+                                <span class="text-[10px] font-black uppercase">OCT</span>
+                                <span class="text-base font-extrabold leading-none">28</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xs text-slate-900">Course Drop Cutoff ('W')</h3>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Last day to withdraw with 'W' grade at 11:59 PM.</p>
+                                <button onclick="showToast('Reminder added for Oct 28 Cutoff')" class="text-[10px] font-bold text-brand-600 hover:underline mt-1">
+                                    + Add Reminder
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 2 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-start gap-3.5 hover:border-amber-300 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex flex-col items-center justify-center shrink-0">
+                                <span class="text-[10px] font-black uppercase">NOV</span>
+                                <span class="text-base font-extrabold leading-none">25</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xs text-slate-900">Thanksgiving Recess</h3>
+                                <p class="text-[11px] text-slate-500 mt-0.5">No classes scheduled. Campus offices closed.</p>
+                                <span class="text-[10px] text-amber-700 font-semibold mt-1 inline-block">Resumes Dec 02</span>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 3 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-start gap-3.5 hover:border-blue-300 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex flex-col items-center justify-center shrink-0">
+                                <span class="text-[10px] font-black uppercase">DEC</span>
+                                <span class="text-base font-extrabold leading-none">09</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xs text-slate-900">Reading Week Begins</h3>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Pre-exam preparation & library 24/7 hours start.</p>
+                                <button onclick="showToast('Library quiet study slot reserved')" class="text-[10px] font-bold text-brand-600 hover:underline mt-1">
+                                    Reserve Study Room
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 4 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-start gap-3.5 hover:border-purple-300 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex flex-col items-center justify-center shrink-0">
+                                <span class="text-[10px] font-black uppercase">DEC</span>
+                                <span class="text-base font-extrabold leading-none">16</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xs text-slate-900">Final Exams Week</h3>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Official term examination schedule active.</p>
+                                <button onclick="showToast('Exam schedule loaded')" class="text-[10px] font-bold text-brand-600 hover:underline mt-1">
+                                    View Exam Schedule
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- FOOTER COPYRIGHT -->
+            <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400 mt-8">
+                &copy; 2026 CampusCorner Academic Portal • Aura State University • All rights reserved.
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- ================= COURSE DETAIL MODAL ================= -->
+    <div id="courseModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span id="modalCourseCode" class="px-2.5 py-1 bg-brand-100 text-brand-800 text-xs font-bold rounded-lg">CS 301</span>
+                    <span id="modalCourseType" class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-lg">Lecture</span>
+                </div>
+                <button onclick="closeCourseModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2">
+                <h3 id="modalCourseTitle" class="font-extrabold text-xl text-slate-900">Data Structures & Algorithms</h3>
+                <p id="modalCourseLocation" class="text-xs font-semibold text-slate-600 flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-brand-600"></i> Turing Hall Room 204 • Mon / Wed / Fri 09:00 AM - 10:30 AM
+                </p>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-2xl text-xs text-slate-600 space-y-1">
+                <div class="font-bold text-slate-800">Instructor: <span id="modalCourseProf" class="font-semibold text-brand-600">Prof. Elena Rostova</span></div>
+                <div>Credits: 4.0 Units • Prerequisites: CS 201 (C or higher)</div>
+                <div class="pt-1 text-slate-500">Core study of trees, graphs, dynamic programming, time complexity, and memory management algorithms.</div>
+            </div>
+
+            <!-- Quick Action Buttons inside Course Modal -->
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+                <button onclick="showToast('Syllabus PDF downloaded')" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors">
+                    <i class="fa-solid fa-file-pdf text-red-500"></i> Syllabus (PDF)
+                </button>
+                <button onclick="showToast('Opening virtual classroom LMS portal...')" class="py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-laptop-code"></i> Open Course Canvas
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CALENDAR SYNC MODAL ================= -->
+    <div id="syncModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-base text-slate-900">Sync Schedule to Calendar</h3>
+                <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-500">Export your Fall 2024 class schedule directly to your personal calendar application.</p>
+
+            <div class="space-y-2">
+                <button onclick="downloadICSFile()" class="w-full p-3 bg-slate-50 hover:bg-brand-50 hover:border-brand-300 border border-slate-200 rounded-2xl flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-file-arrow-down"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-xs text-slate-900 group-hover:text-brand-700">Download .ICS File</div>
+                            <div class="text-[10px] text-slate-400">Apple Calendar, Outlook, iCal</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                </button>
+
+                <button onclick="showToast('Redirecting to Google Calendar sync...')" class="w-full p-3 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 rounded-2xl flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-brands fa-google"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-xs text-slate-900 group-hover:text-emerald-700">Sync with Google Calendar</div>
+                            <div class="text-[10px] text-slate-400">Direct OAuth synchronization</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FACULTY BOOKING MODAL ================= -->
+    <div id="bookingModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                    <h3 id="bookingFacultyName" class="font-bold text-base text-slate-900">Book Office Hour Slot</h3>
+                    <p id="bookingCourseName" class="text-xs text-brand-600 font-semibold"></p>
+                </div>
+                <button onclick="closeBookingModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form onsubmit="submitBooking(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Select Time Slot</label>
+                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                        <option>Thursday 12:30 PM - 12:45 PM</option>
+                        <option>Thursday 12:45 PM - 01:00 PM</option>
+                        <option>Thursday 01:00 PM - 01:15 PM</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Reason for Visit</label>
+                    <textarea rows="3" placeholder="e.g. Question on Data Structures Assignment 2..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="closeBookingModal()" class="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-xs">
+                        Confirm Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification -->
+    <div id="floatingToast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg">Action completed</span>
+    </div>
+
+    <script>
+        /* ================= COURSE DATA OBJECTS ================= */
+        const coursesData = {
+            cs301: {
+                code: "CS 301",
+                type: "Lecture",
+                title: "Data Structures & Algorithms",
+                prof: "Prof. Elena Rostova",
+                location: "Turing Hall Room 204 • Mon/Wed/Fri 09:00 - 10:30 AM"
+            },
+            math240: {
+                code: "MATH 240",
+                type: "Lecture",
+                title: "Linear Algebra & Matrix Theory",
+                prof: "Dr. Marcus Sterling",
+                location: "Euler Bldg Room 110 • Mon/Wed/Fri 12:00 - 01:15 PM"
+            },
+            engr210: {
+                code: "ENGR 210",
+                type: "Lecture",
+                title: "Circuits & Signals Analysis",
+                prof: "Dr. Sarah Jenkins",
+                location: "Tesla Center Room 102 • Tue/Thu 10:00 - 11:30 AM"
+            },
+            bio105l: {
+                code: "BIO 105L",
+                type: "Lab",
+                title: "Genetics Laboratory Methods",
+                prof: "Prof. David Darwin",
+                location: "Darwin Lab Room 3B • Mon 02:30 - 04:00 PM"
+            }
+        };
+
+        let currentWeekOffset = 0;
+
+        /* ================= INITIALIZATION ================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            setupHeaderDropdowns();
+            setupSearchEngine();
+        });
+
+        /* ================= VIEW TOGGLE ================= */
+        function setScheduleView(view) {
+            const gridContainer = document.getElementById('gridScheduleContainer');
+            const listContainer = document.getElementById('listScheduleContainer');
+            const btnGrid = document.getElementById('btnGridView');
+            const btnList = document.getElementById('btnListView');
+
+            if (view === 'grid') {
+                gridContainer.classList.remove('hidden');
+                listContainer.classList.add('hidden');
+                btnGrid.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs flex items-center gap-1.5 transition-all";
+                btnList.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 transition-all";
+            } else {
+                gridContainer.classList.add('hidden');
+                listContainer.classList.remove('hidden');
+                btnList.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs flex items-center gap-1.5 transition-all";
+                btnGrid.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 transition-all";
+            }
+        }
+
+        /* ================= WEEK NAVIGATOR ================= */
+        function changeWeek(direction) {
+            currentWeekOffset += direction;
+            const weekNum = 8 + currentWeekOffset;
+            
+            if (currentWeekOffset === 0) {
+                document.getElementById('currentWeekDisplay').innerText = "Week 8: Oct 21 - Oct 25, 2024";
+            } else if (currentWeekOffset > 0) {
+                document.getElementById('currentWeekDisplay').innerText = `Week ${weekNum}: Nov ${21 + currentWeekOffset * 7} - Nov ${25 + currentWeekOffset * 7}, 2024`;
+            } else {
+                document.getElementById('currentWeekDisplay').innerText = `Week ${weekNum}: Oct ${21 + currentWeekOffset * 7} - Oct ${25 + currentWeekOffset * 7}, 2024`;
+            }
+
+            showToast(`Loaded schedule for Week ${weekNum}`);
+        }
+
+        /* ================= FILTERING SYSTEM ================= */
+        function filterSchedule(type, btn) {
+            document.querySelectorAll('.schedule-filter-btn').forEach(b => {
+                b.className = "schedule-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200";
+            });
+            btn.className = "schedule-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-xs";
+
+            document.querySelectorAll('.schedule-slot').forEach(slot => {
+                if (type === 'all' || slot.dataset.type === type) {
+                    slot.style.opacity = '1';
+                    slot.style.pointerEvents = 'auto';
+                } else {
+                    slot.style.opacity = '0.2';
+                    slot.style.pointerEvents = 'none';
+                }
+            });
+        }
+
+        /* ================= MODALS & OVERLAYS ================= */
+        function openCourseModal(key) {
+            const course = coursesData[key];
+            if (!course) return;
+
+            document.getElementById('modalCourseCode').innerText = course.code;
+            document.getElementById('modalCourseType').innerText = course.type;
+            document.getElementById('modalCourseTitle').innerText = course.title;
+            document.getElementById('modalCourseProf').innerText = course.prof;
+            document.getElementById('modalCourseLocation').innerHTML = `<i class="fa-solid fa-location-dot text-brand-600"></i> ${course.location}`;
+
+            document.getElementById('courseModal').classList.remove('hidden');
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').classList.add('hidden');
+        }
+
+        function openSyncModal() { document.getElementById('syncModal').classList.remove('hidden'); }
+        function closeSyncModal() { document.getElementById('syncModal').classList.add('hidden'); }
+
+        function downloadICSFile() {
+            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//CampusCorner//ClassSchedule//EN\nSUMMARY:Fall 2024 Classes\nEND:VCALENDAR`;
+            const blob = new Blob([icsData], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CampusCorner_Class_Schedule.ics';
+            a.click();
+            closeSyncModal();
+            showToast('.ICS Calendar File Downloaded');
+        }
+
+        function openBookingModal(profName, course) {
+            document.getElementById('bookingFacultyName').innerText = `Book Slot with ${profName}`;
+            document.getElementById('bookingCourseName').innerText = `Course: ${course}`;
+            document.getElementById('bookingModal').classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+
+        function submitBooking(e) {
+            e.preventDefault();
+            closeBookingModal();
+            showToast('Office Hour Slot Booked Successfully! Added to Timetable.');
+        }
+
+        function openMentorMsgModal(profName) {
+            showToast(`Opening messaging portal with ${profName}...`);
+        }
+
+        function openSupportModal() {
+            showToast('Directing to Campus Desk Support Portal...');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('floatingToast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2500);
+        }
+
+        /* ================= HEADER DROPDOWNS & SEARCH ENGINE ================= */
+        function setupHeaderDropdowns() {
+            const notifBtn = document.getElementById('notificationBtn');
+            const notifMenu = document.getElementById('notificationMenu');
+            notifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifMenu.classList.toggle('hidden');
+                document.getElementById('termMenu').classList.add('hidden');
+                document.getElementById('profileMenu').classList.add('hidden');
+            });
+
+            const termBtn = document.getElementById('termSelectorBtn');
+            const termMenu = document.getElementById('termMenu');
+            termBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                termMenu.classList.toggle('hidden');
+                notifMenu.classList.add('hidden');
+                document.getElementById('profileMenu').classList.add('hidden');
+            });
+
+            const profileBtn = document.getElementById('profileBtn');
+            const profileMenu = document.getElementById('profileMenu');
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('hidden');
+                notifMenu.classList.add('hidden');
+                termMenu.classList.add('hidden');
+            });
+
+            document.addEventListener('click', () => {
+                notifMenu.classList.add('hidden');
+                termMenu.classList.add('hidden');
+                profileMenu.classList.add('hidden');
+                document.getElementById('searchDropdown').classList.add('hidden');
+            });
+        }
+
+        function selectTerm(term) {
+            document.getElementById('currentTermText').innerText = term;
+            showToast(`Switched view to ${term}`);
+        }
+
+        function markAllNotificationsRead() {
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.classList.add('hidden');
+            showToast('Notifications marked as read');
+        }
+
+        function setupSearchEngine() {
+            const input = document.getElementById('globalSearchInput');
+            const dropdown = document.getElementById('searchDropdown');
+
+            input.addEventListener('focus', () => dropdown.classList.remove('hidden'));
+            input.addEventListener('input', (e) => {
+                if (e.target.value.trim() !== '') dropdown.classList.remove('hidden');
+            });
+            input.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        function handleSearchResult(term) {
+            document.getElementById('searchDropdown').classList.add('hidden');
+            document.getElementById('globalSearchInput').value = term;
+
+            if (term.includes('CS 301')) openCourseModal('cs301');
+            else if (term.includes('MATH 240')) openCourseModal('math240');
+            else if (term.includes('Rostova')) openBookingModal('Prof. Elena Rostova', 'CS 301');
+            else showToast(`Searching schedule for "${term}"`);
+        }
+
+        function toggleLiveChat() {
+            showToast('Live Support Concierge opened');
+        }
+    </script>
+</body>
+</html>

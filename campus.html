@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Corner - Campus Life & Community</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563eb',
+                        primaryDark: '#1d4ed8',
+                        campusBg: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-campusBg text-slate-800 font-sans h-full overflow-x-hidden flex flex-col">
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 lg:px-8 py-3 flex items-center justify-between shadow-xs">
+        <!-- Logo & Brand -->
+        <div class="flex items-center space-x-3">
+            <div class="bg-primary text-white p-2 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <span class="text-xl font-bold tracking-tight text-slate-900">Campus<span class="text-primary">Corner</span></span>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="hidden md:flex items-center relative flex-1 max-w-md mx-8">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm"></i>
+            <input type="text" id="globalSearchInput" placeholder="Search classes, faculty, events..." class="w-full bg-slate-100 text-slate-800 text-sm pl-10 pr-4 py-2 rounded-full border border-transparent focus:border-primary focus:bg-white focus:outline-none transition-all">
+            <div id="searchDropdown" class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-200 hidden z-50 p-3">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Quick Results</p>
+                <div id="searchResultsList" class="space-y-1"></div>
+            </div>
+        </div>
+
+        <!-- Right User Nav -->
+        <div class="flex items-center space-x-4 lg:space-x-6">
+            <a href="#" class="hidden lg:inline-block text-xs font-medium text-slate-600 hover:text-primary transition-colors">Resources</a>
+            <a href="#" class="hidden lg:inline-block text-xs font-medium text-slate-600 hover:text-primary transition-colors">Help Desk</a>
+            
+            <!-- Term Selector -->
+            <div class="relative">
+                <button id="termDropdownBtn" class="flex items-center space-x-2 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-700 transition-colors">
+                    <span id="currentTermLabel"> Fall 2026</span>
+                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                </button>
+                <div id="termMenu" class="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-lg border border-slate-200 hidden z-50 py-1">
+                    <button onclick="setTerm('Fall 2026')" class="w-full text-left px-4 py-2 text-xs font-medium hover:bg-slate-50 text-slate-700">Fall 2026</button>
+                    <button onclick="setTerm('Spring 2027')" class="w-full text-left px-4 py-2 text-xs font-medium hover:bg-slate-50 text-slate-700">Spring 2027</button>
+                    <button onclick="setTerm('Summer 2027')" class="w-full text-left px-4 py-2 text-xs font-medium hover:bg-slate-50 text-slate-700">Summer 2027</button>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <button onclick="openNotificationsModal()" class="relative text-slate-600 hover:text-primary transition-colors p-1">
+                <i class="fa-regular fa-bell text-lg"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            </button>
+
+            <!-- User Profile -->
+            <div class="flex items-center space-x-2 pl-2 border-l border-slate-200">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-primary font-bold flex items-center justify-center text-xs">AR</div>
+                <div class="hidden sm:block text-left">
+                    <div class="text-xs font-semibold text-slate-900 leading-tight">Alex Rivera</div>
+                    <div class="text-[10px] text-slate-500">ID: #897204</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between hidden md:flex shrink-0">
+            <div class="p-4 space-y-6">
+                <!-- Academic Hub Header -->
+                <div class="px-3 pt-2">
+                    <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Academic Hub</span>
+                </div>
+                <!-- Navigation Items -->
+                <nav class="space-y-1">
+                    <a href="./home.html" onclick="switchTab('Home')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-house w-4 text-center"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="./Schedule.html" onclick="switchTab('Schedule')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-calendar-days w-4 text-center"></i>
+                        <span>Schedule</span>
+                    </a>
+                    <a href="./greds&Exams.html" onclick="switchTab('Grades & Exams')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-award w-4 text-center"></i>
+                        <span>Grades & Exams</span>
+                    </a>
+                    <a href="./campus.html" onclick="switchTab('Campus Life')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-primary text-white shadow-sm transition-all">
+                        <i class="fa-solid fa-users w-4 text-center"></i>
+                        <span>Campus Life</span>
+                    </a>
+                    <a href="./Resource.html" onclick="switchTab('Resources')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-book-open w-4 text-center"></i>
+                        <span>Resources</span>
+                    </a>
+                    <a href="./new-student.html" onclick="switchTab('New Student Orientation')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-compass w-4 text-center"></i>
+                        <span>New Student Orientation</span>
+                    </a>
+                    <a href="./help-desk.html" onclick="switchTab('Campus Support')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-headset w-4 text-center"></i>
+                        <span>Campus Support</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Term GPA Card at bottom of sidebar -->
+            <div class="p-4 m-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                <div class="text-[11px] text-slate-500 font-medium">Term GPA</div>
+                <div class="flex items-baseline justify-between mt-1">
+                    <span class="text-xl font-extrabold text-slate-900">3.84</span>
+                    <span class="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Dean's List</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8" id="mainContentArea">
+
+            <!-- Top Banner & Actions -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center space-x-2 bg-blue-50 text-primary px-3 py-1 rounded-full text-xs font-semibold mb-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                        <span>CAMPUS PULSE • ACTIVE FALL TERM</span>
+                    </div>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Campus Life & Community</h1>
+                    <p class="text-sm text-slate-500 mt-1">Explore student clubs, campus events, dining menus, recreation facilities, and peer community forums.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="openRSVPModal()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center space-x-2">
+                        <i class="fa-regular fa-bookmark text-primary"></i>
+                        <span>My RSVPs (<span id="rsvpCount">3</span>)</span>
+                    </button>
+                    <button onclick="openPostModal()" class="bg-primary hover:bg-primaryDark text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Post Announcement</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metric Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Registered Clubs</div>
+                        <div class="text-xl lg:text-2xl font-extrabold text-slate-900 mt-1">140+</div>
+                        <div class="text-[11px] text-emerald-600 mt-0.5 flex items-center space-x-1">
+                            <i class="fa-solid fa-user-plus text-[10px]"></i>
+                            <span>12 joined this month</span>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-users-rectangle"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Events This Week</div>
+                        <div class="text-xl lg:text-2xl font-extrabold text-slate-900 mt-1">28</div>
+                        <div class="text-[11px] text-indigo-600 mt-0.5 flex items-center space-x-1">
+                            <i class="fa-solid fa-calendar-day text-[10px]"></i>
+                            <span>4 campus majors</span>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-calendar-star"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Dining Halls Live</div>
+                        <div class="text-xl lg:text-2xl font-extrabold text-slate-900 mt-1">4 <span class="text-sm font-semibold text-emerald-600">/ 5 Open</span></div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Serving Lunch & Snacks</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Active Leagues</div>
+                        <div class="text-xl lg:text-2xl font-extrabold text-slate-900 mt-1">18</div>
+                        <div class="text-[11px] text-amber-600 mt-0.5 flex items-center space-x-1">
+                            <i class="fa-solid fa-trophy text-[10px]"></i>
+                            <span>Playoffs starting soon</span>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-medal"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <div class="relative flex-1 min-w-[240px]">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                        <input type="text" id="campusSearch" oninput="filterCampusContent()" placeholder="Search clubs, events, campus dining halls, intramurals..." class="w-full bg-slate-50 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary">
+                    </div>
+                    <button onclick="resetFilters()" class="text-xs font-medium text-slate-500 hover:text-primary px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 transition-colors">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Reset Filter
+                    </button>
+                </div>
+                <!-- Category Chips -->
+                <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs">
+                    <button onclick="setCategoryFilter('All')" class="category-chip px-4 py-2 rounded-xl font-semibold bg-primary text-white shrink-0 transition-all shadow-xs">All Campus</button>
+                    <button onclick="setCategoryFilter('Clubs')" class="category-chip px-4 py-2 rounded-xl font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0 transition-all">Student Clubs & Orgs</button>
+                    <button onclick="setCategoryFilter('Events')" class="category-chip px-4 py-2 rounded-xl font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0 transition-all">Campus Events & Parties</button>
+                    <button onclick="setCategoryFilter('Dining')" class="category-chip px-4 py-2 rounded-xl font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0 transition-all">Dining & Cafeterias</button>
+                    <button onclick="setCategoryFilter('Sports')" class="category-chip px-4 py-2 rounded-xl font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0 transition-all">Sports & Recreation</button>
+                    <button onclick="setCategoryFilter('Housing')" class="category-chip px-4 py-2 rounded-xl font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0 transition-all">Housing & Dorm Life</button>
+                </div>
+            </div>
+
+            <!-- Featured Upcoming Events & Festivals -->
+            <section class="space-y-4 section-block" data-section="Events">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">What's Happening</span>
+                        <h2 class="text-lg lg:text-xl font-bold text-slate-900">Featured Upcoming Events & Festivals</h2>
+                    </div>
+                    <button onclick="showFullCalendar()" class="text-xs font-semibold text-primary hover:underline flex items-center space-x-1">
+                        <span>Browse Full Calendar</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="eventsGrid">
+                    <!-- Event 1 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between group hover:shadow-md transition-shadow">
+                        <div>
+                            <div class="relative h-36 bg-slate-200 overflow-hidden">
+                                <img src="https://placehold.co/400x200/1e293b/ffffff?text=Fall+Carnival" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x200/1e293b/ffffff?text=Event'">
+                                <div class="absolute top-2 left-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> 3h Stays
+                                </div>
+                                <div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xs text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                    Tradition + Free Admission
+                                </div>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <div class="text-[11px] font-semibold text-primary flex items-center space-x-1">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <span>Saturday, 6:00 PM</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900 line-clamp-1">Annual Fall Homecoming Carnival...</h3>
+                                <p class="text-xs text-slate-500 line-clamp-1"><i class="fa-solid fa-location-dot mr-1"></i>University Memorial Stadium</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="rsvpEvent(this, 'Annual Fall Homecoming Carnival')" class="w-full bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5">
+                                <i class="fa-regular fa-bookmark"></i>
+                                <span>RSVP Now</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Event 2 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between group hover:shadow-md transition-shadow">
+                        <div>
+                            <div class="relative h-36 bg-slate-200 overflow-hidden">
+                                <img src="https://placehold.co/400x200/334155/ffffff?text=Acoustic+Night" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x200/334155/ffffff?text=Event'">
+                                <div class="absolute top-2 left-2 bg-emerald-600/90 text-white text-[10px] font-semibold px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid fa-mug-hot mr-1"></i> Free Pastries
+                                </div>
+                                <div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xs text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                    Live Arts + Coffee
+                                </div>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <div class="text-[11px] font-semibold text-primary flex items-center space-x-1">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <span>Thursday, 8:00 PM</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900 line-clamp-1">Acoustic Open Mic & Coffee Night</h3>
+                                <p class="text-xs text-slate-500 line-clamp-1"><i class="fa-solid fa-location-dot mr-1"></i>Student Union 2nd Fl Lounge</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="addToTimetable(this, 'Acoustic Open Mic')" class="w-full bg-slate-100 hover:bg-primary hover:text-white text-slate-700 text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5">
+                                <i class="fa-regular fa-calendar-plus"></i>
+                                <span>Add to Timetable</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Event 3 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between group hover:shadow-md transition-shadow">
+                        <div>
+                            <div class="relative h-36 bg-slate-200 overflow-hidden">
+                                <img src="https://placehold.co/400x200/475569/ffffff?text=Esports+Tournament" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x200/475569/ffffff?text=Event'">
+                                <div class="absolute top-2 left-2 bg-purple-600/90 text-white text-[10px] font-semibold px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid fa-trophy mr-1"></i> ₹42,000 Prize Pool
+                                </div>
+                                <div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xs text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                    Tournament + Gaming
+                                </div>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <div class="text-[11px] font-semibold text-primary flex items-center space-x-1">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <span>Friday, 5:30 PM</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900 line-clamp-1">Esports Tournament: Valorant Invitational</h3>
+                                <p class="text-xs text-slate-500 line-clamp-1"><i class="fa-solid fa-location-dot mr-1"></i>TechCenter Cyber Arena</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="spectateEvent(this, 'Valorant Invitational')" class="w-full bg-slate-100 hover:bg-primary hover:text-white text-slate-700 text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-gamepad"></i>
+                                <span>Spectate & Join</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Event 4 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between group hover:shadow-md transition-shadow">
+                        <div>
+                            <div class="relative h-36 bg-slate-200 overflow-hidden">
+                                <img src="https://placehold.co/400x200/64748b/ffffff?text=Outdoor+Movie" alt="Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x200/64748b/ffffff?text=Event'">
+                                <div class="absolute top-2 left-2 bg-blue-600/90 text-white text-[10px] font-semibold px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid fa-popcorn mr-1"></i> Free Snacks
+                                </div>
+                                <div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xs text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                    Social + Outdoor
+                                </div>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <div class="text-[11px] font-semibold text-primary flex items-center space-x-1">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <span>Sunday, 8:00 PM</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900 line-clamp-1">Outdoor Movie Night on North Lawn</h3>
+                                <p class="text-xs text-slate-500 line-clamp-1"><i class="fa-solid fa-location-dot mr-1"></i>NorthQuad • Free Popcorn</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="saveReminder(this, 'Outdoor Movie Night')" class="w-full bg-slate-100 hover:bg-primary hover:text-white text-slate-700 text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5">
+                                <i class="fa-regular fa-bell"></i>
+                                <span>Save Reminder</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Student Clubs & Organizations Spotlight (2 Cols) -->
+                <div class="lg:col-span-2 space-y-4 section-block" data-section="Clubs">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Engagement Hub</span>
+                            <h2 class="text-lg lg:text-xl font-bold text-slate-900">Student Clubs & Organizations Spotlight</h2>
+                        </div>
+                        <!-- Club Tag Filters -->
+                        <div class="flex items-center space-x-1 text-xs bg-slate-100 p-1 rounded-xl">
+                            <button onclick="filterClubs('All')" class="club-filter px-3 py-1.5 rounded-lg bg-white font-semibold text-slate-900 shadow-xs transition-all">Top Picks</button>
+                            <button onclick="filterClubs('Tech')" class="club-filter px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">Tech</button>
+                            <button onclick="filterClubs('Arts')" class="club-filter px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">Arts</button>
+                            <button onclick="filterClubs('Volunteer')" class="club-filter px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">Volunteer</button>
+                        </div>
+                    </div>
+
+                    <!-- Club Cards List -->
+                    <div class="space-y-3" id="clubsList">
+                        <!-- Club 1 -->
+                        <div class="club-card bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 transition-all" data-tag="Tech">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center text-xl shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-2 flex-wrap">
+                                        <h3 class="text-sm font-bold text-slate-900">Robotics & Autonomous Systems Club</h3>
+                                        <span class="bg-blue-50 text-primary text-[10px] font-semibold px-2 py-0.5 rounded-md">Tech & Coding</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Building autonomous drones & rover prototypes. Weekly Hack Nights on Tuesdays.</p>
+                                    <div class="flex items-center space-x-4 pt-1 text-[11px] text-slate-500">
+                                        <span><i class="fa-solid fa-user-group mr-1 text-slate-400"></i>340 active members</span>
+                                        <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i>Every Tuesday 7:00 PM</span>
+                                        <span><i class="fa-solid fa-medal mr-1 text-amber-500"></i>Tier 1 Chartered</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="joinClub(this, 'Robotics & Autonomous Systems Club')" class="bg-primary hover:bg-primaryDark text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-sm">
+                                Join Club
+                            </button>
+                        </div>
+
+                        <!-- Club 2 -->
+                        <div class="club-card bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 transition-all" data-tag="Arts">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-camera-retro"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-2 flex-wrap">
+                                        <h3 class="text-sm font-bold text-slate-900">Aura Photography & Film Guild</h3>
+                                        <span class="bg-purple-50 text-purple-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">Arts & Costume</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Darkroom painting labs, drone cinematography, and student gallery exhibitions.</p>
+                                    <div class="flex items-center space-x-4 pt-1 text-[11px] text-slate-500">
+                                        <span><i class="fa-solid fa-user-group mr-1 text-slate-400"></i>195 active members</span>
+                                        <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i>Bi-weekly Thursday 6:00 PM</span>
+                                        <span><i class="fa-solid fa-camera mr-1 text-purple-500"></i>Free Gear Rental</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="viewGuild(this, 'Aura Photography & Film Guild')" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-xs">
+                                View Guild
+                            </button>
+                        </div>
+
+                        <!-- Club 3 -->
+                        <div class="club-card bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 transition-all" data-tag="Top Picks">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-comments"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-2 flex-wrap">
+                                        <h3 class="text-sm font-bold text-slate-900">Collegiate Debate Society</h3>
+                                        <span class="bg-indigo-50 text-indigo-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">Debate & Politics</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Parliamentary policy debating on national and circuit. Public forensics training for all levels.</p>
+                                    <div class="flex items-center space-x-4 pt-1 text-[11px] text-slate-500">
+                                        <span><i class="fa-solid fa-user-group mr-1 text-slate-400"></i>95 active members</span>
+                                        <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i>Wednesdays 6:30 PM</span>
+                                        <span><i class="fa-solid fa-award mr-1 text-indigo-500"></i>Top 10 State Rank</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="auditionInfo(this, 'Collegiate Debate Society')" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-xs">
+                                Audition Info
+                            </button>
+                        </div>
+
+                        <!-- Club 4 -->
+                        <div class="club-card bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 transition-all" data-tag="Volunteer">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-seedling"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-2 flex-wrap">
+                                        <h3 class="text-sm font-bold text-slate-900">Environmental Action & Campus Green</h3>
+                                        <span class="bg-emerald-50 text-emerald-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">Volunteering</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Managing the South Campus eco-greenhouse and community garden, composting & zero-waste fairs.</p>
+                                    <div class="flex items-center space-x-4 pt-1 text-[11px] text-slate-500">
+                                        <span><i class="fa-solid fa-user-group mr-1 text-slate-400"></i>210 active members</span>
+                                        <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i>Saturdays 10:00 AM</span>
+                                        <span><i class="fa-solid fa-leaf mr-1 text-emerald-500"></i>Garden Plots Open</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="volunteerClub(this, 'Environmental Action')" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-xs">
+                                Volunteer
+                            </button>
+                        </div>
+
+                        <!-- Club 5 -->
+                        <div class="club-card bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 transition-all" data-tag="Arts">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-music"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-2 flex-wrap">
+                                        <h3 class="text-sm font-bold text-slate-900">Salsa & Ballroom Dance Troupe</h3>
+                                        <span class="bg-rose-50 text-rose-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">Dance & Performing</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Beginner-friendly social dancing, collegiate congress showcases, and weekly salsa socials.</p>
+                                    <div class="flex items-center space-x-4 pt-1 text-[11px] text-slate-500">
+                                        <span><i class="fa-solid fa-user-group mr-1 text-slate-400"></i>160 active members</span>
+                                        <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i>Fridays 7:00 PM</span>
+                                        <span><i class="fa-solid fa-check mr-1 text-rose-500"></i>No Partner Needed</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="joinClassClub(this, 'Salsa & Ballroom Dance Troupe')" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-xs">
+                                Join Class
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dining Halls Live Status Widget (1 Col) -->
+                <div class="space-y-4 section-block" data-section="Dining">
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Campus Cravings</span>
+                        <h2 class="text-lg lg:text-xl font-bold text-slate-900">Dining Halls Live Status</h2>
+                    </div>
+
+                    <!-- Dining Pass & Reload Box -->
+                    <div class="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-5 rounded-2xl shadow-md space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="text-xs font-medium text-blue-100">ALEX RIVERA • DINING PASS</div>
+                            <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-id-card"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-extrabold tracking-tight">₹35,500.50</div>
+                            <div class="text-xs text-blue-100 mt-0.5">Dining Dollars & Flex Cash remaining</div>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-white/20">
+                            <span class="text-xs font-medium">Plan: 14 Meals / Week</span>
+                            <button onclick="reloadCashModal()" class="bg-white text-primary hover:bg-blue-50 text-xs font-bold px-3 py-1.5 rounded-xl transition-colors shadow-xs">
+                                Reload Card
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dining Hall 1 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">South Dining Commons</h3>
+                                <p class="text-[11px] text-slate-500">Closes at 10:00 PM • Main Level</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full">Open</span>
+                                <div class="text-[10px] text-slate-400 mt-1">43% Capacity</div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 text-xs">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Today's Specials</div>
+                            <div class="flex items-center space-x-2 text-slate-700"><i class="fa-solid fa-utensils text-primary text-[10px]"></i><span>Artisanal Wood-Fired Pizza</span></div>
+                            <div class="flex items-center space-x-2 text-slate-700"><i class="fa-solid fa-utensils text-primary text-[10px]"></i><span>Teriyaki Salmon & Jasmine Rice Bowl</span></div>
+                            <div class="flex items-center space-x-2 text-slate-700"><i class="fa-solid fa-utensils text-primary text-[10px]"></i><span>Vegan Coconut Lentil Curry (V/GF)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Dining Hall 2 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">Lowden Bistro & Roasters</h3>
+                                <p class="text-[11px] text-slate-500">Open until 8:00 PM • Library Plaza</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full">Open</span>
+                                <div class="text-[10px] text-slate-400 mt-1">64% Capacity</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs pt-1 text-slate-600 bg-slate-50 p-3 rounded-xl">
+                            <span class="flex items-center space-x-1.5"><i class="fa-solid fa-mug-hot text-amber-600"></i><span>Nitro Cold Brew & Fresh Almond Croissants</span></span>
+                            <span class="font-semibold text-emerald-600">Ready in 4m</span>
+                        </div>
+                    </div>
+
+                    <!-- Dining Hall 3 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900">The Hub Late-Night Grill</h3>
+                            <p class="text-[11px] text-slate-500">Late night dining • NorthQuad Corner</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full">Open</span>
+                            <div class="text-[10px] text-slate-400 mt-1">10:00 PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campus Recreation & Fitness Complex -->
+            <section class="space-y-4 section-block" data-section="Sports">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Active Life & Wellness</span>
+                        <h2 class="text-lg lg:text-xl font-bold text-slate-900">Campus Recreation & Fitness Complex</h2>
+                    </div>
+                    <span class="text-xs text-slate-500 font-medium">Complex Hours: 6:00 AM – 11:30 PM</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <!-- Rec Capacity Card -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">Rec Sports Complex Capacity</h3>
+                                <p class="text-[11px] text-slate-500">Live head count via entrance turnstiles</p>
+                            </div>
+                            <span class="bg-indigo-50 text-indigo-600 text-[10px] font-bold px-2.5 py-1 rounded-full">Moderate</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-center my-4">
+                            <div class="relative w-28 h-28 flex items-center justify-center">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-100" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="text-primary" stroke-dasharray="68, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <div class="absolute text-center">
+                                    <span class="text-2xl font-extrabold text-slate-900">68%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5 text-xs text-slate-600 bg-slate-50 p-3 rounded-xl">
+                            <div class="flex justify-between"><span>Cardio Deck:</span><span class="font-semibold text-slate-900">82% Full</span></div>
+                            <div class="flex justify-between"><span>Free Weights:</span><span class="font-semibold text-slate-900">74% Full</span></div>
+                            <div class="flex justify-between"><span>Lap Pool:</span><span class="font-semibold text-emerald-600">3 Lanes Available</span></div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-100 text-[11px]">
+                            <span class="text-slate-400">Peak hours expected around 5:30 PM</span>
+                            <button onclick="viewCrowdDetails()" class="text-primary font-semibold hover:underline">View Crowd Trends</button>
+                        </div>
+                    </div>
+
+                    <!-- Group Fitness Classes Today -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-900">Group Fitness Classes Today</h3>
+                                    <p class="text-[11px] text-slate-500">Free for registered full-time students</p>
+                                </div>
+                                <i class="fa-solid fa-dumbbell text-primary text-lg"></i>
+                            </div>
+
+                            <div class="space-y-2.5">
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-900">Sunrise Vinyasa Yoga</div>
+                                        <div class="text-[11px] text-slate-500"><i class="fa-regular fa-clock mr-1"></i>7:00 AM • Studio B</div>
+                                    </div>
+                                    <span class="bg-slate-200 text-slate-600 text-[10px] font-semibold px-2.5 py-1 rounded-lg">Ended</span>
+                                </div>
+
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-900">HIIT Bootcamp Challenge</div>
+                                        <div class="text-[11px] text-slate-500"><i class="fa-regular fa-clock mr-1"></i>6:00 PM • Main Turf</div>
+                                    </div>
+                                    <button onclick="bookFitnessSlot(this, 'HIIT Bootcamp')" class="bg-primary hover:bg-primaryDark text-white text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-xs">
+                                        Book Slot
+                                    </button>
+                                </div>
+
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-900">Rock Climbing Clinic</div>
+                                        <div class="text-[11px] text-slate-500"><i class="fa-regular fa-clock mr-1"></i>6:30 PM • The Bouldering Wall</div>
+                                    </div>
+                                    <button onclick="reserveFitnessSlot(this, 'Rock Climbing Clinic')" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-xs">
+                                        Reserve
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 mt-2 border-t border-slate-100 text-center">
+                            <button onclick="openFullClassCalendar()" class="text-xs font-semibold text-primary hover:underline">Full 7-Day Class Calendar &rarr;</button>
+                        </div>
+                    </div>
+
+                    <!-- Intramural League Standings -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-900">Intramural League Standings</h3>
+                                    <p class="text-[11px] text-slate-500">Fall Division • playoff's race</p>
+                                </div>
+                                <i class="fa-solid fa-trophy text-amber-500 text-lg"></i>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">3V3 MEN'S BASKETBALL</div>
+                                    <div class="bg-slate-50 rounded-xl p-2.5 space-y-1 text-xs">
+                                        <div class="flex justify-between items-center"><span class="font-medium text-slate-800">1. Engr. Ballers</span><span class="font-bold text-primary">6 - 0</span></div>
+                                        <div class="flex justify-between items-center"><span class="font-medium text-slate-600">2. Quad Dunks</span><span class="font-bold text-slate-600">5 - 1</span></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">CO-ED 6S VOLLEYBALL LEAGUE</div>
+                                    <div class="bg-slate-50 rounded-xl p-2.5 space-y-1 text-xs">
+                                        <div class="flex justify-between items-center"><span class="font-medium text-slate-800">1. Net Ninjas</span><span class="font-bold text-primary">7 - 1</span></div>
+                                        <div class="flex justify-between items-center"><span class="font-medium text-slate-600">2. Spike Force</span><span class="font-bold text-slate-600">6 - 2</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-100 text-[11px]">
+                            <span class="text-slate-400">Spring registrations open in Nov</span>
+                            <button onclick="joinFreeAgentModal()" class="text-primary font-semibold hover:underline">Join Free Agent Slot</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Marketplace & Notice Board (2 Cols) -->
+                <div class="lg:col-span-2 space-y-4 section-block" data-section="Housing">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Student Exchange</span>
+                            <h2 class="text-lg lg:text-xl font-bold text-slate-900">Marketplace & Campus Notice Board</h2>
+                        </div>
+                        <button onclick="openPostModal()" class="text-xs font-semibold text-primary hover:underline flex items-center space-x-1">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                            <span>Post a Notice</span>
+                        </button>
+                    </div>
+
+                    <!-- Marketplace Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="marketplaceGrid">
+                        
+                        <!-- Item 1 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-3">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-emerald-50 text-emerald-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">For Sale</span>
+                                    <span class="text-sm font-extrabold text-slate-900">₹3,800</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900">Organic Chemistry (8th Ed) + Lab Manual</h3>
+                                <p class="text-xs text-slate-500 line-clamp-2">Like new, no highlighting or missing pages. Connected at Science Complex or Student...</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+                                <span class="text-slate-400">Posted by Maya C. (South Union)</span>
+                                <button onclick="messageSeller('Maya C.', 'Organic Chemistry')" class="text-primary font-semibold hover:underline">Message</button>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-3">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-blue-50 text-primary text-[10px] font-semibold px-2 py-0.5 rounded-md">Housing</span>
+                                    <span class="text-sm font-extrabold text-slate-900">₹62,000<span class="text-[10px] font-normal text-slate-500">/mo</span></span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900">Spring 2026 Roommate Needed (2BR/2B)</h3>
+                                <p class="text-xs text-slate-500 line-clamp-2">University Terrace Apts, 7 min walk to campus shuttle. In-unit laundry, quiet study...</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+                                <span class="text-slate-400">Posted by Jordan P. (Senior)</span>
+                                <button onclick="viewHousingDetails('Roommate Needed')" class="text-primary font-semibold hover:underline">Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-3">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-amber-50 text-amber-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">Lost & Found</span>
+                                    <span class="text-[11px] font-semibold text-slate-400">Today, 11:30 AM</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900">AirPods Pro (2nd Gen) in White Case</h3>
+                                <p class="text-xs text-slate-500 line-clamp-2">Found in studio near 2nd floor library quiet carrels. Handed to Main Circulation Help...</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+                                <span class="text-slate-400">Claim at Library Desk</span>
+                                <button onclick="viewLibraryDesk()" class="text-primary font-semibold hover:underline">View Desk Hours</button>
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-3">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-purple-50 text-purple-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">Study Buddy</span>
+                                    <span class="text-sm font-extrabold text-slate-900">CS 245</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900">Data Structures Midterm Study Group</h3>
+                                <p class="text-xs text-slate-500 line-clamp-2">Meeting this Thursday, 4 PM at Tech Library Group Pod 4. Reviewing trees and dynamic i...</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+                                <span class="text-slate-400">2 spots remaining</span>
+                                <button onclick="joinStudyGroup('Data Structures Group')" class="text-primary font-semibold hover:underline">Join Group</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Start a New Student Org Card (1 Col) -->
+                <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white p-6 rounded-2xl shadow-md flex flex-col justify-between space-y-6">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center space-x-1.5 bg-white/10 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider text-blue-200">
+                            <i class="fa-solid fa-flag text-xs"></i>
+                            <span>Student Government Notice</span>
+                        </div>
+                        <h3 class="text-lg font-bold leading-snug">Want to start a new student organization?</h3>
+                        <p class="text-xs text-blue-100/90 leading-relaxed">
+                            The Student Senate fall funding & official charter window is open. Secure up to <strong class="text-white font-semibold">₹2,10,000</strong> in kickoff grant allocations.
+                        </p>
+                        <div class="flex items-center space-x-2 bg-white/10 p-3 rounded-xl text-xs text-blue-100">
+                            <i class="fa-regular fa-clock text-amber-300 text-sm"></i>
+                            <div>
+                                <div class="font-bold text-white">Deadline: November 5, 2026</div>
+                                <div>at 11:59 PM EST</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <button onclick="openCharterModal()" class="w-full bg-white hover:bg-blue-50 text-slate-900 text-xs font-bold py-3 rounded-xl transition-all shadow-md">
+                            Submit Charter Application
+                        </button>
+                        <button onclick="openGuidelinesModal()" class="w-full bg-transparent hover:bg-white/10 text-white text-xs font-semibold py-2 rounded-xl transition-all text-center">
+                            Read Club Contribution Guidelines &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Photos / Student Lenses -->
+            <section class="space-y-4 pb-8 section-block">
+                <div>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Community Memories</span>
+                    <h2 class="text-lg lg:text-xl font-bold text-slate-900">Life on Campus Through Student Lenses</h2>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="relative rounded-2xl overflow-hidden h-36 bg-slate-200 group shadow-xs">
+                        <img src="https://placehold.co/400x300/1e293b/ffffff?text=Quad+Life" alt="Campus Life" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/1e293b/ffffff?text=Photo'">
+                        <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[10px] font-semibold px-2.5 py-1 rounded-md">
+                            #QuadLife
+                        </div>
+                    </div>
+                    <div class="relative rounded-2xl overflow-hidden h-36 bg-slate-200 group shadow-xs">
+                        <img src="https://placehold.co/400x300/334155/ffffff?text=Homecoming" alt="Campus Life" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/334155/ffffff?text=Photo'">
+                        <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[10px] font-semibold px-2.5 py-1 rounded-md">
+                            #HomecomingFest
+                        </div>
+                    </div>
+                    <div class="relative rounded-2xl overflow-hidden h-36 bg-slate-200 group shadow-xs">
+                        <img src="https://placehold.co/400x300/475569/ffffff?text=Gridiron" alt="Campus Life" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/475569/ffffff?text=Photo'">
+                        <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[10px] font-semibold px-2.5 py-1 rounded-md">
+                            #Gridiron
+                        </div>
+                    </div>
+                    <div class="relative rounded-2xl overflow-hidden h-36 bg-slate-200 group shadow-xs">
+                        <img src="https://placehold.co/400x300/64748b/ffffff?text=StudentArt" alt="Campus Life" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/64748b/ffffff?text=Photo'">
+                        <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[10px] font-semibold px-2.5 py-1 rounded-md">
+                            #StudentArt
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals Container -->
+
+    <!-- Post Announcement Modal -->
+    <div id="postModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-fade-in space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">Post Announcement / Marketplace Notice</h3>
+                <button onclick="closePostModal()" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="announcementForm" onsubmit="handlePostSubmit(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Notice Category</label>
+                    <select id="postCategory" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary font-medium">
+                        <option value="For Sale">For Sale / Textbook</option>
+                        <option value="Housing">Housing / Roommate</option>
+                        <option value="Lost & Found">Lost & Found</option>
+                        <option value="Study Buddy">Study Buddy / Group</option>
+                        <option value="Event">Campus Event</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Title</label>
+                    <input type="text" id="postTitle" required placeholder="e.g. TI-84 Plus Calculator for Sale" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Price (in Rupees ₹, if applicable)</label>
+                    <input type="text" id="postPrice" placeholder="e.g. ₹1,500" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Description</label>
+                    <textarea id="postDesc" required rows="3" placeholder="Provide details, contact info, pickup spot..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closePostModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+                    <button type="submit" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryDark text-white font-semibold shadow-md">Publish Notice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- My RSVPs Modal -->
+    <div id="rsvpModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-fade-in space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">My Saved RSVPs & Reminders</h3>
+                <button onclick="closeRSVPModal()" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="rsvpListContainer" class="space-y-2.5 max-h-60 overflow-y-auto text-xs">
+                <!-- Dynamically populated -->
+            </div>
+            <div class="text-right pt-2">
+                <button onclick="closeRSVPModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 font-semibold text-slate-700 rounded-xl text-xs">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reload Dining Cash Modal -->
+    <div id="reloadModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-fade-in space-y-4 text-xs">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">Reload Dining Cash</h3>
+                <button onclick="closeReloadModal()" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-slate-500">Select top-up amount for Alex Rivera (ID: #897204):</p>
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="selectReloadAmount(1000)" class="reload-amt p-3 border border-slate-200 rounded-xl font-bold text-slate-800 hover:border-primary hover:text-primary transition-all">₹1,000</button>
+                <button onclick="selectReloadAmount(2500)" class="reload-amt p-3 border border-slate-200 rounded-xl font-bold text-slate-800 hover:border-primary hover:text-primary transition-all">₹2,500</button>
+                <button onclick="selectReloadAmount(5000)" class="reload-amt p-3 border border-slate-200 rounded-xl font-bold text-slate-800 hover:border-primary hover:text-primary transition-all">₹5,000</button>
+            </div>
+            <div>
+                <label class="block font-semibold text-slate-700 mb-1">Custom Amount (₹)</label>
+                <input type="number" id="customReloadInput" placeholder="Enter amount" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary">
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button type="button" onclick="closeReloadModal()" class="px-4 py-2 rounded-xl border border-slate-200 font-semibold text-slate-600">Cancel</button>
+                <button type="button" onclick="confirmReload()" class="px-4 py-2 rounded-xl bg-primary hover:bg-primaryDark text-white font-semibold shadow-md">Pay & Reload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-fade-in space-y-4 text-xs">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">Campus Notifications</h3>
+                <button onclick="closeNotificationsModal()" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3 max-h-60 overflow-y-auto">
+                <div class="p-3 bg-blue-50/50 border border-blue-100 rounded-xl space-y-1">
+                    <div class="font-bold text-slate-900">Fall Homecoming Carnival RSVP Confirmed</div>
+                    <div class="text-slate-500">Your ticket is saved in My RSVPs. Gates open Saturday at 6:00 PM at University Memorial Stadium.</div>
+                    <div class="text-[10px] text-primary">10 mins ago</div>
+                </div>
+                <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-1">
+                    <div class="font-bold text-slate-900">Library Book Return Reminder</div>
+                    <div class="text-slate-500">Organic Chemistry (8th Ed) reference copy due in 3 days.</div>
+                    <div class="text-[10px] text-slate-400">2 hours ago</div>
+                </div>
+            </div>
+            <div class="text-right">
+                <button onclick="closeNotificationsModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 font-semibold text-slate-700 rounded-xl text-xs">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Org Charter Application Modal -->
+    <div id="charterModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-fade-in space-y-4 text-xs">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">New Student Organization Charter Application</h3>
+                <button onclick="closeCharterModal()" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="handleCharterSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Proposed Organization Name</label>
+                    <input type="text" required placeholder="e.g. AI & Machine Learning Student Chapter" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Primary Category</label>
+                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary">
+                        <option>Academic & Professional</option>
+                        <option>Technology & Innovation</option>
+                        <option>Arts & Culture</option>
+                        <option>Community Service & Volunteer</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Founding President / Student Leader</label>
+                    <input type="text" value="Alex Rivera (ID: #897204)" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Mission Statement & Planned Activities</label>
+                    <textarea required rows="3" placeholder="Briefly describe club purpose and term objectives..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-primary"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeCharterModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-600">Cancel</button>
+                    <button type="submit" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryDark text-white font-semibold shadow-md">Submit Charter Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Message Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // State storage for RSVPs
+        let userRSVPs = [
+            "Annual Fall Homecoming Carnival",
+            "Acoustic Open Mic & Coffee Night",
+            "Valorant Invitational"
+        ];
+
+        // Search Autocomplete Data
+        const searchDatabase = [
+            { title: "Annual Fall Homecoming Carnival", type: "Event", cat: "Events" },
+            { title: "Acoustic Open Mic & Coffee Night", type: "Event", cat: "Events" },
+            { title: "Valorant Invitational Esports", type: "Event", cat: "Events" },
+            { title: "Outdoor Movie Night on North Lawn", type: "Event", cat: "Events" },
+            { title: "Robotics & Autonomous Systems Club", type: "Club", cat: "Clubs" },
+            { title: "Aura Photography & Film Guild", type: "Club", cat: "Clubs" },
+            { title: "Collegiate Debate Society", type: "Club", cat: "Clubs" },
+            { title: "Environmental Action & Campus Green", type: "Club", cat: "Clubs" },
+            { title: "Salsa & Ballroom Dance Troupe", type: "Club", cat: "Clubs" },
+            { title: "South Dining Commons", type: "Dining", cat: "Dining" },
+            { title: "Lowden Bistro & Roasters", type: "Dining", cat: "Dining" },
+            { title: "Rec Sports Complex", type: "Sports", cat: "Sports" }
+        ];
+
+        // Global Search Functionality
+        const globalSearchInput = document.getElementById('globalSearchInput');
+        const searchDropdown = document.getElementById('searchDropdown');
+        const searchResultsList = document.getElementById('searchResultsList');
+
+        globalSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                searchDropdown.classList.add('hidden');
+                return;
+            }
+            const matches = searchDatabase.filter(item => item.title.toLowerCase().includes(query));
+            if (matches.length > 0) {
+                searchResultsList.innerHTML = matches.map(m => `
+                    <div onclick="selectSearchResult('${m.title}')" class="p-2 hover:bg-slate-50 rounded-lg cursor-pointer text-xs flex items-center justify-between">
+                        <span class="font-medium text-slate-800">${m.title}</span>
+                        <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded">${m.type}</span>
+                    </div>
+                `).join('');
+                searchDropdown.classList.remove('hidden');
+            } else {
+                searchResultsList.innerHTML = `<div class="p-2 text-xs text-slate-400">No matching campus results found</div>`;
+                searchDropdown.classList.remove('hidden');
+            }
+        });
+
+        function selectSearchResult(title) {
+            globalSearchInput.value = title;
+            searchDropdown.classList.add('hidden');
+            showToast(`Navigated to: ${title}`);
+        }
+
+        // Close dropdown on click outside
+        document.addEventListener('click', (e) => {
+            if (!globalSearchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                searchDropdown.classList.add('hidden');
+            }
+        });
+
+        // Term Selector Dropdown
+        const termDropdownBtn = document.getElementById('termDropdownBtn');
+        const termMenu = document.getElementById('termMenu');
+        termDropdownBtn.addEventListener('click', () => {
+            termMenu.classList.toggle('hidden');
+        });
+
+        function setTerm(term) {
+            document.getElementById('currentTermLabel').innerText = term;
+            termMenu.classList.add('hidden');
+            showToast(`Switched active term to ${term}`);
+        }
+
+        // Sidebar Tab Switching
+        function switchTab(tabName) {
+            showToast(`Switched to ${tabName} view`);
+            // Highlight active in sidebar
+            document.querySelectorAll('aside nav a').forEach(el => {
+                if(el.textContent.trim().includes(tabName)) {
+                    el.className = "flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-primary text-white shadow-sm transition-all";
+                } else {
+                    el.className = "flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors";
+                }
+            });
+        }
+
+        // Category Filter Chips
+        function setCategoryFilter(category) {
+            document.querySelectorAll('.category-chip').forEach(btn => {
+                if(btn.textContent.includes(category) || (category === 'All' && btn.textContent.includes('All'))) {
+                    btn.className = "category-chip px-4 py-2 rounded-xl font-semibold bg-primary text-white shrink-0 transition-all shadow-xs";
+                } else {
+                    btn.className = "category-chip px-4 py-2 rounded-xl font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0 transition-all";
+                }
+            });
+
+            // Filter sections
+            const sections = document.querySelectorAll('.section-block');
+            sections.forEach(sec => {
+                const secType = sec.getAttribute('data-section');
+                if(!secType || category === 'All' || secType === category || (category === 'Housing' && secType === 'Housing')) {
+                    sec.style.display = 'block';
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+            showToast(`Filtered view: ${category}`);
+        }
+
+        function resetFilters() {
+            setCategoryFilter('All');
+            document.getElementById('campusSearch').value = '';
+            document.querySelectorAll('.club-card').forEach(c => c.style.display = 'flex');
+            showToast('All filters reset successfully');
+        }
+
+        // Campus Content Live Search
+        function filterCampusContent() {
+            const val = document.getElementById('campusSearch').value.toLowerCase();
+            document.querySelectorAll('.club-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if(text.includes(val)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Club Filter Tags
+        function filterClubs(tag) {
+            document.querySelectorAll('.club-filter').forEach(btn => {
+                if(btn.textContent.includes(tag) || (tag === 'All' && btn.textContent.includes('Top Picks'))) {
+                    btn.className = "club-filter px-3 py-1.5 rounded-lg bg-white font-semibold text-slate-900 shadow-xs transition-all";
+                } else {
+                    btn.className = "club-filter px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all";
+                }
+            });
+
+            document.querySelectorAll('.club-card').forEach(card => {
+                const cardTag = card.getAttribute('data-tag');
+                if(tag === 'All' || cardTag === tag) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Event Actions & RSVPs
+        function rsvpEvent(btn, eventName) {
+            btn.innerHTML = `<i class="fa-solid fa-check text-white"></i><span>RSVP'd!</span>`;
+            btn.className = "w-full bg-emerald-600 text-white text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5";
+            if(!userRSVPs.includes(eventName)) userRSVPs.push(eventName);
+            document.getElementById('rsvpCount').innerText = userRSVPs.length;
+            showToast(`Successfully RSVP'd for ${eventName}!`);
+        }
+
+        function addToTimetable(btn, eventName) {
+            btn.innerHTML = `<i class="fa-solid fa-check"></i><span>Added to Timetable</span>`;
+            btn.className = "w-full bg-emerald-600 text-white text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5";
+            showToast(`${eventName} added to your academic schedule timetable!`);
+        }
+
+        function spectateEvent(btn, eventName) {
+            btn.innerHTML = `<i class="fa-solid fa-check"></i><span>Slot Reserved</span>`;
+            btn.className = "w-full bg-purple-600 text-white text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5";
+            showToast(`Spectator slot secured for ${eventName}!`);
+        }
+
+        function saveReminder(btn, eventName) {
+            btn.innerHTML = `<i class="fa-solid fa-bell text-white"></i><span>Reminder Set</span>`;
+            btn.className = "w-full bg-primary text-white text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-1.5";
+            showToast(`Reminder alert saved for ${eventName}!`);
+        }
+
+        // Club Actions
+        function joinClub(btn, clubName) {
+            btn.innerText = "Member Joined!";
+            btn.className = "bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-sm";
+            showToast(`Welcome to ${clubName}! Membership notification sent.`);
+        }
+
+        function viewGuild(btn, guildName) {
+            showToast(`Opening digital showcase for ${guildName}...`);
+        }
+
+        function auditionInfo(btn, clubName) {
+            showToast(`Audition guidelines downloaded for ${clubName}. Check email for slot booking.`);
+        }
+
+        function volunteerClub(btn, clubName) {
+            btn.innerText = "Signed Up!";
+            btn.className = "bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-sm";
+            showToast(`Thank you for volunteering with ${clubName}!`);
+        }
+
+        function joinClassClub(btn, className) {
+            btn.innerText = "Class Booked!";
+            btn.className = "bg-rose-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-sm";
+            showToast(`Successfully registered for ${className}!`);
+        }
+
+        // Fitness & Rec Actions
+        function viewCrowdDetails() {
+            showToast('Loading real-time heat maps for Rec Sports Complex...');
+        }
+
+        function bookFitnessSlot(btn, className) {
+            btn.innerText = "Slot Booked!";
+            btn.className = "bg-emerald-600 text-white text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-xs";
+            showToast(`Confirmed booking for ${className}!`);
+        }
+
+        function reserveFitnessSlot(btn, className) {
+            btn.innerText = "Reserved!";
+            btn.className = "bg-emerald-600 text-white text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-xs";
+            showToast(`Climbing wall slot reserved for ${className}!`);
+        }
+
+        function openFullClassCalendar() {
+            showToast('Opening full 7-day fitness schedule...');
+        }
+
+        function joinFreeAgentModal() {
+            showToast('Free Agent registration form submitted to Intramural Coordinator.');
+        }
+
+        // Marketplace & Notice Board Actions
+        function messageSeller(sellerName, item) {
+            showToast(`Opening secure chat with ${sellerName} regarding ${item}...`);
+        }
+
+        function viewHousingDetails(item) {
+            showToast(`Opening housing listing details and roommate questionnaire...`);
+        }
+
+        function viewLibraryDesk() {
+            showToast('Main Library Desk Hours: Mon-Sat 8:00 AM - Midnight.');
+        }
+
+        function joinStudyGroup(groupName) {
+            showToast(`Successfully joined ${groupName}! Meeting reminder set.`);
+        }
+
+        function showFullCalendar() {
+            showToast('Loading full campus events calendar for Fall 2026...');
+        }
+
+        // Modals Control
+        function openPostModal() {
+            document.getElementById('postModal').classList.remove('hidden');
+        }
+        function closePostModal() {
+            document.getElementById('postModal').classList.add('hidden');
+        }
+
+        function openRSVPModal() {
+            const container = document.getElementById('rsvpListContainer');
+            if(userRSVPs.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 py-4 text-center">No saved RSVPs yet.</p>`;
+            } else {
+                container.innerHTML = userRSVPs.map((r, i) => `
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                        <span class="font-semibold text-slate-800"><i class="fa-solid fa-bookmark text-primary mr-2"></i>${r}</span>
+                        <button onclick="removeRSVP(${i})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Remove</button>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('rsvpModal').classList.remove('hidden');
+        }
+        function closeRSVPModal() {
+            document.getElementById('rsvpModal').classList.add('hidden');
+        }
+        function removeRSVP(index) {
+            userRSVPs.splice(index, 1);
+            document.getElementById('rsvpCount').innerText = userRSVPs.length;
+            openRSVPModal();
+            showToast('RSVP removed successfully');
+        }
+
+        function reloadCashModal() {
+            document.getElementById('reloadModal').classList.remove('hidden');
+        }
+        function closeReloadModal() {
+            document.getElementById('reloadModal').classList.add('hidden');
+        }
+        function selectReloadAmount(amt) {
+            document.getElementById('customReloadInput').value = amt;
+            document.querySelectorAll('.reload-amt').forEach(b => b.classList.remove('border-primary', 'text-primary', 'bg-blue-50'));
+            event.target.classList.add('border-primary', 'text-primary', 'bg-blue-50');
+        }
+        function confirmReload() {
+            const amt = document.getElementById('customReloadInput').value || '1000';
+            closeReloadModal();
+            showToast(`Successfully reloaded ₹${Number(amt).toLocaleString()} to your dining card!`);
+        }
+
+        function openNotificationsModal() {
+            document.getElementById('notificationsModal').classList.remove('hidden');
+        }
+        function closeNotificationsModal() {
+            document.getElementById('notificationsModal').classList.add('hidden');
+        }
+
+        function openCharterModal() {
+            document.getElementById('charterModal').classList.remove('hidden');
+        }
+        function closeCharterModal() {
+            document.getElementById('charterModal').classList.add('hidden');
+        }
+        function openGuidelinesModal() {
+            showToast('Downloading Club Contribution & Grant Guidelines (PDF)...');
+        }
+
+        // Handle Form Submissions
+        function handlePostSubmit(e) {
+            e.preventDefault();
+            const category = document.getElementById('postCategory').value;
+            const title = document.getElementById('postTitle').value;
+            const price = document.getElementById('postPrice').value;
+            const desc = document.getElementById('postDesc').value;
+
+            const grid = document.getElementById('marketplaceGrid');
+            const newCard = document.createElement('div');
+            newCard.className = "bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-3 animate-fade-in";
+            newCard.innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-primary/10 text-primary text-[10px] font-semibold px-2 py-0.5 rounded-md">${category}</span>
+                        ${price ? `<span class="text-sm font-extrabold text-slate-900">₹${price}</span>` : `<span class="text-[11px] font-semibold text-slate-400">Just posted</span>`}
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-900">${title}</h3>
+                    <p class="text-xs text-slate-500 line-clamp-2">${desc}</p>
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+                    <span class="text-slate-400">Posted by Alex Rivera (You)</span>
+                    <button onclick="showToast('This is your active post.')" class="text-primary font-semibold hover:underline">Manage</button>
+                </div>
+            `;
+            grid.prepend(newCard);
+            closePostModal();
+            document.getElementById('announcementForm').reset();
+            showToast('Announcement successfully published to Marketplace!');
+        }
+
+        function handleCharterSubmit(e) {
+            e.preventDefault();
+            closeCharterModal();
+            showToast('Student Organization Charter Application submitted to Student Senate!');
+        }
+
+        // Toast Notification Function
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = "bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 animate-fade-in pointer-events-auto";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

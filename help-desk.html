@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCorner - Help Desk & Campus Support</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) scale(1)' },
+                            '50%': { transform: 'translateY(-15px) scale(1.03)' },
+                        },
+                        pulseSlow: {
+                            '0%, 100%': { opacity: 0.3 },
+                            '50%': { opacity: 0.6 },
+                        },
+                        slideIn: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 10s ease-in-out 2s infinite',
+                        'pulse-slow': 'pulseSlow 4s ease-in-out infinite',
+                        'slide-in': 'slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .bg-ambient-orb-1 {
+            position: fixed;
+            top: -100px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-ambient-orb-2 {
+            position: fixed;
+            bottom: -150px;
+            left: 200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(147, 197, 253, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        .glass-card-hover {
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -10px rgba(37, 99, 235, 0.12);
+            border-color: rgba(147, 197, 253, 0.9);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="text-slate-700 dark:text-slate-200 antialiased font-sans min-h-screen flex flex-col">
+
+    <!-- Ambient Background Floating Orbs -->
+    <div class="bg-ambient-orb-1 animate-float-slow"></div>
+    <div class="bg-ambient-orb-2 animate-float-delayed"></div>
+
+    <!-- MAIN WRAPPER CONTAINER -->
+    <div class="relative z-10 flex min-h-screen w-full">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-64 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r border-slate-200/80 dark:border-slate-800 flex flex-col justify-between shrink-0 hidden md:flex sticky top-0 h-screen z-20">
+            <div>
+                <!-- Brand Logo Header -->
+                <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-blue-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                            <i class="fa-solid font-bold text-lg">C</i>
+                        </div>
+                        <span class="font-bold text-xl tracking-tight text-slate-800 dark:text-white">Campus<span class="text-brand-600 dark:text-brand-400">Corner</span></span>
+                    </div>
+                </div>
+
+                <!-- Category Title -->
+                <div class="px-6 pt-6 pb-2 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                    Academic Hub
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="px-3 space-y-1">
+                    <a href="./home.html" onclick="showToast('Navigating to Home Dashboard...')" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-house text-slate-400 w-5 text-center"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="./Schedule.html" onclick="showToast('Opening Schedule Calendar...')" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all">
+                        <i class="fa-regular fa-calendar-days text-slate-400 w-5 text-center"></i>
+                        <span>Schedule</span>
+                    </a>
+                    <a href="./greds&Exams.html" onclick="showToast('Opening Grades & Academic Records...')" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-graduation-cap text-slate-400 w-5 text-center"></i>
+                        <span>Grades & Exams</span>
+                    </a>
+                    <a href="./campus.html" onclick="showToast('Navigating to Campus Life Portal...')" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-users text-slate-400 w-5 text-center"></i>
+                        <span>Campus Life</span>
+                    </a>
+                    <a href="./Resource.html" onclick="showToast('Opening Resource Library...')" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-folder-open text-slate-400 w-5 text-center"></i>
+                        <span>Resources</span>
+                    </a>
+                    <a href="./new-student.html" onclick="openOrientationModal()" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-compass text-slate-400 w-5 text-center"></i>
+                        <span>New Student Orientation</span>
+                    </a>
+
+                    <!-- ACTIVE NAVIGATION TAB -->
+                    <a href="./help-desk.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-600 shadow-lg shadow-brand-500/25 transition-all">
+                        <i class="fa-solid fa-headset w-5 text-center"></i>
+                        <span>Help Desk & Campus Support</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar Bottom Profile / Academic Summary -->
+            <div class="p-4 m-3 bg-gradient-to-br from-slate-50 to-blue-50/50 dark:from-slate-800 dark:to-slate-800/50 rounded-2xl border border-slate-200/60 dark:border-slate-700 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Term GPA</span>
+                    <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">Dean's List</span>
+                </div>
+                <div class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">3.84</div>
+            </div>
+        </aside>
+
+        <!-- MAIN BODY CONTENT AREA -->
+        <div class="flex-1 flex flex-col min-w-0">
+
+            <!-- TOP NAVBAR -->
+            <header class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-30">
+                
+                <!-- MOBILE MENU BUTTON & INTERACTIVE SEARCH INPUT -->
+                <div class="flex items-center gap-3 flex-1 max-w-xl relative">
+                    <button onclick="showToast('Sidebar mobile menu expanded')" class="md:hidden text-slate-500 hover:text-slate-800 dark:text-slate-400 p-2">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                    
+                    <!-- Search Field Wrapper -->
+                    <div class="relative w-full">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" onfocus="handleGlobalSearch(this.value)"
+                               placeholder="Search tickets, knowledge base, services, or FAQs..." 
+                               class="w-full pl-10 pr-9 py-2 text-sm bg-slate-100/80 dark:bg-slate-800 dark:text-white rounded-xl border border-transparent focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 focus:outline-none transition-all placeholder:text-slate-400">
+                        <button id="search-clear-btn" onclick="clearGlobalSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+
+                        <!-- DYNAMIC SEARCH DROPDOWN OVERLAY -->
+                        <div id="search-dropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden z-50 animate-slide-in max-h-[450px] overflow-y-auto">
+                            <!-- Dynamic items inserted via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT HEADER TOOLS & USER PROFILE -->
+                <div class="flex items-center gap-2 sm:gap-4 pl-2 sm:pl-4">
+                    
+                    <!-- TERM / SEMESTER SELECTOR DROPDOWN -->
+                    <div class="relative">
+                        <button id="term-dropdown-btn" onclick="toggleTermMenu()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700 transition">
+                            <i class="fa-solid fa-calendar text-slate-400"></i>
+                            <span id="selected-term-label">Fall 2026</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+                        </button>
+                        <!-- Term Dropdown Menu -->
+                        <div id="term-menu" class="hidden absolute right-0 mt-2 w-44 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 z-50 text-xs">
+                            <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Academic Term</div>
+                            <button onclick="selectTerm('Fall 2024')" class="w-full text-left px-3 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-between font-semibold">
+                                <span>Fall 2026</span>
+                                <i class="fa-solid fa-check text-brand-600 text-xs"></i>
+                            </button>
+                            <button onclick="selectTerm('Spring 2025')" class="w-full text-left px-3 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-between">
+                                <span>Spring 2026</span>
+                            </button>
+                            <button onclick="selectTerm('Summer 2024')" class="w-full text-left px-3 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-between">
+                                <span>Summer 2027</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SUPPORT QUICK HELP LINK -->
+                    <button onclick="openSupportModal()" class="hidden sm:block text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 transition">
+                        Support
+                    </button>
+
+                    <!-- ORIENTATION LINK -->
+                    <button onclick="openOrientationModal()" class="hidden sm:block text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 transition">
+                        Orientation
+                    </button>
+
+                    <!-- NOTIFICATION BELL & CENTER -->
+                    <div class="relative">
+                        <button id="notif-btn" onclick="toggleNotificationCenter()" class="relative p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                            <i class="fa-regular fa-bell text-lg"></i>
+                            <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-brand-600 rounded-full ring-2 ring-white dark:ring-slate-900"></span>
+                        </button>
+
+                        <!-- NOTIFICATION CENTER DROPDOWN -->
+                        <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden z-50 animate-slide-in">
+                            <div class="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-slate-800 dark:text-white text-xs">Notifications</h4>
+                                    <span id="notif-unread-count" class="bg-brand-100 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full">2 New</span>
+                                </div>
+                                <button onclick="markAllNotificationsRead()" class="text-[11px] text-brand-600 dark:text-brand-400 hover:underline font-semibold">Mark all read</button>
+                            </div>
+                            <div id="notif-list" class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+                                <!-- Notifications dynamically inserted -->
+                            </div>
+                            <div class="p-2.5 bg-slate-50 dark:bg-slate-800/50 text-center border-t border-slate-100 dark:border-slate-800">
+                                <span class="text-[11px] text-slate-400">Showing recent campus & support notifications</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHAT INDICATOR / LAUNCHER BUTTON -->
+                    <button onclick="toggleLiveChatDrawer()" class="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition relative">
+                        <i class="fa-regular fa-comment-dots text-lg"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    </button>
+
+                    <!-- USER PROFILE AVATAR & DROPDOWN -->
+                    <div class="relative">
+                        <div onclick="toggleProfileMenu()" class="flex items-center gap-3 pl-2 border-l border-slate-200 dark:border-slate-700 cursor-pointer group">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" 
+                                 alt="Alex Rivers" 
+                                 class="w-9 h-9 rounded-full object-cover ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition"
+                                 onerror="this.src='https://placehold.co/100x100/3b82f6/ffffff?text=AR'">
+                            <div class="hidden xl:block text-left">
+                                <div class="text-xs font-bold text-slate-800 dark:text-white leading-none">Alex Rivers</div>
+                                <div class="text-[10px] font-medium text-slate-400 mt-1">ID: A49204</div>
+                            </div>
+                        </div>
+
+                        <!-- USER PROFILE DROPDOWN MENU -->
+                        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-4 z-50 animate-slide-in">
+                            <div class="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" class="w-12 h-12 rounded-full object-cover">
+                                <div>
+                                    <div class="text-sm font-bold text-slate-900 dark:text-white">Alex Rivers</div>
+                                    <div class="text-xs text-slate-400">a.rivers@campus.edu</div>
+                                    <div class="text-[10px] font-semibold text-brand-600 bg-brand-50 dark:bg-brand-950/80 px-2 py-0.5 rounded-md inline-block mt-1">Computer Science Senior</div>
+                                </div>
+                            </div>
+
+                            <div class="py-2 space-y-1 text-xs">
+                                <button onclick="toggleDarkMode()" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-moon text-slate-400"></i> Dark Mode Theme</span>
+                                    <span id="dark-mode-toggle-icon" class="text-xs font-bold text-slate-400">OFF</span>
+                                </button>
+                                <button onclick="showToast('Opening Account & Security Settings...')" class="w-full flex items-center gap-2 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition">
+                                    <i class="fa-solid fa-gear text-slate-400"></i> Account Settings
+                                </button>
+                                <button onclick="showToast('Switching Account Profile...')" class="w-full flex items-center gap-2 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition">
+                                    <i class="fa-solid fa-users-gear text-slate-400"></i> Switch Account
+                                </button>
+                            </div>
+
+                            <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
+                                <button onclick="showToast('Logging out of Campus Corner...')" class="w-full p-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2">
+                                    <a href="./index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- MAIN CONTAINER PAGE CONTENT -->
+            <main class="flex-1 p-4 lg:p-8 space-y-6 max-w-[1600px] mx-auto w-full">
+
+                <!-- Breadcrumbs & Live Chat Badge Header -->
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                            <a href="#" class="hover:text-brand-600">Academics</a>
+                            <i class="fa-solid fa-chevron-right text-[9px] text-slate-300 dark:text-slate-600"></i>
+                            <a href="#" class="hover:text-brand-600">Student Support</a>
+                            <i class="fa-solid fa-chevron-right text-[9px] text-slate-300 dark:text-slate-600"></i>
+                            <span class="text-brand-600 dark:text-brand-400 font-semibold">Help Desk & Problem Resolution</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                LIVE TECH CHAT AVAILABLE
+                            </span>
+                            <span class="text-xs text-slate-400 font-medium hidden sm:inline">• Avg wait: &lt; 2m</span>
+                        </div>
+                    </div>
+
+                    <!-- Page Title and Top Action Buttons -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-1">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-brand-100 dark:bg-brand-950/80 text-brand-700 dark:text-brand-300">24/7 Student Concierge</span>
+                                <span class="text-xs text-slate-400 font-mono">Ref #CC-PORTAL-HUB</span>
+                            </div>
+                            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-1">Help Desk & Campus Support</h1>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">Submit IT tickets, report campus facility breakdowns, track official grievance reviews, or book time with campus support specialists.</p>
+                        </div>
+
+                        <!-- Top Action Buttons -->
+                        <div class="flex items-center gap-3 shrink-0">
+                            <button onclick="toggleLiveChatDrawer()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-sm shadow-sm transition flex items-center gap-2">
+                                <i class="fa-regular fa-comments text-brand-600 dark:text-brand-400"></i>
+                                Live Chat Agent
+                            </button>
+                            <button onclick="openTicketModal()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-lg shadow-brand-500/20 transition flex items-center gap-2">
+                                <i class="fa-solid fa-plus"></i>
+                                Submit New Ticket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STAT SUMMARY ROW -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Active Tickets Stat -->
+                    <div class="glass-card p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Active Tickets</div>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-2xl font-black text-slate-800 dark:text-white" id="stat-active-count">2</span>
+                                <span class="text-xs text-slate-500 font-medium">In Progress</span>
+                            </div>
+                            <div class="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800 rounded px-1.5 py-0.5 mt-1 inline-block font-medium">1 Pending Review</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-950/80 border border-brand-100 dark:border-brand-800 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                            <i class="fa-solid fa-ticket text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Avg Resolution Time -->
+                    <div class="glass-card p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Avg Resolution Time</div>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-2xl font-black text-slate-800 dark:text-white">4.2</span>
+                                <span class="text-xs text-slate-500 font-medium">Hours</span>
+                            </div>
+                            <div class="text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 rounded px-1.5 py-0.5 mt-1 inline-block font-medium">
+                                <i class="fa-solid fa-arrow-down text-[9px] mr-0.5"></i>18% w/w
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-100 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                            <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Campus IT & Wi-Fi -->
+                    <div class="glass-card p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Campus IT & Wi-Fi</div>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-2xl font-black text-slate-800 dark:text-white">99.8%</span>
+                            </div>
+                            <div class="text-[11px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 rounded px-1.5 py-0.5 mt-1 inline-block font-medium">
+                                All Nodes Live
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-100 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                            <i class="fa-solid fa-wifi text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Hotlines -->
+                    <div class="glass-card p-4 rounded-2xl border border-rose-200/80 bg-rose-50/30 dark:bg-rose-950/20 shadow-sm flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400">Emergency Hotlines</div>
+                            <div class="text-lg font-extrabold text-rose-900 dark:text-rose-200 mt-1">555-019-911</div>
+                            <div class="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wide mt-0.5">Campus Police 24/7</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                            <i class="fa-solid fa-phone-volume text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SELF-DISPATCH DIRECTORY (REPORT BY SERVICE DEPARTMENT) -->
+                <section class="space-y-3 pt-2">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-bold tracking-wider text-brand-600 dark:text-brand-400 uppercase">Self-Dispatch Directory</span>
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white">Report by Service Department</h2>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium hidden sm:inline">Click a category to launch priority pre-tagged ticket</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        
+                        <!-- IT, Wi-Fi & Software -->
+                        <div class="glass-card glass-card-hover p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-laptop-code"></i>
+                                    </div>
+                                    <span class="text-[10px] font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/80 px-2 py-0.5 rounded border border-brand-100 dark:border-brand-800">TIER 1 & 2 IT</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 dark:text-white text-base">IT, Wi-Fi & Software</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Eduroam Wi-Fi drops, Student Portal & Canvas logins, 2-Factor MFA resetting, or lab hardware faults.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 mt-4">
+                                    <button onclick="openTicketModal('IT, Wi-Fi & Software', 'Eduroam Drop')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-700 dark:hover:text-brand-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Eduroam Drop</button>
+                                    <button onclick="openTicketModal('IT, Wi-Fi & Software', 'SSO Locked')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-700 dark:hover:text-brand-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">SSO Locked</button>
+                                    <button onclick="openTicketModal('IT, Wi-Fi & Software', 'MFA Reset')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-700 dark:hover:text-brand-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">MFA Reset</button>
+                                </div>
+                            </div>
+                            <button onclick="openTicketModal('IT, Wi-Fi & Software')" class="mt-5 w-full py-2 bg-slate-50 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-700 dark:hover:text-brand-300 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
+                                <span>Report IT Glitch</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+
+                        <!-- Hostel & Maintenance -->
+                        <div class="glass-card glass-card-hover p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-house-chimney-crack"></i>
+                                    </div>
+                                    <span class="text-[10px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/80 px-2 py-0.5 rounded border border-purple-100 dark:border-purple-800">RAPID OPS</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 dark:text-white text-base">Hostel & Maintenance</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Dorm AC, heating, pipe leaks, malfunctioning keycard locks, broken lighting, or campus elevator faults.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 mt-4">
+                                    <button onclick="openTicketModal('Hostel & Maintenance', 'HVAC / Heating')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-950 hover:text-purple-700 dark:hover:text-purple-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">HVAC / Heating</button>
+                                    <button onclick="openTicketModal('Hostel & Maintenance', 'Plumbing')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-950 hover:text-purple-700 dark:hover:text-purple-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Plumbing</button>
+                                    <button onclick="openTicketModal('Hostel & Maintenance', 'Smart Lock')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-950 hover:text-purple-700 dark:hover:text-purple-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Smart Lock</button>
+                                </div>
+                            </div>
+                            <button onclick="openTicketModal('Hostel & Maintenance')" class="mt-5 w-full py-2 bg-slate-50 dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-950 hover:text-purple-700 dark:hover:text-purple-300 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
+                                <span>Request Maintenance</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+
+                        <!-- Academic & Fee Grievances -->
+                        <div class="glass-card glass-card-hover p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-file-signature"></i>
+                                    </div>
+                                    <span class="text-[10px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-800">REGISTRAR LINK</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 dark:text-white text-base">Academic & Fee Grievances</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Official grading discrepancies, late course add/drop approval petitions, or scholarship disbursement status.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 mt-4">
+                                    <button onclick="openTicketModal('Academic & Fee Grievances', 'Grade Appeal')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-700 dark:hover:text-emerald-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Grade Appeal</button>
+                                    <button onclick="openTicketModal('Academic & Fee Grievances', 'Course Swap')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-700 dark:hover:text-emerald-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Course Swap</button>
+                                    <button onclick="openTicketModal('Academic & Fee Grievances', 'Tuition Audit')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-700 dark:hover:text-emerald-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Tuition Audit</button>
+                                </div>
+                            </div>
+                            <button onclick="openTicketModal('Academic & Fee Grievances')" class="mt-5 w-full py-2 bg-slate-50 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-700 dark:hover:text-emerald-300 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
+                                <span>Lodge Grievance Petition</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+
+                        <!-- Dining & Campus Life -->
+                        <div class="glass-card glass-card-hover p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-utensils"></i>
+                                    </div>
+                                    <span class="text-[10px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-2 py-0.5 rounded border border-amber-100 dark:border-amber-800">SERVICES</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 dark:text-white text-base">Dining & Campus Life</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Dining hall meal swipe sync, student ID card replacement, gym locker pass, or campus shuttle inquiries.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 mt-4">
+                                    <button onclick="openTicketModal('Dining & Campus Life', 'Meal Card')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950 hover:text-amber-700 dark:hover:text-amber-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Meal Card</button>
+                                    <button onclick="openTicketModal('Dining & Campus Life', 'Rec Access')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950 hover:text-amber-700 dark:hover:text-amber-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Rec Access</button>
+                                    <button onclick="openTicketModal('Dining & Campus Life', 'Bike Locker')" class="text-[10px] bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950 hover:text-amber-700 dark:hover:text-amber-300 text-slate-600 dark:text-slate-300 font-medium px-2 py-1 rounded-md transition">Bike Locker</button>
+                                </div>
+                            </div>
+                            <button onclick="openTicketModal('Dining & Campus Life')" class="mt-5 w-full py-2 bg-slate-50 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950 hover:text-amber-700 dark:hover:text-amber-300 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
+                                <span>Submit Amenities Inquiry</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- MAIN SPLIT SECTION: MY TICKETS & RIGHT SIDEBAR WIDGETS -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+
+                    <!-- LEFT SIDE (2 COLS): ACTIVE INQUIRIES & TICKETS -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h2 class="text-lg font-bold text-slate-800 dark:text-white">My Active Inquiries & Tickets</h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Real-time resolution status and communication threads</p>
+                            </div>
+
+                            <!-- Filter Tabs -->
+                            <div class="flex items-center gap-1 bg-slate-200/60 dark:bg-slate-800/80 p-1 rounded-xl self-start sm:self-auto text-xs font-semibold">
+                                <button onclick="filterTickets('All')" id="tab-All" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm transition">All (<span id="count-all">3</span>)</button>
+                                <button onclick="filterTickets('Open')" id="tab-Open" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Open (<span id="count-open">2</span>)</button>
+                                <button onclick="filterTickets('Resolved')" id="tab-Resolved" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Resolved (<span id="count-resolved">1</span>)</button>
+                                <button onclick="filterTickets('Urgent')" id="tab-Urgent" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Urgent (0)</button>
+                            </div>
+                        </div>
+
+                        <!-- TICKET LIST CONTAINER -->
+                        <div id="tickets-container" class="space-y-4">
+                            <!-- Dynamic tickets generated via JavaScript -->
+                        </div>
+
+                        <!-- Ticket Archive Footer Link -->
+                        <div class="flex items-center justify-between pt-2 px-1 text-xs text-slate-400">
+                            <span>Showing historical inquiries logged this academic year</span>
+                            <a href="#" onclick="showToast('Loading complete ticket archive...')" class="font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1">
+                                View Full Ticket Archive <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </a>
+                        </div>
+
+                        <!-- Campus Service Telemetry Banner -->
+                        <div class="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-md">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0"></div>
+                                <div class="text-xs">
+                                    <span class="font-bold text-slate-200">Campus Service Telemetry & System Health</span>
+                                    <p class="text-slate-400 text-[11px] mt-0.5">Canvas LMS, Eduroam 802.1x, Dining POS, and Student Identity SSO are fully functional.</p>
+                                </div>
+                            </div>
+                            <button onclick="showToast('Redirecting to Live System Status Dashboard...')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg text-slate-200 transition shrink-0">
+                                View Live Statuspage
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT SIDEBAR WIDGETS -->
+                    <div class="space-y-5">
+                        
+                        <!-- Physical Tech Desk Widget -->
+                        <div class="glass-card p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 space-y-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-950/80 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 dark:text-white text-sm">Physical Tech Desk</h3>
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400">In-person support, laptop loaners & setup</p>
+                                </div>
+                            </div>
+
+                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Need immediate hardware diagnosis, laptop loaners, or in-person Wi-Fi setup? Visit the central Tech Bar inside the library.
+                            </p>
+
+                            <div class="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                                <div class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-location-dot text-slate-400 mt-0.5"></i>
+                                    <div>
+                                        <div class="font-semibold text-slate-800 dark:text-white">Lowden Memorial Library</div>
+                                        <div class="text-slate-500 dark:text-slate-400 text-[11px]">Ground Floor, Room 104 (Behind Study Commons)</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2.5">
+                                    <i class="fa-regular fa-clock text-slate-400 mt-0.5"></i>
+                                    <div>
+                                        <div class="font-semibold text-slate-800 dark:text-white">Walk-In Hours</div>
+                                        <div class="text-slate-500 dark:text-slate-400 text-[11px]">Monday - Friday: 8:00 AM - 8:00 PM<br>Saturday: 10:00 AM - 4:00 PM</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <i class="fa-regular fa-envelope text-slate-400"></i>
+                                    <span class="font-mono text-brand-600 dark:text-brand-400">support@gouts.edu</span>
+                                </div>
+                            </div>
+
+                            <button onclick="openAppointmentModal()" class="w-full py-2.5 bg-brand-50 dark:bg-brand-950/80 hover:bg-brand-100 dark:hover:bg-brand-900 text-brand-700 dark:text-brand-300 font-semibold text-xs rounded-xl border border-brand-200 dark:border-brand-800 transition flex items-center justify-center gap-2">
+                                <i class="fa-regular fa-calendar-check"></i>
+                                Book Tech Genius Appointment
+                            </button>
+                        </div>
+
+                        <!-- Urgent Escalation Box -->
+                        <div class="p-5 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white space-y-3 shadow-lg shadow-rose-500/15">
+                            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-100">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Urgent Escalation
+                            </div>
+                            <p class="text-xs text-rose-50 leading-relaxed">
+                                For immediate campus security threats, electrical hazards, gas leaks, or emergency dorm lockouts after-hours:
+                            </p>
+                            <div class="space-y-2 pt-1">
+                                <div class="flex items-center justify-between text-xs bg-white/10 p-2 rounded-lg backdrop-blur-sm">
+                                    <span class="font-medium"><i class="fa-solid fa-shield-halved mr-1.5"></i> Campus Police (24/7)</span>
+                                    <span class="font-bold font-mono">555-019-911</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs bg-white/10 p-2 rounded-lg backdrop-blur-sm">
+                                    <span class="font-medium"><i class="fa-solid fa-wrench mr-1.5"></i> Facilities After-Hours</span>
+                                    <span class="font-bold font-mono">Ext. 4022</span>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-rose-200 italic pt-1">
+                                Notice: Physical dispatch arrives within 8-12 minutes on central campus grounds.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- KNOWLEDGE BASE & INSTANT ANSWERS SECTION -->
+                <section class="glass-card p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 space-y-4 mt-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-[11px] font-bold tracking-wider text-brand-600 dark:text-brand-400 uppercase">Fast Fix Guides</span>
+                            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">Knowledge Base & Instant Answers</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search through step-by-step interactive documentation, network connection profiles, and dormitory appliance instructions.</p>
+                        </div>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="relative max-w-2xl">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="kb-search" onkeyup="filterKB()" placeholder="Search 200+ help articles: 'Eduroam password reset', 'dorm AC manuals', 'parking permits'..." 
+                               class="w-full pl-11 pr-24 py-3 text-sm bg-slate-50 dark:bg-slate-800 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 focus:outline-none transition">
+                        <button onclick="filterKB()" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-lg transition">Search</button>
+                    </div>
+
+                    <!-- Knowledge Cards Grid -->
+                    <div id="kb-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                        
+                        <div class="kb-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-brand-300 hover:shadow-md transition cursor-pointer" onclick="showKBModal('Eduroam Wi-Fi on iOS, Mac & Android')">
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/80 text-brand-600 dark:text-brand-400 flex items-center justify-center text-sm mb-3">
+                                <i class="fa-solid fa-wifi"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Eduroam Wi-Fi on iOS, Mac & Android</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Certificate installation, correct domain flags, and clearing legacy auth caches.</p>
+                            <div class="flex items-center justify-between text-[11px] text-slate-400 mt-4">
+                                <span>3 min read • 8.4k views</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </div>
+                        </div>
+
+                        <div class="kb-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-brand-300 hover:shadow-md transition cursor-pointer" onclick="showKBModal('Resetting Multi-Factor MFA (Duo & Authenticator)')">
+                            <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center text-sm mb-3">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Resetting Multi-Factor MFA (Duo & Authenticator)</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">How to bind a new smartphone or request temporary emergency passcodes.</p>
+                            <div class="flex items-center justify-between text-[11px] text-slate-400 mt-4">
+                                <span>2 min read • 14.1k views</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </div>
+                        </div>
+
+                        <div class="kb-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-brand-300 hover:shadow-md transition cursor-pointer" onclick="showKBModal('Hostel Maintenance SLA & Urgent SLA')">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm mb-3">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Hostel Maintenance SLA & Urgent Request SLA</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Standard turnaround timelines for plumbing, HVAC repair, and locks.</p>
+                            <div class="flex items-center justify-between text-[11px] text-slate-400 mt-4">
+                                <span>4 min read • 5.2k views</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </div>
+                        </div>
+
+                        <div class="kb-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-brand-300 hover:shadow-md transition cursor-pointer" onclick="showKBModal('Commuter & Dorm Parking Permit Guide')">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm mb-3">
+                                <i class="fa-solid fa-car"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Commuter & Dorm Parking Permit Guide</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Semester vehicle pass tiers, decal placement, and EV charging stall rules.</p>
+                            <div class="flex items-center justify-between text-[11px] text-slate-400 mt-4">
+                                <span>5 min read • 11.8k views</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- LIVE CHAT BOT DRAWER OVERLAY -->
+    <div id="live-chat-drawer" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white dark:bg-slate-900 shadow-2xl z-50 border-l border-slate-200 dark:border-slate-800 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Chat Drawer Header -->
+        <div class="p-4 bg-brand-600 text-white flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm leading-tight">Campus Support Assistant</h3>
+                    <p class="text-[10px] text-brand-100 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span> Online • AI Assistant</p>
+                </div>
+            </div>
+            <button onclick="toggleLiveChatDrawer()" class="p-1 hover:bg-white/10 rounded-lg transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div id="chat-messages-container" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 dark:bg-slate-950">
+            <div class="flex gap-2.5">
+                <div class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none border border-slate-200/80 dark:border-slate-700 text-xs shadow-sm max-w-[80%]">
+                    Hello Alex! I am your 24/7 Campus Corner Concierge. How can I assist you today?
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="pl-9 space-y-1.5">
+                <button onclick="sendQuickChatMessage('How do I reset my Wi-Fi password?')" class="block w-full text-left text-[11px] p-2 bg-white dark:bg-slate-800 hover:bg-brand-50 text-brand-700 dark:text-brand-300 rounded-xl border border-slate-200 dark:border-slate-700 transition">
+                    💡 How do I reset my Wi-Fi password?
+                </button>
+                <button onclick="sendQuickChatMessage('I want to check my active ticket status')" class="block w-full text-left text-[11px] p-2 bg-white dark:bg-slate-800 hover:bg-brand-50 text-brand-700 dark:text-brand-300 rounded-xl border border-slate-200 dark:border-slate-700 transition">
+                    🎫 Check my active ticket status
+                </button>
+                <button onclick="sendQuickChatMessage('Where is the campus Tech Bar located?')" class="block w-full text-left text-[11px] p-2 bg-white dark:bg-slate-800 hover:bg-brand-50 text-brand-700 dark:text-brand-300 rounded-xl border border-slate-200 dark:border-slate-700 transition">
+                    📍 Tech Bar location & walk-in hours
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Input Field -->
+        <div class="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shrink-0">
+            <div class="flex items-center gap-2">
+                <input type="text" id="chat-user-input" onkeypress="if(event.key==='Enter') sendChatMessage()" placeholder="Type message..." class="flex-1 text-xs p-2.5 bg-slate-100 dark:bg-slate-800 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-brand-500">
+                <button onclick="sendChatMessage()" class="p-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPPORT QUICK HELP DRAWER / MODAL -->
+    <div id="support-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 animate-slide-in">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 dark:bg-brand-950 text-brand-600 flex items-center justify-center">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base">Campus Direct Support Lines</h3>
+                </div>
+                <button onclick="closeSupportModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400">Need direct contact with university administrators? Use the contact directory below:</p>
+
+            <div class="space-y-2 text-xs">
+                <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-slate-800 dark:text-white">Central IT Help Desk</div>
+                        <div class="text-slate-400 text-[11px]">Mon-Fri 8am - 8pm</div>
+                    </div>
+                    <span class="font-mono text-brand-600 dark:text-brand-400 font-bold">555-019-2000</span>
+                </div>
+                <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-slate-800 dark:text-white">Student Housing & Dorms</div>
+                        <div class="text-slate-400 text-[11px]">24/7 Desk Line</div>
+                    </div>
+                    <span class="font-mono text-brand-600 dark:text-brand-400 font-bold">555-019-4022</span>
+                </div>
+                <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-slate-800 dark:text-white">Registrar & Student Accounts</div>
+                        <div class="text-slate-400 text-[11px]">Mon-Fri 9am - 5pm</div>
+                    </div>
+                    <span class="font-mono text-brand-600 dark:text-brand-400 font-bold">555-019-3100</span>
+                </div>
+            </div>
+
+            <button onclick="closeSupportModal()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition">Close Directory</button>
+        </div>
+    </div>
+
+    <!-- ORIENTATION GUIDE MODAL -->
+    <div id="orientation-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 animate-slide-in">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-compass"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base">New Student Orientation Checklist</h3>
+                </div>
+                <button onclick="closeOrientationModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400">Welcome to Campus Corner! Ensure you have completed all mandatory setup steps:</p>
+
+            <div class="space-y-2 text-xs">
+                <div class="flex items-center gap-2.5 p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    <span class="font-semibold">Setup Eduroam Wi-Fi Credentials</span>
+                </div>
+                <div class="flex items-center gap-2.5 p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    <span class="font-semibold">Verify Duo 2-Factor Authentication</span>
+                </div>
+                <div class="flex items-center gap-2.5 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-700 dark:text-slate-300">
+                    <i class="fa-regular fa-circle text-slate-400"></i>
+                    <span>Upload Digital Campus ID Photo</span>
+                </div>
+                <div class="flex items-center gap-2.5 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-700 dark:text-slate-300">
+                    <i class="fa-regular fa-circle text-slate-400"></i>
+                    <span>Register Campus Vehicle or Bicycle Pass</span>
+                </div>
+            </div>
+
+            <button onclick="closeOrientationModal()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl transition">Got it, thanks!</button>
+        </div>
+    </div>
+
+    <!-- TICKET CREATION / COMPLAINT REPORT MODAL -->
+    <div id="ticket-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-slide-in">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 dark:bg-brand-950 text-brand-600 flex items-center justify-center text-sm font-bold">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 dark:text-white text-base">Submit Help Ticket or Complaint</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">All submissions are assigned a tracking number and logged instantly</p>
+                    </div>
+                </div>
+                <button onclick="closeTicketModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="new-ticket-form" onsubmit="handleTicketSubmit(event)" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Department</label>
+                        <select id="modal-dept" required class="w-full text-xs p-2.5 bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none">
+                            <option value="IT, Wi-Fi & Software">IT, Wi-Fi & Software</option>
+                            <option value="Hostel & Maintenance">Hostel & Maintenance</option>
+                            <option value="Academic & Fee Grievances">Academic & Fee Grievances</option>
+                            <option value="Dining & Campus Life">Dining & Campus Life</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Priority Level</label>
+                        <select id="modal-priority" required class="w-full text-xs p-2.5 bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none">
+                            <option value="Standard">Standard Priority</option>
+                            <option value="High Priority">High Priority</option>
+                            <option value="Urgent">Urgent (Immediate Fix Needed)</option>
+                            <option value="Low Priority">Low Priority</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Issue Title / Subject</label>
+                    <input type="text" id="modal-subject" required placeholder="e.g. Dorm B 3rd Floor Wi-Fi Signal Loss & Latency" 
+                           class="w-full text-xs p-2.5 bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Campus Location / Room / Hall</label>
+                    <input type="text" id="modal-location" placeholder="e.g. Building: North Hall B, Rm 312" 
+                           class="w-full text-xs p-2.5 bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Detailed Description</label>
+                    <textarea id="modal-desc" rows="3" required placeholder="Provide specific details about the issue or complaint..." 
+                              class="w-full text-xs p-2.5 bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none"></textarea>
+                </div>
+
+                <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-3 text-center bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 transition cursor-pointer" onclick="showToast('File picker opened. Select screenshot or logs.')">
+                    <i class="fa-solid fa-cloud-arrow-up text-slate-400 text-base mb-1"></i>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">Attach Screenshots or Logs (Optional)</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">PNG, JPG, PDF up to 10MB</p>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <button type="button" onclick="closeTicketModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow-md transition flex items-center gap-1.5">
+                        <i class="fa-regular fa-paper-plane"></i>
+                        <span>Save & Submit Ticket</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TICKET DETAIL THREAD MODAL -->
+    <div id="thread-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-slide-in flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800">
+                <div>
+                    <span id="thread-modal-id" class="text-xs font-mono font-bold text-brand-600 dark:text-brand-400">#TKT-84920</span>
+                    <h3 id="thread-modal-title" class="font-bold text-slate-900 dark:text-white text-base">Dorm B 3rd Floor Wi-Fi Signal Loss & Latency</h3>
+                </div>
+                <button onclick="closeThreadModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div id="thread-modal-body" class="p-6 space-y-4 overflow-y-auto flex-1">
+                <!-- Thread messages inserted dynamically -->
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                <div class="flex gap-2">
+                    <input type="text" id="thread-reply-input" placeholder="Type a message or response to dispatch..." class="flex-1 text-xs p-2.5 bg-white dark:bg-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-brand-500 outline-none">
+                    <button onclick="sendThreadReply()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl transition">Reply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOK APPOINTMENT MODAL -->
+    <div id="appointment-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 animate-slide-in">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base">Book Tech Genius Appointment</h3>
+                <button onclick="closeAppointmentModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Select a preferred walk-in time slot at the Lowden Library Tech Bar:</p>
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Select Date</label>
+                <input type="date" class="w-full text-xs p-2.5 bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl" value="2024-10-25">
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Select Time Slot</label>
+                <select class="w-full text-xs p-2.5 bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl">
+                    <option>10:00 AM - 10:30 AM (Tech Bar Desk 2)</option>
+                    <option>02:15 PM - 02:45 PM (Tech Bar Desk 1)</option>
+                    <option>04:00 PM - 04:30 PM (Hardware Specialist Desk)</option>
+                </select>
+            </div>
+            <button onclick="confirmAppointment()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition">Confirm Booking</button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // MOCK NOTIFICATIONS DATA
+        let notifications = [
+            { id: 1, title: "Ticket #TKT-84920 Updated", desc: "Technician Mark D. added an update on 3rd floor Wi-Fi.", time: "10 min ago", unread: true, icon: "fa-ticket text-brand-500" },
+            { id: 2, title: "Scheduled Maintenance Notice", desc: "Canvas LMS offline for maintenance on Saturday 2 AM.", time: "1 hour ago", unread: true, icon: "fa-triangle-exclamation text-amber-500" },
+            { id: 3, title: "Library Tech Bar Hours Extended", desc: "Open until 10 PM during exam week.", time: "Yesterday", unread: false, icon: "fa-building-columns text-emerald-500" }
+        ];
+
+        // MOCK TICKETS DATA
+        const defaultTickets = [
+            {
+                id: "TKT-84920",
+                dept: "IT, Wi-Fi & Software",
+                subject: "Dorm B 3rd Floor Wi-Fi Signal Loss & Latency",
+                priority: "High Priority",
+                status: "Under Investigation",
+                assignedTo: "Mark D. (Field Tech)",
+                loggedTime: "Yesterday at 6:42 PM",
+                location: "Building: North Hall B, Rm 312",
+                statusColor: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800",
+                badgeColor: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
+                replies: [
+                    {
+                        author: "Mark Davies (Campus Network Tech)",
+                        role: "Field Technician",
+                        time: "Today, 10:14 AM",
+                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+                        text: "Field technician team has scheduled an on-site access point replacement for 3rd floor corridor North Hall B at 2:00 PM."
+                    }
+                ],
+                estResolution: "Est. resolution: Today by 3:45 PM"
+            },
+            {
+                id: "TKT-54321",
+                dept: "Hostel & Maintenance",
+                subject: "Thermostat Unit Unresponsive • West Annex 204",
+                priority: "Standard",
+                status: "Assigned to HVAC Team",
+                assignedTo: "HVAC Ops",
+                loggedTime: "Logged: Oct 24, 2024",
+                location: "Dorm Residential Quad",
+                statusColor: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800",
+                badgeColor: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+                replies: [
+                    {
+                        author: "Elena Ramos (Facilities Coordinator)",
+                        role: "Facilities Staff",
+                        time: "Oct 24, 08:30 AM",
+                        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+                        text: "Parts requisitioned from central store. Mechanic Perez assigned for Friday morning inspection."
+                    }
+                ],
+                estResolution: "Est. inspection: Friday 9:00 AM – 11:30 AM"
+            },
+            {
+                id: "TKT-12431",
+                dept: "Academic / Grading",
+                subject: "GS-302 Midterm Exam Credit Correction",
+                priority: "Standard",
+                status: "Closed / Resolved",
+                assignedTo: "Registrar Staff",
+                loggedTime: "Resolved on Oct 21",
+                location: "Prof. Martinez Class",
+                statusColor: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800",
+                badgeColor: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+                replies: [
+                    {
+                        author: "Prof. Martinez",
+                        role: "Instructor",
+                        time: "Oct 21, 04:15 PM",
+                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                        text: "Confirmed grade update in Canvas. Final score revised to 94.5%."
+                    }
+                ],
+                estResolution: "Resolved and Archived"
+            }
+        ];
+
+        let activeFilter = 'All';
+        let currentActiveThreadId = null;
+
+        // On Page Load Init
+        window.onload = function() {
+            if (!localStorage.getItem('campus_tickets')) {
+                localStorage.setItem('campus_tickets', JSON.stringify(defaultTickets));
+            }
+            renderTickets();
+            renderNotifications();
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#global-search-input') && !e.target.closest('#search-dropdown')) {
+                    document.getElementById('search-dropdown').classList.add('hidden');
+                }
+                if (!e.target.closest('#notif-btn') && !e.target.closest('#notif-dropdown')) {
+                    document.getElementById('notif-dropdown').classList.add('hidden');
+                }
+                if (!e.target.closest('#term-dropdown-btn') && !e.target.closest('#term-menu')) {
+                    document.getElementById('term-menu').classList.add('hidden');
+                }
+                if (!e.target.closest('.group') && !e.target.closest('#profile-menu')) {
+                    document.getElementById('profile-menu').classList.add('hidden');
+                }
+            });
+        };
+
+        // GLOBAL SEARCH ENGINE (HEADER BAR)
+        function handleGlobalSearch(query) {
+            const dropdown = document.getElementById('search-dropdown');
+            const clearBtn = document.getElementById('search-clear-btn');
+            
+            if (!query || query.trim() === '') {
+                dropdown.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            clearBtn.classList.remove('hidden');
+            const q = query.toLowerCase().trim();
+            const tickets = getTickets();
+
+            // Match Knowledge base items
+            const kbMatches = [
+                { title: "Eduroam Wi-Fi Setup on iOS & Android", category: "Knowledge Base" },
+                { title: "Resetting Multi-Factor MFA (Duo Login)", category: "Knowledge Base" },
+                { title: "Hostel Maintenance Turnaround SLA", category: "Knowledge Base" },
+                { title: "Commuter & Dorm Parking Permits Guide", category: "Knowledge Base" }
+            ].filter(k => k.title.toLowerCase().includes(q));
+
+            // Match Tickets
+            const ticketMatches = tickets.filter(t => 
+                t.subject.toLowerCase().includes(q) || 
+                t.id.toLowerCase().includes(q) ||
+                t.dept.toLowerCase().includes(q)
+            );
+
+            // Match Departments
+            const deptMatches = [
+                "IT, Wi-Fi & Software", 
+                "Hostel & Maintenance", 
+                "Academic & Fee Grievances", 
+                "Dining & Campus Life"
+            ].filter(d => d.toLowerCase().includes(q));
+
+            let html = '';
+
+            if (ticketMatches.length > 0) {
+                html += `<div class="p-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800">My Tickets (${ticketMatches.length})</div>`;
+                ticketMatches.forEach(t => {
+                    html += `
+                        <div onclick="openThreadModal('${t.id}'); clearGlobalSearch()" class="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+                            <div>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white">${t.subject}</div>
+                                <div class="text-[10px] text-slate-400">#${t.id} • ${t.dept}</div>
+                            </div>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${t.statusColor}">${t.status}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            if (kbMatches.length > 0) {
+                html += `<div class="p-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800">Knowledge Base Articles</div>`;
+                kbMatches.forEach(k => {
+                    html += `
+                        <div onclick="showKBModal('${k.title}'); clearGlobalSearch()" class="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition flex items-center gap-2 border-b border-slate-100 dark:border-slate-800">
+                            <i class="fa-solid fa-file-lines text-brand-500 text-xs"></i>
+                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">${k.title}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            if (deptMatches.length > 0) {
+                html += `<div class="p-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800">Departments</div>`;
+                deptMatches.forEach(d => {
+                    html += `
+                        <div onclick="openTicketModal('${d}'); clearGlobalSearch()" class="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">${d}</span>
+                            <span class="text-[10px] text-brand-600 font-bold">Lodge Ticket →</span>
+                        </div>
+                    `;
+                });
+            }
+
+            if (!html) {
+                html = `
+                    <div class="p-6 text-center text-xs text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-slate-300 text-xl mb-2"></i>
+                        <p>No direct matches found for "<strong>${query}</strong>"</p>
+                        <p class="mt-1 text-[11px] text-brand-600 cursor-pointer" onclick="openTicketModal('', '${query}')">Create a support ticket for this topic instead →</p>
+                    </div>
+                `;
+            }
+
+            dropdown.innerHTML = html;
+            dropdown.classList.remove('hidden');
+        }
+
+        function clearGlobalSearch() {
+            document.getElementById('global-search-input').value = '';
+            document.getElementById('search-dropdown').classList.add('hidden');
+            document.getElementById('search-clear-btn').classList.add('hidden');
+        }
+
+        // SEMESTER / TERM SELECTOR
+        function toggleTermMenu() {
+            document.getElementById('term-menu').classList.toggle('hidden');
+        }
+        function selectTerm(term) {
+            document.getElementById('selected-term-label').innerText = term;
+            document.getElementById('term-menu').classList.add('hidden');
+            showToast(`Switched active portal context to ${term}`);
+        }
+
+        // NOTIFICATIONS CENTER
+        function toggleNotificationCenter() {
+            document.getElementById('notif-dropdown').classList.toggle('hidden');
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notif-list');
+            const unreadCount = notifications.filter(n => n.unread).length;
+            
+            document.getElementById('notif-unread-count').innerText = `${unreadCount} New`;
+            document.getElementById('notif-badge').style.display = unreadCount > 0 ? 'block' : 'none';
+
+            list.innerHTML = '';
+            notifications.forEach(n => {
+                const item = document.createElement('div');
+                item.className = `p-3 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition cursor-pointer ${n.unread ? 'bg-brand-50/40 dark:bg-brand-950/20' : ''}`;
+                item.innerHTML = `
+                    <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs shrink-0 mt-0.5">
+                        <i class="fa-solid ${n.icon}"></i>
+                    </div>
+                    <div class="flex-1 text-xs">
+                        <div class="font-bold text-slate-800 dark:text-white flex items-center justify-between">
+                            <span>${n.title}</span>
+                            <span class="text-[10px] text-slate-400 font-normal">${n.time}</span>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 mt-0.5">${n.desc}</p>
+                    </div>
+                `;
+                item.onclick = () => {
+                    n.unread = false;
+                    renderNotifications();
+                    showToast(`Opened: ${n.title}`);
+                };
+                list.appendChild(item);
+            });
+        }
+
+        function markAllNotificationsRead() {
+            notifications.forEach(n => n.unread = false);
+            renderNotifications();
+            showToast('All notifications marked as read');
+        }
+
+        // USER PROFILE & DARK MODE
+        function toggleProfileMenu() {
+            document.getElementById('profile-menu').classList.toggle('hidden');
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('dark-mode-toggle-icon').innerText = isDark ? 'ON' : 'OFF';
+            showToast(`Dark Mode ${isDark ? 'Enabled' : 'Disabled'}`);
+        }
+
+        // SUPPORT & ORIENTATION MODALS
+        function openSupportModal() {
+            document.getElementById('support-modal').classList.remove('hidden');
+        }
+        function closeSupportModal() {
+            document.getElementById('support-modal').classList.add('hidden');
+        }
+        function openOrientationModal() {
+            document.getElementById('orientation-modal').classList.remove('hidden');
+        }
+        function closeOrientationModal() {
+            document.getElementById('orientation-modal').classList.add('hidden');
+        }
+
+        // LIVE CHAT DRAWER & BOT FLOW
+        function toggleLiveChatDrawer() {
+            const drawer = document.getElementById('live-chat-drawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-user-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            appendUserChatMessage(msg);
+            input.value = '';
+
+            setTimeout(() => {
+                respondBotMessage(msg);
+            }, 800);
+        }
+
+        function sendQuickChatMessage(msg) {
+            appendUserChatMessage(msg);
+            setTimeout(() => {
+                respondBotMessage(msg);
+            }, 800);
+        }
+
+        function appendUserChatMessage(msg) {
+            const container = document.getElementById('chat-messages-container');
+            const userMsgHtml = `
+                <div class="flex justify-end">
+                    <div class="bg-brand-600 text-white p-3 rounded-2xl rounded-tr-none text-xs shadow-sm max-w-[80%]">
+                        ${msg}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', userMsgHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function respondBotMessage(userMsg) {
+            const container = document.getElementById('chat-messages-container');
+            let responseText = "I have logged your request. Would you like me to dispatch an agent to your dorm?";
+            const lower = userMsg.toLowerCase();
+
+            if (lower.includes('wi-fi') || lower.includes('wifi') || lower.includes('password')) {
+                responseText = "To reconnect to Eduroam Wi-Fi, clear your saved network credentials, select 'Eduroam' network, and log in using your full student email (a.rivers@campus.edu).";
+            } else if (lower.includes('ticket') || lower.includes('status')) {
+                responseText = "You have 2 active tickets currently open. Ticket #TKT-84920 (Wi-Fi Signal Loss) has a field technician assigned for 2:00 PM today.";
+            } else if (lower.includes('tech bar') || lower.includes('location')) {
+                responseText = "The Tech Bar is located in Lowden Library, Ground Floor Room 104. Walk-in hours are Mon-Fri 8:00 AM - 8:00 PM.";
+            }
+
+            const botMsgHtml = `
+                <div class="flex gap-2.5 animate-slide-in">
+                    <div class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none border border-slate-200/80 dark:border-slate-700 text-xs shadow-sm max-w-[80%] text-slate-700 dark:text-slate-200">
+                        ${responseText}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', botMsgHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // TICKET MANAGEMENT LOGIC
+        function getTickets() {
+            return JSON.parse(localStorage.getItem('campus_tickets')) || defaultTickets;
+        }
+
+        function saveTickets(tickets) {
+            localStorage.setItem('campus_tickets', JSON.stringify(tickets));
+            renderTickets();
+        }
+
+        function renderTickets() {
+            const tickets = getTickets();
+            const container = document.getElementById('tickets-container');
+            container.innerHTML = '';
+
+            let filtered = tickets.filter(t => {
+                if (activeFilter === 'Open') return t.status !== 'Closed / Resolved';
+                if (activeFilter === 'Resolved') return t.status === 'Closed / Resolved';
+                if (activeFilter === 'Urgent') return t.priority === 'Urgent';
+                return true;
+            });
+
+            document.getElementById('count-all').innerText = tickets.length;
+            document.getElementById('count-open').innerText = tickets.filter(t => t.status !== 'Closed / Resolved').length;
+            document.getElementById('count-resolved').innerText = tickets.filter(t => t.status === 'Closed / Resolved').length;
+            document.getElementById('stat-active-count').innerText = tickets.filter(t => t.status !== 'Closed / Resolved').length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <i class="fa-solid fa-folder-open text-3xl text-slate-300 dark:text-slate-600 mb-2"></i>
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">No tickets found in this category</p>
+                        <p class="text-xs text-slate-400 mt-1">Submit a new ticket or adjust your active tab filter.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(ticket => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 space-y-4 hover:border-brand-300 transition";
+
+                let latestReplyHtml = '';
+                if (ticket.replies && ticket.replies.length > 0) {
+                    const lastReply = ticket.replies[ticket.replies.length - 1];
+                    latestReplyHtml = `
+                        <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800 flex items-start gap-3 mt-2">
+                            <img src="${lastReply.avatar}" class="w-8 h-8 rounded-full object-cover mt-0.5" onerror="this.src='https://placehold.co/100x100/3b82f6/ffffff?text=Tech'">
+                            <div class="flex-1 text-xs">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-800 dark:text-white">${lastReply.author}</span>
+                                    <span class="text-[10px] text-slate-400">${lastReply.time}</span>
+                                </div>
+                                <p class="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">"${lastReply.text}"</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-mono font-bold text-brand-600 dark:text-brand-400">#${ticket.id}</span>
+                            <span class="text-slate-300 dark:text-slate-600">•</span>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${ticket.dept}</span>
+                            <span class="text-xs ${ticket.badgeColor || 'bg-slate-100 text-slate-700'} font-bold px-2 py-0.5 rounded-full">${ticket.priority}</span>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full ${ticket.statusColor || 'bg-blue-50 text-blue-700'} self-start sm:self-auto">
+                            ${ticket.status}
+                        </span>
+                    </div>
+
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 dark:text-white text-base hover:text-brand-600 transition cursor-pointer" onclick="openThreadModal('${ticket.id}')">${ticket.subject}</h3>
+                        <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-1">
+                            <span><i class="fa-regular fa-clock mr-1"></i> ${ticket.loggedTime}</span>
+                            <span>•</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i> ${ticket.location || 'Campus Main'}</span>
+                        </div>
+                    </div>
+
+                    ${latestReplyHtml}
+
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <i class="fa-regular fa-calendar-check text-brand-600 dark:text-brand-400"></i>
+                            ${ticket.estResolution || 'Active in queue'}
+                        </span>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="inlineAddReply('${ticket.id}')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-lg transition">Add Reply</button>
+                            <button onclick="openThreadModal('${ticket.id}')" class="px-3 py-1.5 bg-brand-50 dark:bg-brand-950/80 hover:bg-brand-100 text-brand-700 dark:text-brand-300 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                <span>Thread History</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterTickets(tab) {
+            activeFilter = tab;
+            ['All', 'Open', 'Resolved', 'Urgent'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    el.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm transition";
+                } else {
+                    el.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+                }
+            });
+            renderTickets();
+        }
+
+        function openTicketModal(dept = '', quickTag = '') {
+            const modal = document.getElementById('ticket-modal');
+            modal.classList.remove('hidden');
+            
+            if (dept) document.getElementById('modal-dept').value = dept;
+            if (quickTag) document.getElementById('modal-subject').value = `[${quickTag}] Issue Inquiry`;
+            else document.getElementById('modal-subject').value = '';
+
+            document.getElementById('modal-desc').value = '';
+            document.getElementById('modal-location').value = 'North Hall / Campus Quad';
+        }
+
+        function closeTicketModal() {
+            document.getElementById('ticket-modal').classList.add('hidden');
+        }
+
+        function handleTicketSubmit(e) {
+            e.preventDefault();
+            const dept = document.getElementById('modal-dept').value;
+            const priority = document.getElementById('modal-priority').value;
+            const subject = document.getElementById('modal-subject').value;
+            const location = document.getElementById('modal-location').value;
+            const desc = document.getElementById('modal-desc').value;
+
+            const newTicket = {
+                id: `TKT-${Math.floor(10000 + Math.random() * 90000)}`,
+                dept: dept,
+                subject: subject,
+                priority: priority,
+                status: "Under Review",
+                assignedTo: "Campus Dispatcher",
+                loggedTime: "Just now",
+                location: location || "Campus Main",
+                statusColor: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
+                badgeColor: priority === 'Urgent' ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300' : 'bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300',
+                replies: [
+                    {
+                        author: "Alex Rivers (You)",
+                        role: "Student",
+                        time: "Just now",
+                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                        text: desc
+                    }
+                ],
+                estResolution: "Est. response: Within 2 hours"
+            };
+
+            const tickets = getTickets();
+            tickets.unshift(newTicket);
+            saveTickets(tickets);
+
+            closeTicketModal();
+            showToast(`Ticket #${newTicket.id} submitted successfully!`);
+        }
+
+        function openThreadModal(ticketId) {
+            currentActiveThreadId = ticketId;
+            const tickets = getTickets();
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+
+            document.getElementById('thread-modal-id').innerText = `#${ticket.id}`;
+            document.getElementById('thread-modal-title').innerText = ticket.subject;
+
+            const body = document.getElementById('thread-modal-body');
+            body.innerHTML = '';
+
+            ticket.replies.forEach(r => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = "flex gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700";
+                messageDiv.innerHTML = `
+                    <img src="${r.avatar}" class="w-9 h-9 rounded-full object-cover shrink-0" onerror="this.src='https://placehold.co/100x100/3b82f6/ffffff?text=User'">
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-xs text-slate-800 dark:text-white">${r.author} <span class="font-normal text-slate-400">(${r.role})</span></span>
+                            <span class="text-[10px] text-slate-400">${r.time}</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">${r.text}</p>
+                    </div>
+                `;
+                body.appendChild(messageDiv);
+            });
+
+            document.getElementById('thread-modal').classList.remove('hidden');
+        }
+
+        function closeThreadModal() {
+            document.getElementById('thread-modal').classList.add('hidden');
+        }
+
+        function sendThreadReply() {
+            const input = document.getElementById('thread-reply-input');
+            const text = input.value.trim();
+            if (!text || !currentActiveThreadId) return;
+
+            const tickets = getTickets();
+            const ticket = tickets.find(t => t.id === currentActiveThreadId);
+            if (ticket) {
+                ticket.replies.push({
+                    author: "Alex Rivers (You)",
+                    role: "Student",
+                    time: "Just now",
+                    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                    text: text
+                });
+                saveTickets(tickets);
+                openThreadModal(currentActiveThreadId);
+                input.value = '';
+                showToast("Reply sent to dispatch thread!");
+            }
+        }
+
+        function inlineAddReply(ticketId) {
+            const text = prompt("Enter your reply message for the support agent:");
+            if (text && text.trim()) {
+                const tickets = getTickets();
+                const ticket = tickets.find(t => t.id === ticketId);
+                if (ticket) {
+                    ticket.replies.push({
+                        author: "Alex Rivers (You)",
+                        role: "Student",
+                        time: "Just now",
+                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                        text: text.trim()
+                    });
+                    saveTickets(tickets);
+                    showToast("Reply saved successfully!");
+                }
+            }
+        }
+
+        function openAppointmentModal() {
+            document.getElementById('appointment-modal').classList.remove('hidden');
+        }
+        function closeAppointmentModal() {
+            document.getElementById('appointment-modal').classList.add('hidden');
+        }
+        function confirmAppointment() {
+            closeAppointmentModal();
+            showToast("Tech Genius Appointment confirmed! Confirmation sent to your email.");
+        }
+
+        function filterKB() {
+            const val = document.getElementById('kb-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.kb-card');
+            cards.forEach(c => {
+                const text = c.innerText.toLowerCase();
+                c.style.display = text.includes(val) ? 'block' : 'none';
+            });
+        }
+
+        function showKBModal(title) {
+            showToast(`Opening Knowledge Base Article: "${title}"`);
+        }
+
+        // TOAST SYSTEM
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-slate-900 text-white dark:bg-slate-800 dark:text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 text-xs font-semibold flex items-center gap-2 animate-slide-in pointer-events-auto";
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

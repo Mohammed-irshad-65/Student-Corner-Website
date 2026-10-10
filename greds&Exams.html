@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Corner - Grades & Academic Performance</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js for smooth GPA trend chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f5ff',
+                            100: '#e0ebff',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.4s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 3s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f6f8fc;
+            color: #1e293b;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Glassmorphism subtle effects */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .metric-card-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .metric-card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.08), 0 8px 10px -6px rgba(37, 99, 235, 0.05);
+        }
+
+        .badge-green {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-purple {
+            background-color: #f3e8ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
+        }
+
+        .badge-blue {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col lg:flex-row overflow-x-hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-full lg:w-64 bg-white border-r border-slate-200/80 flex-shrink-0 flex flex-col justify-between z-30 transition-all duration-300">
+        <div>
+            <!-- Logo area -->
+            <div class="h-16 px-6 flex items-center justify-between border-b border-slate-100">
+                <div class="flex items-center space-x-3 cursor-pointer">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-bold text-lg text-slate-900 tracking-tight">Campus Corner</span>
+                </div>
+                <!-- Mobile toggle button -->
+                <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav id="sidebarNav" class="px-4 py-6 space-y-7 hidden lg:block">
+                <div>
+                    <span class="px-3 text-xs font-bold text-slate-400 tracking-wider uppercase">Academic Hub</span>
+                    <div class="mt-3 space-y-1">
+                        <a href="./home.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors">
+                            <i data-lucide="layout-grid" class="w-4 h-4 text-slate-400"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="./Schedule.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors">
+                            <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                            <span>Schedule</span>
+                        </a>
+                        <a href="./greds&Exams.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-brand-500 text-white font-semibold shadow-lg shadow-brand-500/25 transition-all">
+                            <i data-lucide="award" class="w-4 h-4"></i>
+                            <span>Grades & Exams</span>
+                        </a>
+                        <a href="./campus.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors">
+                            <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
+                            <span>Campus Life</span>
+                        </a>
+                        <a href="./Resource.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors">
+                            <i data-lucide="folder-kanban" class="w-4 h-4 text-slate-400"></i>
+                            <span>Resources</span>
+                        </a>
+                        <a href="./new-student.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors">
+                            <i data-lucide="folder-kanban" class="w-4 h-4 text-slate-400"></i>
+                            <span>New Student Orientation</span>
+                        </a>
+                        <a href="./help-desk.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors">
+                            <i data-lucide="folder-kanban" class="w-4 h-4 text-slate-400"></i>
+                            <span>Help Desk & Campus Support</span>
+                            </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer Widget -->
+        <div class="p-4 m-4 rounded-2xl bg-slate-50 border border-slate-100 hidden lg:block">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-semibold text-slate-500">Term GPA</span>
+                <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200">Dean's List</span>
+            </div>
+            <div class="text-2xl font-extrabold text-slate-900 tracking-tight">3.84</div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+        <!-- Top Header Navigation -->
+        <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-20">
+            <!-- Search bar -->
+            <div class="flex-1 max-w-md">
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" placeholder="Search classes, faculty, events..." 
+                        class="w-full pl-10 pr-4 py-2 bg-slate-100/80 focus:bg-white text-sm rounded-xl border border-transparent focus:border-blue-500 focus:outline-none transition-all placeholder:text-slate-400">
+                </div>
+            </div>
+
+            <!-- Right Controls & User Profile -->
+            <div class="flex items-center space-x-3 sm:space-x-4 pl-4">
+                <!-- Term Select Button -->
+                <button class="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200/70 text-slate-700 text-xs font-semibold rounded-lg transition-colors">
+                    <i data-lucide="calendar-days" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span>Fall 2024</span>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                </button>
+
+                <!-- Notifications -->
+                <button class="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                </button>
+
+                <!-- Messages -->
+                <button class="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors hidden sm:block">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                </button>
+
+                <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
+
+                <!-- User Profile -->
+                <div class="flex items-center space-x-3 cursor-pointer group">
+                    <div class="text-right hidden sm:block">
+                        <div class="text-xs font-bold text-slate-800 group-hover:text-brand-600 transition-colors">Alex Rivera</div>
+                        <div class="text-[11px] font-medium text-slate-400">ID: #89204</div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" 
+                        alt="Alex Rivera" 
+                        class="w-9 h-9 rounded-full object-cover ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition-all">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+
+            <!-- Breadcrumbs & Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in">
+                <div>
+                    <div class="flex items-center space-x-2 text-xs font-medium text-slate-500 mb-1">
+                        <span class="hover:underline cursor-pointer">Academics</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
+                        <span class="text-brand-600 font-semibold">Grades & Examinations</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Grades & Academic Performance</h1>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300/60 uppercase tracking-wider">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-ping"></span>
+                            ACTIVE SESSION
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Top Right Action Controls -->
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <div class="relative">
+                        <select class="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-semibold pl-3 pr-8 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm cursor-pointer">
+                            <option>Fall 2024 (Current)</option>
+                            <option>Spring 2024</option>
+                            <option>Fall 2023</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
+
+                    <button id="whatIfBtn" class="flex items-center space-x-2 px-3.5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl shadow-sm transition-all active:scale-95">
+                        <i data-lucide="calculator" class="w-4 h-4 text-brand-600"></i>
+                        <span>What-If Calculator</span>
+                    </button>
+
+                    <button id="downloadTranscriptBtn" class="flex items-center space-x-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-brand-500/20 transition-all active:scale-95">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Official Transcript</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Metric Summary Grid (4 Cards) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up">
+                
+                <!-- Metric Card 1: Term GPA -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm metric-card-hover flex flex-col justify-between relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Term GPA</span>
+                        <div class="w-8 h-8 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                            <i data-lucide="trending-up" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline justify-between mb-4">
+                        <div class="text-3xl font-black text-slate-900 tracking-tight">3.88</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                            +0.04 vs Spring
+                        </span>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+                        <div><span class="font-semibold text-slate-700">Grade Points:</span> 62.0</div>
+                        <div><span class="font-semibold text-slate-700">Scale:</span> 4.0</div>
+                    </div>
+                </div>
+
+                <!-- Metric Card 2: Cumulative GPA -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm metric-card-hover flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cumulative GPA</span>
+                        <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline justify-between mb-4">
+                        <div class="text-3xl font-black text-indigo-900 tracking-tight">3.82</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                            Top 5% Cohort
+                        </span>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+                        <div><span class="font-semibold text-slate-700">Earned Credits:</span> 64 hrs</div>
+                        <div><span class="font-semibold text-slate-700">Degree Req:</span> 120</div>
+                    </div>
+                </div>
+
+                <!-- Metric Card 3: Academic Standing -->
+                <div class="bg-gradient-to-br from-emerald-50/60 to-teal-50/30 p-5 rounded-2xl border border-emerald-200/70 shadow-sm metric-card-hover flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Academic Standing</span>
+                        <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-emerald-950 mb-0.5">Dean's Honor List</div>
+                        <div class="text-xs text-emerald-700 font-medium">Consecutive 3rd Term Awarded</div>
+                    </div>
+                    <div class="pt-3 border-t border-emerald-200/60 flex items-center text-xs font-semibold text-emerald-800">
+                        <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1.5 text-emerald-600"></i>
+                        <span>Full Honors Distinction</span>
+                    </div>
+                </div>
+
+                <!-- Metric Card 4: Credits Registered -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm metric-card-hover flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Credits Registered</span>
+                        <div class="w-8 h-8 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline justify-between mb-4">
+                        <div class="text-3xl font-black text-slate-900 tracking-tight">16 <span class="text-sm font-semibold text-slate-400">/ 16</span></div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-brand-700 border border-blue-200">
+                            100% On Track
+                        </span>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+                        <div><span class="font-semibold text-slate-700">5 Courses</span> Enrolled</div>
+                        <div><span class="font-semibold text-slate-700">Active</span> Full-Time</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main Table Section: Current Semester Course Grades -->
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden animate-slide-up" style="animation-delay: 0.1s;">
+                
+                <!-- Table Header -->
+                <div class="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center shadow-md shadow-brand-500/20">
+                            <i data-lucide="book-marked" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Current Semester Course Grades</h2>
+                            <p class="text-xs text-slate-500 font-medium">Fall 2024 • Regular Assessment Breakdown • Updated 2 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-lg">
+                        <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+                        <span>Scale: Letter (4.0 Max)</span>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/30">
+                                <th class="py-3.5 px-6">Course Code & Title</th>
+                                <th class="py-3.5 px-4 text-center">Credits</th>
+                                <th class="py-3.5 px-4">Midterm Exam</th>
+                                <th class="py-3.5 px-4">Assignments & Labs</th>
+                                <th class="py-3.5 px-4 text-center">Projected Grade</th>
+                                <th class="py-3.5 px-6">Faculty Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs sm:text-sm font-medium text-slate-700">
+                            
+                            <!-- Row 1: CS 301 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors group">
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-lg bg-blue-100 text-brand-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                            CS
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 group-hover:text-brand-600 transition-colors">CS 301 • Data Structures & Algorithms</div>
+                                            <div class="text-xs text-slate-400">Prof. Harrison Vance • Section 04</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-center font-semibold text-slate-600">4.0</td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">94%</div>
+                                    <div class="text-[11px] text-slate-400">Weight: 30%</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">95%</div>
+                                    <div class="text-[11px] text-slate-400">4/4 Submitted</div>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold badge-green shadow-xs">
+                                        <i data-lucide="check" class="w-3 h-3 mr-1"></i>
+                                        A (4.0)
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <a href="#" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center hover:underline">
+                                        "Superb graph theory logic"
+                                        <i data-lucide="external-link" class="w-3 h-3 ml-1 text-slate-400"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Row 2: ENG 204 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors group">
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                            ENG
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 group-hover:text-brand-600 transition-colors">ENG 204 • Literature & Composition</div>
+                                            <div class="text-xs text-slate-400">Dr. Madeline Thorne • Section 01</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-center font-semibold text-slate-600">3.0</td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">88%</div>
+                                    <div class="text-[11px] text-slate-400">Weight: 25%</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">90%</div>
+                                    <div class="text-[11px] text-slate-400">3/3 Essays</div>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold badge-purple shadow-xs">
+                                        <i data-lucide="check" class="w-3 h-3 mr-1"></i>
+                                        B+ (3.3)
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <a href="#" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center hover:underline">
+                                        "Critical analysis refined"
+                                        <i data-lucide="external-link" class="w-3 h-3 ml-1 text-slate-400"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Row 3: MATH 215 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors group">
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                            MATH
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 group-hover:text-brand-600 transition-colors">MATH 215 • Linear Algebra & Vector Spaces</div>
+                                            <div class="text-xs text-slate-400">Prof. Kenji Takahashi • Section 02</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-center font-semibold text-slate-600">4.0</td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">96%</div>
+                                    <div class="text-[11px] text-slate-400">Weight: 35%</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">98%</div>
+                                    <div class="text-[11px] text-slate-400">Problem Sets</div>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold badge-green shadow-xs">
+                                        <i data-lucide="star" class="w-3 h-3 mr-1 fill-emerald-600"></i>
+                                        A (4.0)
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <a href="#" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center hover:underline">
+                                        "Flawless matrix proofs"
+                                        <i data-lucide="external-link" class="w-3 h-3 ml-1 text-slate-400"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Row 4: BIO 110 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors group">
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-lg bg-teal-100 text-teal-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                            BIO
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 group-hover:text-brand-600 transition-colors">BIO 110 • Environmental Biology</div>
+                                            <div class="text-xs text-slate-400">Dr. Sarah Al-Mansoor • Section 03</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-center font-semibold text-slate-600">3.0</td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">91%</div>
+                                    <div class="text-[11px] text-slate-400">Weight: 25%</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">88%</div>
+                                    <div class="text-[11px] text-slate-400">Lab Reports</div>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold badge-purple shadow-xs">
+                                        <i data-lucide="check" class="w-3 h-3 mr-1"></i>
+                                        A- (3.7)
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <a href="#" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center hover:underline">
+                                        "Field sample data precise"
+                                        <i data-lucide="external-link" class="w-3 h-3 ml-1 text-slate-400"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Row 5: PSYCH 101 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors group">
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-lg bg-sky-100 text-sky-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                            PSY
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 group-hover:text-brand-600 transition-colors">PSYCH 101 • Introduction to Psychology</div>
+                                            <div class="text-xs text-slate-400">Dr. Robert Chen • Section 01</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-center font-semibold text-slate-600">2.0</td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">89%</div>
+                                    <div class="text-[11px] text-slate-400">Weight: 20%</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800">92%</div>
+                                    <div class="text-[11px] text-slate-400">Quizzes & Reading</div>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold badge-purple shadow-xs">
+                                        <i data-lucide="check" class="w-3 h-3 mr-1"></i>
+                                        B+ (3.3)
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <a href="#" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center hover:underline">
+                                        "Great case study insights"
+                                        <i data-lucide="external-link" class="w-3 h-3 ml-1 text-slate-400"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table Summary Footer Bar -->
+                <div class="p-4 bg-slate-50 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 gap-2">
+                    <div class="flex items-center space-x-4">
+                        <div><span class="font-bold text-slate-800">Total Semester Hours:</span> 16 Credits</div>
+                        <div class="hidden sm:block text-slate-300">•</div>
+                        <div><span class="font-bold text-slate-800">Quality Points:</span> 62.0</div>
+                    </div>
+                    <div class="font-bold text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs">
+                        Calculated Projected Term GPA: <span class="text-brand-600 text-sm">3.88 / 4.00</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Two Columns Section: Exam Schedule & GPA Trends -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-slide-up" style="animation-delay: 0.2s;">
+
+                <!-- Left Column: Upcoming Midterm & Final Exam Schedule (7 cols) -->
+                <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                    <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-bold text-slate-900 text-base">Upcoming Midterm & Final Exam Schedule</h3>
+                            </div>
+                            <span class="text-xs font-semibold text-slate-400">Fall Finals Period</span>
+                        </div>
+
+                        <!-- Exam Cards List -->
+                        <div class="space-y-3.5">
+                            
+                            <!-- Exam 1 -->
+                            <div class="p-4 rounded-xl border border-slate-200/80 bg-white hover:border-brand-500/50 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="flex items-start space-x-3.5">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 text-brand-700 flex flex-col items-center justify-center flex-shrink-0">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">DEC</span>
+                                        <span class="text-lg font-black leading-none">12</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-900 text-sm">MATH 215 • Comprehensive Final Exam</div>
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 mt-1">
+                                            <span class="flex items-center"><i data-lucide="clock" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>09:00 AM - 12:00 PM</span>
+                                            <span class="flex items-center"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>Hall A, Desk 42</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2">
+                                    <span class="px-2.5 py-0.5 text-[11px] font-bold badge-green rounded-full">Admit Card Ready</span>
+                                    <button class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center">
+                                        View Seat Plan
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Exam 2 -->
+                            <div class="p-4 rounded-xl border border-slate-200/80 bg-white hover:border-brand-500/50 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="flex items-start space-x-3.5">
+                                    <div class="w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 text-purple-700 flex flex-col items-center justify-center flex-shrink-0">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">DEC</span>
+                                        <span class="text-lg font-black leading-none">14</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-900 text-sm">CS 301 • Practical & Theory Exam</div>
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 mt-1">
+                                            <span class="flex items-center"><i data-lucide="clock" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>01:30 PM - 04:30 PM</span>
+                                            <span class="flex items-center"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>Science Lab 204</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2">
+                                    <span class="px-2.5 py-0.5 text-[11px] font-bold badge-purple rounded-full">Lab System</span>
+                                    <button class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center">
+                                        Download Materials
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Exam 3 -->
+                            <div class="p-4 rounded-xl border border-slate-200/80 bg-white hover:border-brand-500/50 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="flex items-start space-x-3.5">
+                                    <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex flex-col items-center justify-center flex-shrink-0">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">DEC</span>
+                                        <span class="text-lg font-black leading-none">16</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-900 text-sm">ENG 204 • Term Paper Presentation</div>
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 mt-1">
+                                            <span class="flex items-center"><i data-lucide="clock" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>10:00 AM - 11:30 AM</span>
+                                            <span class="flex items-center"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>Humanities Wing, Room 112</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2">
+                                    <span class="px-2.5 py-0.5 text-[11px] font-bold bg-slate-100 text-slate-600 rounded-full border border-slate-200">Scheduled</span>
+                                    <button class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center">
+                                        View Rubric
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: GPA Trend & Credit Progress (5 cols) -->
+                <div class="lg:col-span-5 flex flex-col space-y-6">
+                    
+                    <!-- GPA Trend Chart Card -->
+                    <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                                        <i data-lucide="line-chart" class="w-5 h-5"></i>
+                                    </div>
+                                    <h3 class="font-bold text-slate-900 text-base">GPA Trend & Credit Progress</h3>
+                                </div>
+                                <span class="px-2.5 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200">Steady Growth</span>
+                            </div>
+
+                            <div class="flex items-baseline justify-between mt-2 mb-4">
+                                <div>
+                                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">4-Semester Trajectory</div>
+                                    <div class="text-xl font-black text-slate-900">3.72 <span class="text-slate-400 text-sm font-semibold">→</span> 3.88 GPA</div>
+                                </div>
+                                <div class="flex items-center space-x-3 text-xs">
+                                    <div class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-brand-600 mr-1.5"></span>Semester</div>
+                                    <div class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-indigo-200 mr-1.5"></span>Cumulative</div>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Chart Canvas -->
+                            <div class="h-44 w-full relative">
+                                <canvas id="gpaChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Degree Progress Section -->
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-2">
+                                <span class="font-bold text-slate-700 flex items-center">
+                                    <i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1.5 text-emerald-500"></i>
+                                    Degree Progress
+                                </span>
+                                <span class="font-extrabold text-brand-600 text-sm">53%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5">
+                                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-1000" style="width: 53%;"></div>
+                            </div>
+                            <div class="text-[11px] text-slate-400 font-medium mt-1 text-right">
+                                64 of 120 Total Credits Completed
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Bottom Advisory Callout Banner -->
+            <div class="p-6 rounded-2xl bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-white border border-blue-100/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-600 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="help-circle" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-slate-900">Need a Grade Review or Academic Advising?</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Grade dispute window for midterms remains open until <span class="font-semibold text-slate-700">Dec 05, 2024</span>. Schedule a meeting with your academic advisor directly through Campus Corner.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 flex-shrink-0 w-full md:w-auto justify-end">
+                    <button id="appealPolicyBtn" class="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl transition-all active:scale-95 shadow-2xs">
+                        Grade Appeal Policy
+                    </button>
+                    <button id="bookAdvisorBtn" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-brand-500/20 transition-all active:scale-95">
+                        Book Advisor Slot
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- WHAT-IF GRADE CALCULATOR MODAL -->
+    <div id="whatIfModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-300" id="whatIfModalCard">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-brand-600 flex items-center justify-center">
+                        <i data-lucide="calculator" class="w-4 h-4"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">What-If Grade Simulator</h3>
+                </div>
+                <button id="closeWhatIfModal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-500 mb-4">Adjust your final exam target scores below to calculate your estimated term GPA.</p>
+
+            <div class="space-y-3 max-h-60 overflow-y-auto pr-1">
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-xs text-slate-800">CS 301 Data Structures</div>
+                        <div class="text-[11px] text-slate-400">Current: 94%</div>
+                    </div>
+                    <input type="number" value="95" max="100" min="0" class="w-16 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 sim-score">
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-xs text-slate-800">ENG 204 Literature</div>
+                        <div class="text-[11px] text-slate-400">Current: 88%</div>
+                    </div>
+                    <input type="number" value="90" max="100" min="0" class="w-16 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 sim-score">
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-xs text-slate-800">MATH 215 Linear Algebra</div>
+                        <div class="text-[11px] text-slate-400">Current: 96%</div>
+                    </div>
+                    <input type="number" value="98" max="100" min="0" class="w-16 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 sim-score">
+                </div>
+            </div>
+
+            <div class="mt-5 p-4 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-between">
+                <span class="text-xs font-bold text-brand-900">Projected Term GPA:</span>
+                <span id="simGpaValue" class="text-xl font-extrabold text-brand-600">3.91 / 4.00</span>
+            </div>
+
+            <div class="mt-5 flex justify-end">
+                <button id="applySimBtn" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-brand-500/20">
+                    Apply to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRANSCRIPT GENERATING / ADVISOR ALERT TOAST -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400" id="toastIcon"></i>
+        <span id="toastMessage" class="text-xs font-medium">Official Transcript requested successfully!</span>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Initialize GPA Trend Chart
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('gpaChart').getContext('2d');
+            
+            // Gradient for bar chart
+            const gradientBlue = ctx.createLinearGradient(0, 0, 0, 180);
+            gradientBlue.addColorStop(0, '#2563eb');
+            gradientBlue.addColorStop(1, '#60a5fa');
+
+            const gradientPurple = ctx.createLinearGradient(0, 0, 0, 180);
+            gradientPurple.addColorStop(0, '#e0e7ff');
+            gradientPurple.addColorStop(1, '#c7d2fe');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["F'23", "S'24", "Sum'24", "F'24 (Now)"],
+                    datasets: [
+                        {
+                            label: 'Term GPA',
+                            data: [3.72, 3.78, 3.84, 3.88],
+                            backgroundColor: [gradientPurple, gradientPurple, gradientPurple, gradientBlue],
+                            borderRadius: 8,
+                            barThickness: 24,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { size: 12, weight: 'bold' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: (context) => `GPA: ${context.raw}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '600' }, color: '#64748b' }
+                        },
+                        y: {
+                            min: 3.0,
+                            max: 4.0,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { stepSize: 0.2, font: { size: 10 }, color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        });
+
+        // UI Interactions & Modals
+        const whatIfBtn = document.getElementById('whatIfBtn');
+        const whatIfModal = document.getElementById('whatIfModal');
+        const whatIfModalCard = document.getElementById('whatIfModalCard');
+        const closeWhatIfModal = document.getElementById('closeWhatIfModal');
+        const applySimBtn = document.getElementById('applySimBtn');
+        const downloadTranscriptBtn = document.getElementById('downloadTranscriptBtn');
+        const bookAdvisorBtn = document.getElementById('bookAdvisorBtn');
+        const appealPolicyBtn = document.getElementById('appealPolicyBtn');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebarNav = document.getElementById('sidebarNav');
+
+        // Toggle Mobile Nav Menu
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebarNav.classList.toggle('hidden');
+        });
+
+        // Modal Open/Close Logic
+        function openModal(modal, card) {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal(modal, card) {
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        whatIfBtn.addEventListener('click', () => openModal(whatIfModal, whatIfModalCard));
+        closeWhatIfModal.addEventListener('click', () => closeModal(whatIfModal, whatIfModalCard));
+
+        // Toast Trigger Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.innerText = msg;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Feature Actions
+        downloadTranscriptBtn.addEventListener('click', () => {
+            showToast("Downloading Official Transcript (PDF)...");
+        });
+
+        bookAdvisorBtn.addEventListener('click', () => {
+            showToast("Opening Academic Advisor Calendar...");
+        });
+
+        appealPolicyBtn.addEventListener('click', () => {
+            showToast("Opening Grade Appeal Guidelines...");
+        });
+
+        applySimBtn.addEventListener('click', () => {
+            closeModal(whatIfModal, whatIfModalCard);
+            showToast("Simulated GPA calculated and applied!");
+        });
+
+        // Dynamic what-if simulator calculation listener
+        document.querySelectorAll('.sim-score').forEach(input => {
+            input.addEventListener('input', () => {
+                let total = 0;
+                let count = 0;
+                document.querySelectorAll('.sim-score').forEach(i => {
+                    total += parseFloat(i.value || 0);
+                    count++;
+                });
+                let avg = (total / count) / 25; // Map approx score to 4.0 scale
+                if (avg > 4.0) avg = 4.0;
+                document.getElementById('simGpaValue').innerText = avg.toFixed(2) + ' / 4.00';
+            });
+        });
+    </script>
+</body>
+</html>
